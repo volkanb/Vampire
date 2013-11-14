@@ -1,10 +1,14 @@
-# Unity .gitignore file.
-.DS_Store
-Library
-Library/*
-*.csproj
-*.sln
+# gazihan's gitignore that worked fine during Summer 2013
+
+/*/
+!.gitignore
+!/Assets
+!/Library
+/Library/*
+!/Library/*.asset
+!/ProjectSettings
+/*-CSharp*
+/*-UnityScript*
+/*-csharp*
+/*.sln
 *.userprefs
-Temp
-*.pidb
-Build
