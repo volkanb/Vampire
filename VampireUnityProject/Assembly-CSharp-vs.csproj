@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+	<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+	<ProductVersion>10.0.20506</ProductVersion>
+	<SchemaVersion>2.0</SchemaVersion>
+	<ProjectGuid>{D3148027-B3A4-E656-F81E-FC7CF55A2E2E}</ProjectGuid>
+	<OutputType>Library</OutputType>
+	<AppDesignerFolder>Properties</AppDesignerFolder>
+	<RootNamespace></RootNamespace>
+	<AssemblyName>Assembly-CSharp</AssemblyName>
+	<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+	<FileAlignment>512</FileAlignment>
+	<BaseDirectory>Assets</BaseDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+	<DebugSymbols>true</DebugSymbols>
+	<DebugType>full</DebugType>
+	<Optimize>false</Optimize>
+	<OutputPath>Temp\bin\Debug\</OutputPath>
+	<DefineConstants>DEBUG;TRACE;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_GENERICS;ENABLE_SUBSTANCE;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;UNITY_4_3_1;UNITY_4_3;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN;UNITY_TEAM_LICENSE</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+	<DebugType>pdbonly</DebugType>
+	<Optimize>true</Optimize>
+	<OutputPath>Temp\bin\Release\</OutputPath>
+	<DefineConstants>TRACE</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+	<Reference Include="System" />
+    <Reference Include="System.XML" />
+	<Reference Include="System.Core" />
+	<Reference Include="System.Xml.Linq" />
+	<Reference Include="UnityEngine">
+	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	</Reference>
+	<Reference Include="UnityEditor">
+	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	</Reference>
+  </ItemGroup>
+  <ItemGroup>
+     <Compile Include="Assets\NGUI\Scripts\Interaction\LanguageSelection.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIButton.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIButtonActivate.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIButtonColor.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIButtonKeyBinding.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIButtonKeys.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIButtonMessage.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIButtonOffset.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIButtonPlayAnimation.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIButtonRotation.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIButtonScale.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIButtonSound.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIButtonTween.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UICenterOnChild.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UICheckbox.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UICheckboxControlledComponent.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UICheckboxControlledObject.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIDragCamera.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIDragObject.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIDragPanelContents.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIDraggableCamera.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIDraggablePanel.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIForwardEvents.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIGrid.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIImageButton.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIInputValidator.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIPopupList.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UISavedOption.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UIScrollBar.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UISlider.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UISliderColors.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UISoundVolume.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Interaction\UITable.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Internal\ActiveAnimation.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Internal\AnimationOrTween.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Internal\BMFont.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Internal\BMGlyph.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Internal\BMSymbol.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Internal\BetterList.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Internal\ByteReader.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Internal\IgnoreTimeScale.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Internal\Localization.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Internal\NGUIDebug.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Internal\NGUIMath.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Internal\NGUITools.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Internal\SpringPanel.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Internal\UIDrawCall.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Internal\UIEventListener.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Internal\UIGeometry.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Internal\UINode.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Internal\UIWidget.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Tweening\AnimatedAlpha.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Tweening\AnimatedColor.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Tweening\SpringPosition.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Tweening\TweenAlpha.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Tweening\TweenColor.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Tweening\TweenFOV.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Tweening\TweenOrthoSize.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Tweening\TweenPosition.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Tweening\TweenRotation.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Tweening\TweenScale.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Tweening\TweenTransform.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Tweening\TweenVolume.cs" />
+     <Compile Include="Assets\NGUI\Scripts\Tweening\UITweener.cs" />
+     <Compile Include="Assets\NGUI\Scripts\UI\UIAnchor.cs" />
+     <Compile Include="Assets\NGUI\Scripts\UI\UIAtlas.cs" />
+     <Compile Include="Assets\NGUI\Scripts\UI\UICamera.cs" />
+     <Compile Include="Assets\NGUI\Scripts\UI\UIFilledSprite.cs" />
+     <Compile Include="Assets\NGUI\Scripts\UI\UIFont.cs" />
+     <Compile Include="Assets\NGUI\Scripts\UI\UIInput.cs" />
+     <Compile Include="Assets\NGUI\Scripts\UI\UIInputSaved.cs" />
+     <Compile Include="Assets\NGUI\Scripts\UI\UILabel.cs" />
+     <Compile Include="Assets\NGUI\Scripts\UI\UILocalize.cs" />
+     <Compile Include="Assets\NGUI\Scripts\UI\UIOrthoCamera.cs" />
+     <Compile Include="Assets\NGUI\Scripts\UI\UIPanel.cs" />
+     <Compile Include="Assets\NGUI\Scripts\UI\UIRoot.cs" />
+     <Compile Include="Assets\NGUI\Scripts\UI\UISlicedSprite.cs" />
+     <Compile Include="Assets\NGUI\Scripts\UI\UISprite.cs" />
+     <Compile Include="Assets\NGUI\Scripts\UI\UISpriteAnimation.cs" />
+     <Compile Include="Assets\NGUI\Scripts\UI\UIStretch.cs" />
+     <Compile Include="Assets\NGUI\Scripts\UI\UITextList.cs" />
+     <Compile Include="Assets\NGUI\Scripts\UI\UITexture.cs" />
+     <Compile Include="Assets\NGUI\Scripts\UI\UITiledSprite.cs" />
+     <Compile Include="Assets\NGUI\Scripts\UI\UITooltip.cs" />
+     <Compile Include="Assets\NGUI\Scripts\UI\UIViewport.cs" />
+     <Compile Include="Assets\Scripts\gui_EventHandler.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\ComponentSystem\vp_Component.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\ComponentSystem\vp_ComponentPreset.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\ComponentSystem\vp_State.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\ComponentSystem\vp_StateManager.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\EventSystem\vp_Activity.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\EventSystem\vp_Attempt.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\EventSystem\vp_Event.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\EventSystem\vp_EventDump.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\EventSystem\vp_EventHandler.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\EventSystem\vp_GlobalEvent.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\EventSystem\vp_Message.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\EventSystem\vp_StateEventHandler.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\EventSystem\vp_Value.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPCamera.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPController.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPInput.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPInteractManager.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPPistolReloader.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPPlayerEventHandler.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPWeapon.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPWeaponHandler.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPWeaponMeleeAttack.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPWeaponReloader.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPWeaponShooter.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\Motion\vp_Perlin.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\Motion\vp_Spring.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\Utility\vp_Gizmo.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\Utility\vp_Layer.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\Utility\vp_TimeUtility.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\Utility\vp_Timer.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\Utility\vp_Utility.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Core\Utility\vp_WaypointGizmo.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Demo\vp_DemoManager.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Demo\vp_FPSDemo1.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Demo\vp_FPSDemo2.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Demo\vp_FPSDemo3.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Demo\vp_FPSDemoManager.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Effects\vp_Debris.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Effects\vp_Earthquake.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Effects\vp_MuzzleFlash.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Effects\vp_PulsingLight.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Effects\vp_Shell.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\GUI\vp_SimpleCrosshair.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\GUI\vp_SimpleHUD.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\AI\vp_SimpleAITurret.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\Combat\vp_DamageHandler.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\Combat\vp_Explosion.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\Combat\vp_HitscanBullet.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\Combat\vp_PlayerDamageHandler.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\Combat\vp_Shooter.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\Items\Pickups\vp_AmmoPickup.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\Items\Pickups\vp_HealthPickup.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\Items\Pickups\vp_Pickup.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\Items\Pickups\vp_SlomoPickup.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\Items\Pickups\vp_SpeedPickup.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\Items\Pickups\vp_WeaponPickup.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\Items\vp_SimpleInventory.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\Surfaces\FootstepManager\vp_FootstepManager.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\Surfaces\FootstepManager\vp_SurfaceIdentifier.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\Surfaces\vp_DecalManager.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\World\Interaction\vp_Climb.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\World\Interaction\vp_Grab.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\World\Interaction\vp_Interactable.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\World\Interaction\vp_PlatformSwitch.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\World\Interaction\vp_Switch.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\World\vp_MovingPlatform.cs" />
+     <Compile Include="Assets\UltimateFPS\Scripts\Gameplay\World\vp_RandomSpawner.cs" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Shooter\ShooterPistolSlideFast.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Depth Cutout.shader" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Camera\CameraClimb.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Shooter\ShooterMachinegunZoom.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\SystemOFFShooter.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Controller\ControllerDead.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Controller\ControllerCrouch.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponRevolverCrouch.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Camera\CameraSlideFast.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ArtilleryController.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponMachinegun.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\CowboyWeaponZoom.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MaceWeaponSwingRight.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ModernCameraZoom.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\PerspOldWeapon.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MafiaCamera.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Controller\ControllerFreeze.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\StompingCamera.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ModernWeaponCrouch.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MouseRawUnityCamera.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\GUI - Text Shader (SoftClip).shader" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\CowboyCamera.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\SystemOFFWeapon.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MaceWeaponPullLeft.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Dynamic Font (AlphaClip).shader" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Masked Colored.shader" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ControllerCrouch.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponRevolverRun.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ModernCamera.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponRevolverZoom.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MafiaShooter.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponPistolReload2.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Camera\CameraReload.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\SmackController.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Camera\CameraFreeze.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MaceWeaponPullUpLeft.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\WallFacingWeapon.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\Persp1999Weapon.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\FreezeController.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MaceWeaponSwingDown.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\CowboyController.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponMachinegunCrouch.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Camera\CameraDefault.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored (Packed) (AlphaClip) .shader" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponPistolZoom.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\Persp1999Camera.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ModernController.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Shooter\ShooterRevolverZoom.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponRevolverReload.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MouseSmoothingCamera.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Controller\ControllerRun.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Camera\CameraCrouch.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\WallFacingCamera.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\PivotMuzzleWeapon.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\DefaultCamera.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MeleeAttackToDown.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Premultiplied Colored (AlphaClip).shader" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\DefaultWeapon.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Shooter\ShooterMachinegun.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Shooter\ShooterPistolZoom.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\OldSchoolCamera.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MaceWeaponPullUpRight.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Controller\ControllerZoom.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponPistol.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MaceWeaponPullUp.txt" />
+     <None Include="Assets\UltimateFPS\Content\Art\Weapons\Source\BasicArms\BasicArmsReadMe.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\DrunkWeapon.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MaceWeaponPullRight.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored (AlphaClip).shader" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponPistolSlideFast.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ModernShooter.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponRevolver.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\GUI - Text Shader (AlphaClip).shader" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ImmobileCamera.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MaceCamera.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ImmobileController.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MaceWeaponSwingLeft.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MechController.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\DrunkController.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Shooter\ShooterPistol.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\DrunkCamera.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponMachinegunReload.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ArtilleryCamera.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponPistolCrouch.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MechWeapon.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Dynamic Font (SoftClip).shader" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ModernCameraCrouch.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Camera\CameraDead.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\CowboyShooter.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MouseLowSensWeapon.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MaceWeaponSwingDownLeft.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MafiaWeaponZoom.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\SystemOFFController.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MaceWeaponPullDown.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\OldSchoolWeapon.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored (Packed) (SoftClip).shader" />
+     <None Include="Assets\GUI\Fonts\MSGoth32.fnt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Premultiplied Colored (SoftClip).shader" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ControllerMegaSpeed.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MaceWeaponSwingUp.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ImmobileWeapon.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponMachinegunRun.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\TurretWeapon.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Premultiplied Colored.shader" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MaceWeapon.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\AstronautCamera.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MechWeaponZoom.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MeleeAttackToRight.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Dynamic Font.shader" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MouseLowSensCamera.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponMachinegunZoom.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponPistolReload.txt" />
+     <None Include="Assets\NGUI\ReadMe - 2.6.3.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Shooter\ShooterRevolver.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored.shader" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MaceWeaponSwingDownRight.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ModernWeapon.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\PivotChestWeapon.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Controller\ControllerClimb.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MeleeAttackToDownLeft.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored Overlay.shader" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Camera\CameraRun.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Camera\CameraZoom.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\SystemOFFWeaponGlideIn.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\SniperWeapon.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\SystemOFFCamera.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\PerspOldCamera.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored (Packed).shader" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponGenericSlide.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MafiaWeapon.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\OldSchoolShooter.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MechShooter.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MeleeAttackToLeft.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\TurretCamera.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\CowboyWeapon.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\PivotElbowWeapon.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MafiaCameraCrouch.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ModernWeaponZoom.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Additive Colored.shader" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MafiaShooterZoom.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\PerspModernWeapon.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponPistolRun.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\PerspModernCamera.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ModernControllerZoom.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MeleeAttackToUp.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ModernShooterZoom.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Camera\CameraSlide.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MechCamera.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\CowboyShooterZoom.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Depth.shader" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\OldSchoolController.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Shooter\ShooterMachinegunSlideFast.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\SniperCamera.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MouseRawUnityWeapon.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored (SoftClip).shader" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MafiaWeaponCrouch.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\AstronautController.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\TurretShooter.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\SniperShooter.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\CowboyWeaponCrouch.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\FreezeCamera.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponMachinegunSlideFast.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MouseSmoothingWeapon.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\PivotWristWeapon.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\SimpleAIShooter.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\AstronautWeapon.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponRevolverSlideFast.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MeleeAttackToDownRight.txt" />
+     <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Controller\ControllerDefault.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+	   Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  
+</Project>
