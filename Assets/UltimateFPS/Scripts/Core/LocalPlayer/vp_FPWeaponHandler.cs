@@ -166,7 +166,7 @@ public class vp_FPWeaponHandler : MonoBehaviour
 
 		if (i < 0 || i > m_Weapons.Count)
 		{
-			Debug.LogError("Error: (" + this + ") Weapon list does not have a weapon with index: " + i);
+			//Debug.LogError("Error: (" + this + ") Weapon list does not have a weapon with index: " + i);
 			return;
 		}
 

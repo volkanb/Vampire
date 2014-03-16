@@ -1,13 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class test : MonoBehaviour {
-	//public vp_FPPlayerEventHandler Player = null;
-	RaycastHit objectHit;
+public class LayerChanger : MonoBehaviour {
+
 	// Use this for initialization
 	void Start () 
 	{
-//		GetComponent<CharacterController>().center=new Vector3(0,-0.9f,0);
+
 	}
 	
 	// Update is called once per frame
