@@ -39,24 +39,13 @@
 	<Reference Include="System.Core" />
 	<Reference Include="System.Xml.Linq" />
 	<Reference Include="UnityEngine">
-	  <HintPath>E:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityEditor">
-	  <HintPath>E:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\AstarPathfindingProject\Editor\AstarPathEditor.cs" />
-     <Compile Include="Assets\AstarPathfindingProject\Editor\EditorGUIx.cs" />
-     <Compile Include="Assets\AstarPathfindingProject\Editor\EditorUtilities.cs" />
-     <Compile Include="Assets\AstarPathfindingProject\Editor\GraphEditors\GraphEditor.cs" />
-     <Compile Include="Assets\AstarPathfindingProject\Editor\GraphEditors\GridGeneratorEditor.cs" />
-     <Compile Include="Assets\AstarPathfindingProject\Editor\GraphEditors\NavMeshGeneratorEditor.cs" />
-     <Compile Include="Assets\AstarPathfindingProject\Editor\GraphEditors\PointGeneratorEditor.cs" />
-     <Compile Include="Assets\AstarPathfindingProject\Editor\GraphUpdateSceneEditor.cs" />
-     <Compile Include="Assets\AstarPathfindingProject\Editor\ModifierEditors\RaycastModifierEditor.cs" />
-     <Compile Include="Assets\AstarPathfindingProject\Editor\ModifierEditors\SmoothModifierEditor.cs" />
-     <Compile Include="Assets\AstarPathfindingProject\Editor\SeekerEditor.cs" />
      <Compile Include="Assets\UltimateFPS\Scripts\Core\Editor\vp_ComponentPersister.cs" />
      <Compile Include="Assets\UltimateFPS\Scripts\Core\Editor\vp_EditorGUIUtility.cs" />
      <Compile Include="Assets\UltimateFPS\Scripts\Core\Editor\vp_EventDumpWindow.cs" />
@@ -82,7 +71,7 @@
      <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Controller\ControllerCrouch.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponRevolverCrouch.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Camera\CameraSlideFast.txt" />
-     <None Include="Assets\AstarPathfindingProject\Editor\EditorAssets\Materials\Navmesh2.shader" />
+     <None Include="Assets\Plugins\AstarPathfindingProject\Editor\EditorAssets\Materials\Navmesh2.shader" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ArtilleryController.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponMachinegun.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\CowboyWeaponZoom.txt" />
@@ -109,7 +98,7 @@
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\SmackController.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Camera\CameraFreeze.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MaceWeaponPullUpLeft.txt" />
-     <None Include="Assets\AstarPathfindingProject\Plugins\DotNetZip\License.txt" />
+     <None Include="Assets\Plugins\AstarPathfindingProject\Plugins\DotNetZip\License.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\WallFacingWeapon.txt" />
      <None Include="Assets\Terrain Scene\Shaders\Resources\FastTreeCreatorLeaves.shader" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\Persp1999Weapon.txt" />
@@ -126,7 +115,7 @@
      <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponRevolverReload.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MouseSmoothingCamera.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Controller\ControllerRun.txt" />
-     <None Include="Assets\AstarPathfindingProject\ExampleScenes\Materials\Projector Multiply.shader" />
+     <None Include="Assets\Plugins\AstarPathfindingProject\ExampleScenes\Materials\Projector Multiply.shader" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Camera\CameraCrouch.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\WallFacingCamera.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\PivotMuzzleWeapon.txt" />
@@ -151,21 +140,21 @@
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ModernShooter.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponRevolver.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ImmobileCamera.txt" />
-     <None Include="Assets\AstarPathfindingProject\ExampleScenes\Materials\DiffuseAlwaysVisible.shader" />
+     <None Include="Assets\Plugins\AstarPathfindingProject\ExampleScenes\Materials\DiffuseAlwaysVisible.shader" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MaceCamera.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ImmobileController.txt" />
-     <None Include="Assets\AstarPathfindingProject\Editor\EditorAssets\Materials\Navmesh.shader" />
+     <None Include="Assets\Plugins\AstarPathfindingProject\Editor\EditorAssets\Materials\Navmesh.shader" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MaceWeaponSwingLeft.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MechController.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\DrunkController.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Shooter\ShooterPistol.txt" />
-     <None Include="Assets\AstarPathfindingProject\Plugins\dependencies.txt" />
+     <None Include="Assets\Plugins\AstarPathfindingProject\Plugins\dependencies.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\DrunkCamera.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponMachinegunReload.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ArtilleryCamera.txt" />
      <None Include="Assets\Terrain Scene\Shaders\BillboardTree.shader" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponPistolCrouch.txt" />
-     <None Include="Assets\AstarPathfindingProject\ExampleScenes\_Example Scenes.txt" />
+     <None Include="Assets\Plugins\AstarPathfindingProject\ExampleScenes\_Example Scenes.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MechWeapon.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ModernCameraCrouch.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Camera\CameraDead.txt" />
@@ -177,7 +166,7 @@
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MaceWeaponPullDown.txt" />
      <None Include="Assets\Terrain Scene\Shaders\MeshTerrain4Splats.shader" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\OldSchoolWeapon.txt" />
-     <None Include="Assets\AstarPathfindingProject\Readme_upgrading.txt" />
+     <None Include="Assets\Plugins\AstarPathfindingProject\Readme_upgrading.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ControllerMegaSpeed.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MaceWeaponSwingUp.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ImmobileWeapon.txt" />
@@ -192,14 +181,14 @@
      <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponPistolReload.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Shooter\ShooterRevolver.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MaceWeaponSwingDownRight.txt" />
-     <None Include="Assets\AstarPathfindingProject\ExampleScenes\Materials\Projector Light.shader" />
+     <None Include="Assets\Plugins\AstarPathfindingProject\ExampleScenes\Materials\Projector Light.shader" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ModernWeapon.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\PivotChestWeapon.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Controller\ControllerClimb.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MeleeAttackToDownLeft.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Camera\CameraRun.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Camera\CameraZoom.txt" />
-     <None Include="Assets\AstarPathfindingProject\Readme.txt" />
+     <None Include="Assets\Plugins\AstarPathfindingProject\Readme.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\SystemOFFWeaponGlideIn.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\SniperWeapon.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\SystemOFFCamera.txt" />
@@ -215,11 +204,11 @@
      <None Include="Assets\Terrain Scene\Shaders\Vegetation-TwoPassUnlit.shader" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\PivotElbowWeapon.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MafiaCameraCrouch.txt" />
-     <None Include="Assets\AstarPathfindingProject\Plugins\JsonFx\License.txt" />
+     <None Include="Assets\Plugins\AstarPathfindingProject\Plugins\JsonFx\License.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ModernWeaponZoom.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MafiaShooterZoom.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\PerspModernWeapon.txt" />
-     <None Include="Assets\AstarPathfindingProject\Plugins\JsonFx\Readme.txt" />
+     <None Include="Assets\Plugins\AstarPathfindingProject\Plugins\JsonFx\Readme.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponPistolRun.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\PerspModernCamera.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\ModernControllerZoom.txt" />
@@ -238,7 +227,7 @@
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\TurretShooter.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\SniperShooter.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\CowboyWeaponCrouch.txt" />
-     <None Include="Assets\AstarPathfindingProject\link.xml" />
+     <None Include="Assets\Plugins\AstarPathfindingProject\link.xml" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\FreezeCamera.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Weapon\WeaponMachinegunSlideFast.txt" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Demo\MouseSmoothingWeapon.txt" />
@@ -250,28 +239,28 @@
      <None Include="Assets\Terrain Scene\Shaders\alpha_2sided.shader" />
      <None Include="Assets\UltimateFPS\Scripts\Presets\Standard\Controller\ControllerDefault.txt" />
  <Reference Include="Ionic.Zip.Reduced">
- <HintPath>Assets\AstarPathfindingProject\Plugins\DotNetZip\Ionic.Zip.Reduced.dll</HintPath>
+ <HintPath>Assets\Plugins\AstarPathfindingProject\Plugins\DotNetZip\Ionic.Zip.Reduced.dll</HintPath>
  </Reference>
  <Reference Include="JsonFx.Json">
- <HintPath>Assets\AstarPathfindingProject\Plugins\JsonFx\JsonFx.Json.dll</HintPath>
+ <HintPath>Assets\Plugins\AstarPathfindingProject\Plugins\JsonFx\JsonFx.Json.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Graphs">
- <HintPath>E:\Program Files (x86)\Unity\Editor\Data\Managed\UnityEditor.Graphs.dll</HintPath>
+ <HintPath>C:\Program Files (x86)\Unity\Editor\Data\Managed\UnityEditor.Graphs.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions">
- <HintPath>E:\Program Files (x86)\Unity\Editor\Data\PlaybackEngines\iPhonePlayer\EditorExtensions\UnityEditor.iOS.Extensions.dll</HintPath>
+ <HintPath>C:\Program Files (x86)\Unity\Editor\Data\PlaybackEngines\iPhonePlayer\EditorExtensions\UnityEditor.iOS.Extensions.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.WP8.Extensions">
- <HintPath>E:\Program Files (x86)\Unity\Editor\Data\PlaybackEngines\WP8Support\EditorExtensions\UnityEditor.WP8.Extensions.dll</HintPath>
+ <HintPath>C:\Program Files (x86)\Unity\Editor\Data\PlaybackEngines\WP8Support\EditorExtensions\UnityEditor.WP8.Extensions.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Metro.Extensions">
- <HintPath>E:\Program Files (x86)\Unity\Editor\Data\PlaybackEngines\MetroSupport\EditorExtensions\UnityEditor.Metro.Extensions.dll</HintPath>
+ <HintPath>C:\Program Files (x86)\Unity\Editor\Data\PlaybackEngines\MetroSupport\EditorExtensions\UnityEditor.Metro.Extensions.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.BB10.Extensions">
- <HintPath>E:\Program Files (x86)\Unity\Editor\Data\PlaybackEngines\BB10Player\EditorExtensions\UnityEditor.BB10.Extensions.dll</HintPath>
+ <HintPath>C:\Program Files (x86)\Unity\Editor\Data\PlaybackEngines\BB10Player\EditorExtensions\UnityEditor.BB10.Extensions.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Android.Extensions">
- <HintPath>E:\Program Files (x86)\Unity\Editor\Data\PlaybackEngines\AndroidPlayer\EditorExtensions\UnityEditor.Android.Extensions.dll</HintPath>
+ <HintPath>C:\Program Files (x86)\Unity\Editor\Data\PlaybackEngines\AndroidPlayer\EditorExtensions\UnityEditor.Android.Extensions.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>
