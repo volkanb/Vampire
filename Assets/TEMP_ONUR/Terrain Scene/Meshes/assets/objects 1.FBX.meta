@@ -1,7 +1,7 @@
 fileFormatVersion: 2
-guid: afd398864a01d4e498378e29e664c216
+guid: 0d5dbb26b365def46a1af0dc30354b22
 ModelImporter:
-  serializedVersion: 16
+  serializedVersion: 15
   fileIDToRecycleName:
     100000: air_conditioner_a
     100002: air_conditioner_b
@@ -902,5 +902,4 @@ ModelImporter:
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 1
-  additionalBone: 0
   userData: 
