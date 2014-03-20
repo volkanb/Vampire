@@ -1,7 +1,7 @@
 fileFormatVersion: 2
-guid: e469c7d3d8212184690f9a1345447029
+guid: 2c406404c6b768848bbbb971e81c0e6b
 ModelImporter:
-  serializedVersion: 16
+  serializedVersion: 15
   fileIDToRecycleName:
     100000: alphas
     100002: bricks_a
@@ -411,5 +411,4 @@ ModelImporter:
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 1
-  additionalBone: 0
   userData: 
