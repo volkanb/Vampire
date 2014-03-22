@@ -9,3 +9,12 @@
 /*-UnityScript*
 /*-csharp*
 /*.sln
+
+# Volkan's additions
+/*.csproj
+/*.unityproj
+/*.suo
+/*.user
+/*.userprefs
+/*.pidb
+/*.booproj
