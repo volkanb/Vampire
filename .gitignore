@@ -1,0 +1,11 @@
+/*/
+!.gitignore
+!/Assets
+!/Library
+/Library/*
+!/Library/*.asset
+!/ProjectSettings
+/*-CSharp*
+/*-UnityScript*
+/*-csharp*
+/*.sln
