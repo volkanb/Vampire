@@ -155,6 +155,7 @@ public class AIPathVampire : MonoBehaviour {
 	//int maxAngularAcceleration = 1;
 	int maxRotationSpeed = 270;
 	float targetRadius = 0.1f;
+	float channelingTime;
 	//float slowRadius = 2.0f;
 	//float timeToTarget = 0.1f;
 	void alignMe()
@@ -243,7 +244,7 @@ public class AIPathVampire : MonoBehaviour {
 		return random;
 	}
 
-	enum State {SEARCH, ATTACK, ATTACKHUMAN, SUCK, DEAD, DOWN};
+	enum State {SEARCH, ATTACK, ATTACKHUMAN, SUCK, DEAD, DOWN, CHANNELING};
 	State state;
 	State lastState;
 	/** Initializes reference variables.
@@ -457,6 +458,49 @@ public class AIPathVampire : MonoBehaviour {
 		}
 	}
 
+	void attackHuman(Transform target)
+	{
+		Vector3 pos=target.position-transform.position;	
+		if (!canMove) { return; }
+		else if(pos.magnitude>=radius)
+		{
+			Vector3 dir = CalculateVelocity (GetFeetPosition());
+			
+			//Rotate towards targetDirection (filled in by CalculateVelocity)
+			if (targetDirection != Vector3.zero) 
+			{
+				RotateTowards (targetDirection);
+				//Debug.Log("1");
+			}
+			
+			if (navController != null)
+			{
+				navController.SimpleMove (GetFeetPosition(),dir*1.5f);
+				//Debug.Log("2");
+			} 
+			else if (controller != null) 
+			{
+				controller.SimpleMove (dir*1.5f);
+				//Debug.Log("3");
+			}
+			else if (rigid != null) 
+			{
+				rigid.AddForce (dir*1.5f);
+				//Debug.Log("4");
+			}
+			else
+			{
+				transform.Translate (1.5f*dir*Time.deltaTime, Space.World);
+				//Debug.Log("5");
+			}
+		}
+		else if(pos.magnitude<radius)
+		{
+			channelingTime=Time.time;
+			state=State.CHANNELING;
+			GetComponent<log>().EnterLog("Channeling");
+		}
+	}
 	/*void alignMe()
 	{
 
@@ -513,6 +557,7 @@ public class AIPathVampire : MonoBehaviour {
 				GetComponentInChildren<vp_DamageHandler2>().reanimTime=Time.time;
 				lastPos=transform.position;
 				state=State.DOWN;
+				GetComponent<log>().EnterLog("Down");
 			}
 			else if((pos.magnitude>6f) && (target.tag=="zone"))
 			{
@@ -523,7 +568,7 @@ public class AIPathVampire : MonoBehaviour {
 					if(Time.time-jumpTime>Random.Range(20,22))
 					{
 						Player.Jump.TryStart();
-						if(Time.time-jumpTime>Random.Range(24,26))
+						if(Time.time-jumpTime>Random.Range(24,27))
 						{
 							jumpTime=Time.time;
 						}
@@ -564,7 +609,6 @@ public class AIPathVampire : MonoBehaviour {
 			else
 			{
 				target=getRandomZone().transform;
-				//if(target.tag=="Human") {state=State.ATTACKHUMAN;}
 			}
 
 			break;
@@ -580,15 +624,18 @@ public class AIPathVampire : MonoBehaviour {
 				GetComponentInChildren<vp_DamageHandler2>().reanimTime=Time.time;
 				lastPos=transform.position;
 				state=State.DOWN;
+				GetComponent<log>().EnterLog("Down");
 			}
-			else if((target.GetComponent<AIPathHuman>().isRescued==true) || (target.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)|| (target.GetComponent<AIPathHuman>().isPossessed==true))
+			else if((target.GetComponent<AIPathHuman>().isRescued==true) || (target.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)|| (target.GetComponent<AIPathHuman>().isPossessed==true) ||  (target.GetComponent<AIPathHuman>().isChanneling==true))
 			{
 				Player.Attack.TryStop();
 				state=State.SEARCH;
+				GetComponent<log>().EnterLog("Search");
 			}
 			else
 			{
-				attackTarget(target);
+				//attackTarget(target);
+				attackHuman(target);
 			}
 			break;
 
@@ -603,11 +650,13 @@ public class AIPathVampire : MonoBehaviour {
 				GetComponentInChildren<vp_DamageHandler2>().reanimTime=Time.time;
 				lastPos=transform.position;
 				state=State.DOWN;
+				GetComponent<log>().EnterLog("Down");
 			}
 			else if(target.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				Player.Attack.TryStop();
 				state=State.SEARCH;
+				GetComponent<log>().EnterLog("Search");
 			}
 			else
 			{
@@ -621,6 +670,7 @@ public class AIPathVampire : MonoBehaviour {
 			if(isDead==true)
 			{
 				state=State.DEAD;
+				GetComponent<log>().EnterLog("Dead");
 			}
 			/*else if(Time.time-GetComponentInChildren<vp_DamageHandler2>().reanimTime>4f)
 			{
@@ -641,11 +691,19 @@ public class AIPathVampire : MonoBehaviour {
 			}
 			else if((GetComponentInChildren<vp_DamageHandler2>().isReanimPlaying()==false) && (animSet==true))
 			{
-				Player.SetWeapon.TryStart(1);
-				isDown=false;
-				GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth=1;
-				animSet=false;
-				state=lastState;
+				if(isDead==true)
+				{
+					state=State.DEAD;
+					GetComponent<log>().EnterLog("Dead");
+				}
+				else
+				{
+					Player.SetWeapon.TryStart(1);
+					isDown=false;
+					GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth=1;
+					animSet=false;
+					state=lastState;
+				}
 
 			}
 			else 
@@ -659,33 +717,85 @@ public class AIPathVampire : MonoBehaviour {
 			Player.Attack.TryStop();
 			Destroy(gameObject,10);
 			break;
+
+			case State.CHANNELING:
+			if(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
+			{
+				target.GetComponent<AIPathHuman>().isChanneling=false;
+				GetComponentInChildren<vp_DamageHandler2>().animation.Play("death");
+				GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth=1;
+				isDown=true;
+				lastState=State.ATTACK;
+				GetComponentInChildren<vp_DamageHandler2>().reanimTime=Time.time;
+				lastPos=transform.position;
+				state=State.DOWN;
+				GetComponent<log>().EnterLog("Down");
+
+			}
+			else if( (target.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1) || (target.GetComponent<AIPathHuman>().isPossessed==true))
+			{
+				target.GetComponent<AIPathHuman>().isChanneling=false;
+				state=State.SEARCH;
+				GetComponent<log>().EnterLog("Search");
+
+			}
+			else if(Time.time-channelingTime>4f)
+			{
+				target.GetComponent<AIPathHuman>().isPossessed=true;
+			}
+			else
+			{
+				target.GetComponent<AIPathHuman>().isChanneling=true;
+				Debug.Log(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth);
+				Debug.Log(GetComponentInChildren<vp_DamageHandler2>().MaxHealth);
+				if(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<GetComponentInChildren<vp_DamageHandler2>().MaxHealth)
+				{
+					GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth+=0.015f;
+					Debug.Log(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth);
+					Debug.Log("bacın");
+				}
+			}
+			break;
+
 			/*    Terrain terrain = (Terrain) GetComponent(typeof(Terrain));
-    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-    RaycastHit hit = new RaycastHit();
-    if (collider.Raycast(ray, out hit, 100f)) {
-    Vector3 terrainLocalPos = terrain.transform.InverseTransformPoint(hit.point);
-    Vector2 normalizedPos = new Vector2(Mathf.InverseLerp(0.0f, terrain.terrainData.size.x, terrainLocalPos.x),
-    Mathf.InverseLerp(0.0f, terrain.terrainData.size.z, terrainLocalPos.z));
-    float steepiness = terrain.terrainData.GetSteepness(normalizedPos.x, normalizedPos.y);
-    if (steepiness > 60f) {
-    Vector2 alphamapPos = new Vector2(normalizedPos.x * terrain.terrainData.alphamapWidth,
-    normalizedPos.y * terrain.terrainData.alphamapHeight);
-    float[,,] alphamap = Terrain.activeTerrain.terrainData.GetAlphamaps((int) Mathf.Round(alphamapPos.x), (int) Mathf.Round(alphamapPos.y), 1, 1);
-    Debug.Log("alpha " + alphamap + " " + alphamap.GetLength(0) + " " + alphamap.GetLength(1));
-    float rockiness = alphamap[0, 0, alphamapLayerRock];
-    if (rockiness > 0.5f) {
-    // Mining okay
-    }
-    }
-    }*/
+		    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		    RaycastHit hit = new RaycastHit();
+		    if (collider.Raycast(ray, out hit, 100f)) {
+		    Vector3 terrainLocalPos = terrain.transform.InverseTransformPoint(hit.point);
+		    Vector2 normalizedPos = new Vector2(Mathf.InverseLerp(0.0f, terrain.terrainData.size.x, terrainLocalPos.x),
+		    Mathf.InverseLerp(0.0f, terrain.terrainData.size.z, terrainLocalPos.z));
+		    float steepiness = terrain.terrainData.GetSteepness(normalizedPos.x, normalizedPos.y);
+		    if (steepiness > 60f) {
+		    Vector2 alphamapPos = new Vector2(normalizedPos.x * terrain.terrainData.alphamapWidth,
+		    normalizedPos.y * terrain.terrainData.alphamapHeight);
+		    float[,,] alphamap = Terrain.activeTerrain.terrainData.GetAlphamaps((int) Mathf.Round(alphamapPos.x), (int) Mathf.Round(alphamapPos.y), 1, 1);
+		    Debug.Log("alpha " + alphamap + " " + alphamap.GetLength(0) + " " + alphamap.GetLength(1));
+		    float rockiness = alphamap[0, 0, alphamapLayerRock];
+		    if (rockiness > 0.5f) {
+		    // Mining okay
+		    }
+		    }
+		    }*/
 		}
 	}
 
 
 	void OnTriggerEnter(Collider other)
 	{
-		if((other.tag=="Slayer") || (other.tag=="ArmedHuman")) {target=other.gameObject.transform; Player.Attack.TryStop(); state=State.ATTACK;}
-		else if((state==State.SEARCH) && (other.tag=="Human") && (other.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth>0)) {target=other.gameObject.transform; state=State.ATTACK;}
+
+		if((other.tag=="Slayer") || (other.tag=="ArmedHuman")) 
+		{
+			if(target!=null){if(target.tag=="Human"){target.GetComponent<AIPathHuman>().isChanneling=false;}}
+			target=other.gameObject.transform;
+			Player.Attack.TryStop();
+			state=State.ATTACK; 
+			GetComponent<log>().EnterLog("Attack");
+		}
+
+		if(state!=State.CHANNELING)
+		{
+			if((state==State.SEARCH) && (other.tag=="Human") && (other.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth>0)) {target=other.gameObject.transform; state=State.ATTACKHUMAN; GetComponent<log>().EnterLog("AttackHuman");}
+		}
 	}
 	
 	/** Point to where the AI is heading.

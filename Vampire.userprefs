@@ -1,9 +1,13 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Plugin\Other\Spawner.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Plugin\AstarPathfindingProject\Core\AI\AIPathVampire.cs">
     <Files>
-      <File FileName="E:\Software Engineering\Software Engineering 4.1\SE 352\Zombie\Assets\ThirdPersonNetworkZombie2.cs" Line="110" Column="1" />
-      <File FileName="Assets\Plugin\Other\Spawner.cs" Line="42" Column="1" />
+      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Gameplay\Combat\vp_DamageHandler2.cs" Line="155" Column="7" />
+      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPWeaponMeleeAttack.cs" Line="208" Column="11" />
+      <File FileName="Assets\Plugin\AstarPathfindingProject\Core\AI\AIPathVampire.cs" Line="685" Column="18" />
+      <File FileName="Assets\Plugin\AstarPathfindingProject\Core\AI\AIPathSlayer.cs" Line="693" Column="5" />
+      <File FileName="Assets\Plugin\AstarPathfindingProject\Core\AI\AIPathHuman.cs" Line="633" Column="25" />
+      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Gameplay\Combat\vp_DamageHandler2.cs" Line="126" Column="5" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

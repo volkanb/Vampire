@@ -606,7 +606,6 @@ public class vp_FPController : vp_Component
 			// undo anti-bump offset to make the fall smoother
 			if (m_CurrentAntiBumpOffset != 0.0f)
 			{
-				Debug.Log("fpcontroller3");
 				m_CharacterController.Move(vp_Utility.NaNSafeVector3(m_CurrentAntiBumpOffset * Vector3.up) * Delta * Time.timeScale);
 				m_PredictedPos += vp_Utility.NaNSafeVector3(m_CurrentAntiBumpOffset * Vector3.up) * Delta * Time.timeScale;
 				m_MoveDirection += m_CurrentAntiBumpOffset * Vector3.up;

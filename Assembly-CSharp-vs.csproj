@@ -115,6 +115,7 @@
      <Compile Include="Assets\Plugin\Other\MeshCombineUtility.cs" />
      <Compile Include="Assets\Plugin\Other\Spawner.cs" />
      <Compile Include="Assets\Plugin\Other\combineChildren.cs" />
+     <Compile Include="Assets\Plugin\Other\log.cs" />
      <Compile Include="Assets\Plugin\Other\lookat.cs" />
      <Compile Include="Assets\Plugin\Other\switchCam.cs" />
      <Compile Include="Assets\Plugin\UltimateFPS\Scripts\Core\ComponentSystem\vp_Component.cs" />

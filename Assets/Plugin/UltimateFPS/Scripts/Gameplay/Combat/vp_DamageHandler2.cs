@@ -42,7 +42,7 @@ public class vp_DamageHandler2 : MonoBehaviour
 	public float reanimTime;
 	public bool reanimisPlayed=false;
 	private vp_FPPlayerEventHandler m_Player = null;
-	public bool isVampire=false;
+	//public bool isVampire=false;
 	bool isPlayed=false;
 	/// <summary>
 	/// 
@@ -152,7 +152,7 @@ public class vp_DamageHandler2 : MonoBehaviour
 				}
 			}
 		}
-		else if(transform.parent.parent.tag=="Slayer")
+		else
 		{
 			if (!enabled || !vp_Utility.IsActive(gameObject))
 				return;
@@ -172,39 +172,6 @@ public class vp_DamageHandler2 : MonoBehaviour
 			
 			if (Respawns)
 				vp_Timer.In(Random.Range(MinRespawnTime, MaxRespawnTime), Respawn);
-
-		}
-		else
-		{
-			if (!enabled || !vp_Utility.IsActive(gameObject))
-					return;
-				
-			//vp_Utility.Activate(gameObject, false);
-			/*vp_Utility.Activate(gameObject.transform.parent.parent.gameObject, false);
-			Destroy(gameObject.transform.parent.parent.gameObject);*/
-			animation.Play("death");
-				
-			if (DeathEffect != null)
-				Object.Instantiate(DeathEffect, transform.position, transform.rotation);
-				
-			m_Player.SetWeapon.Argument = 0;
-			m_Player.SetWeapon.Start();
-			//m_Player.Dead.Start();
-			m_Player.AllowGameplayInput.Set(false);
-				
-				
-				
-			if (Respawns)
-				vp_Timer.In(Random.Range(MinRespawnTime, MaxRespawnTime), Respawn);
-			/*else
-				Object.Destroy(gameObject);*/
-
-			if((transform.parent.parent.GetComponent<AIPathHuman>().isPossessed==false) && (isVampire==true))
-			{
-				reanimTime=Time.time;
-				animation.Play("death");
-
-			}
 
 		}
 		

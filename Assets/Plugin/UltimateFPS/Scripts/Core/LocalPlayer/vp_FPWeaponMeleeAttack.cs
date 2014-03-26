@@ -190,15 +190,15 @@ public class vp_FPWeaponMeleeAttack : vp_Component
 					{
 						if(hit.collider.transform.parent.parent)
 						{
-							if(gameObject.transform.parent.parent.parent.tag=="Vampire")
+							/*if(gameObject.transform.parent.parent.parent.tag=="Vampire")
 							{
 								if(hit.collider.transform.parent.parent.tag=="Human")
 								{
 									if(hit.collider.GetComponent<vp_DamageHandler2>().m_CurrentHealth<=1) {hit.collider.GetComponent<vp_DamageHandler2>().isVampire=true;}
 								}
-							}
+							}*/
 
-							else if((gameObject.transform.parent.parent.parent.tag=="Slayer") && (Player.CurrentWeaponName.Get()=="4Mace") )
+							if((gameObject.transform.parent.parent.parent.tag=="Slayer") && (Player.CurrentWeaponName.Get()=="4Mace") )
 							{
 								
 								if(hit.collider.transform.parent.parent.tag=="Vampire")
