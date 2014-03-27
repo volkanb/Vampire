@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 15b41a6e8288e094db83bf8197a6d78c
 ModelImporter:
-  serializedVersion: 15
+  serializedVersion: 16
   fileIDToRecycleName:
     100000: concret
     100002: concret 1
@@ -222,4 +222,5 @@ ModelImporter:
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 1
+  additionalBone: 0
   userData: 

@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: dd9e95ac45916de4ba395b7a95758ffe
 ModelImporter:
-  serializedVersion: 15
+  serializedVersion: 16
   fileIDToRecycleName:
     100000: wire_high1
     100002: wire_high1_a
@@ -93,4 +93,5 @@ ModelImporter:
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 1
+  additionalBone: 0
   userData: 
