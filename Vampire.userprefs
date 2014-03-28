@@ -1,13 +1,11 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Plugin\AstarPathfindingProject\Core\AI\AIPathVampire.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Plugin\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPCameraAI.cs">
     <Files>
-      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Gameplay\Combat\vp_DamageHandler2.cs" Line="155" Column="7" />
-      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPWeaponMeleeAttack.cs" Line="208" Column="11" />
-      <File FileName="Assets\Plugin\AstarPathfindingProject\Core\AI\AIPathVampire.cs" Line="685" Column="18" />
-      <File FileName="Assets\Plugin\AstarPathfindingProject\Core\AI\AIPathSlayer.cs" Line="693" Column="5" />
-      <File FileName="Assets\Plugin\AstarPathfindingProject\Core\AI\AIPathHuman.cs" Line="633" Column="25" />
-      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Gameplay\Combat\vp_DamageHandler2.cs" Line="126" Column="5" />
+      <File FileName="Assets\TEMP_VOLKAN\Scripts\NetworkTraffic.cs" Line="73" Column="6" />
+      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Core\Utility\vp_Layer.cs" Line="1" Column="1" />
+      <File FileName="Assets\TEMP_VOLKAN\Scripts\vp_FPCameraNETWORK.cs" Line="187" Column="5" />
+      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPCameraAI.cs" Line="10" Column="47" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

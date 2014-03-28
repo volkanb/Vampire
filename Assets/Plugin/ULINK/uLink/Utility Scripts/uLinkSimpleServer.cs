@@ -72,7 +72,7 @@ public class uLinkSimpleServer : uLink.MonoBehaviour
 	void uLink_OnServerInitialized()
 	{
 		Debug.Log("Server successfully started on port " + uLink.Network.listenPort);
-		
+
 		if (registerHost) uLink.MasterServer.RegisterHost();
 	}
 

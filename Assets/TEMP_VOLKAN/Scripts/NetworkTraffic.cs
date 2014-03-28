@@ -52,7 +52,32 @@ public class NetworkTraffic : uLink.MonoBehaviour
 		if (networkView.viewID == uLink.NetworkViewID.unassigned) return;
 		
 		isInitiaized = true;
-		
+
+		// Following codes closes input and cameras for CREATOR and PROXY
+		if( !networkView.isMine )
+		{
+			m_Player.AllowGameplayInput.Set (false);
+
+			foreach (Transform child in gameObject.transform) 
+			{
+				if(child.name == "FPSCamera")
+				{
+					foreach (Transform child2 in child.gameObject.transform) 
+					{
+						if(child2.name == "WeaponCamera")
+						{
+							child2.transform.gameObject.GetComponent<Camera>().enabled = false;
+							break;
+						}
+					}
+
+					child.transform.gameObject.GetComponent<Camera>().enabled = false;
+					break;
+				}
+			}
+		}
+
+
 		if (!networkView.isMine) return;
 		
 		enabled = false;
@@ -61,9 +86,6 @@ public class NetworkTraffic : uLink.MonoBehaviour
 		{
 			InvokeRepeating("SendToServer", 0, 1.0f / uLink.Network.sendRate);
 		}
-
-		if (!networkView.isOwner)
-						m_Player.AllowGameplayInput.Set (false);
 
 	}
 	
