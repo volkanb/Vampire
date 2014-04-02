@@ -163,7 +163,7 @@ public class vp_FPInput : MonoBehaviour
 		// succeeds and where it is hooked up, search the project
 		// for 'CanStart_Jump'
 
-		if (Input.GetButton("Jump"))
+		if (Input.GetButton ("Jump")) 
 			Player.Jump.TryStart();
 		else
 			Player.Jump.Stop();

@@ -3,7 +3,7 @@
 Network.symmetricKeySize=128
 Network.incomingPassword=
 Network.maxManualViewIDs=1000
-Network.sendRate=60
+Network.sendRate=20
 Network.trackRate=2
 Network.trackMaxDelta=2
 Network.isAuthoritativeServer=True

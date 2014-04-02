@@ -34,6 +34,23 @@ public class NetworkTraffic : uLink.MonoBehaviour
 	// EVENT HANDLER
 	vp_FPPlayerEventHandler m_Player;
 	
+	
+	protected virtual void OnEnable()
+	{
+		
+		if (m_Player != null) 
+		{
+			m_Player.Register(this);
+		}
+		
+	}
+	protected virtual void OnDisable()
+	{
+		if (m_Player != null)
+			m_Player.Unregister(this);
+	}
+
+
 
 	void Awake()
 	{
@@ -45,6 +62,12 @@ public class NetworkTraffic : uLink.MonoBehaviour
 		curRot = transform.rotation;
 		
 		character = GetComponent<CharacterController>();
+	}
+
+	void OnStart_Jump(){
+
+		Debug.Log("ONSTART_JUMP STARTED!");
+
 	}
 	
 	void Start()
@@ -88,7 +111,8 @@ public class NetworkTraffic : uLink.MonoBehaviour
 		}
 
 	}
-	
+
+
 	void uLink_OnSerializeNetworkView(uLink.BitStream stream, uLink.NetworkMessageInfo info)
 	{
 		if (stream.isWriting)
@@ -191,11 +215,12 @@ public class NetworkTraffic : uLink.MonoBehaviour
 	//------------------------------------------------------------------------------------------------------
 	// OnStart_ function is not working.
 	// RPC is not working.
+	/*
+	void OnStart_Jump(){
+		Debug.Log("JUMP STARTED!");
 
-	void OnStart_Crouch(){
-		Debug.Log("CROUCH STARTED!");
-
-		if (networkView.isOwner) 
+		//if (networkView.isOwner) 
+		if (false) 
 		{
 			Debug.Log("CROUCH STARTED ON OWNER!");
 			networkView.RPC("TryActivity", uLink.NetworkPlayer.server, "Crouch");
@@ -217,7 +242,7 @@ public class NetworkTraffic : uLink.MonoBehaviour
 			}
 		}
 	}
-
+	*/
 	//------------------------------------------------------------------------------------------------------
 
 

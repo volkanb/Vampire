@@ -155,7 +155,7 @@ public class vp_FPCameraNETWORK : vp_Component
 			m_Yaw = value;
 		}
 	}
-	
+
 	
 	/// <summary>
 	/// in 'Awake' we do things that need to be run once at the
@@ -185,17 +185,6 @@ public class vp_FPCameraNETWORK : vp_Component
 			{
 				b.gameObject.layer = vp_Layer.LocalPlayer;
 			}
-
-		}
-		else
-		{
-
-			Transform[] ts = Parent.gameObject.GetComponentsInChildren<Transform>();
-			foreach( Transform T in ts ){
-				T.gameObject.layer = 0;
-				Debug.Log("MY LAYER IS ENEMY");
-			}
-				
 
 		}
 
@@ -270,7 +259,31 @@ public class vp_FPCameraNETWORK : vp_Component
 		
 	}
 	
+
+	//-------------------------------------------------------------------------------
+	// This fuction is used for recursively changing the layers in an object. Used in Init()
 	
+	void SetLayerRecursively(GameObject obj, int newLayer)
+	{
+		if (null == obj)
+		{
+			return;
+		}
+		obj.layer = newLayer;
+		
+		foreach (Transform child in obj.transform)
+		{
+			if (null == child)
+			{
+				continue;
+			}
+			SetLayerRecursively(child.gameObject, newLayer);
+		}	
+	}
+	//-------------------------------------------------------------------------------
+
+
+
 	/// <summary>
 	/// in 'Init' we do things that must be run once at the
 	/// beginning, but only after all other components have
@@ -281,6 +294,9 @@ public class vp_FPCameraNETWORK : vp_Component
 	{
 		
 		base.Init();
+
+		if( !isMine )
+			SetLayerRecursively( Parent.gameObject, 25 );
 		
 	}
 	
