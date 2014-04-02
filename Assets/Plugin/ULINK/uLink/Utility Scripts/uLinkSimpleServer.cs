@@ -65,13 +65,15 @@ public class uLinkSimpleServer : uLink.MonoBehaviour
 		Application.targetFrameRate = targetFrameRate;
 
 		if (dontDestroyOnLoad) DontDestroyOnLoad(this);
-	
+
 		uLink.Network.InitializeServer(maxConnections, port);
 	}
 
 	void uLink_OnServerInitialized()
 	{
 		Debug.Log("Server successfully started on port " + uLink.Network.listenPort);
+
+		//uLink.Network.useProxy = true;
 
 		if (registerHost) uLink.MasterServer.RegisterHost();
 	}
