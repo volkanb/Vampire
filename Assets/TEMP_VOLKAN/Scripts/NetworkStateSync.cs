@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using uLink;
 
-public class NetworkTraffic : uLink.MonoBehaviour
+public class NetworkStateSync : uLink.MonoBehaviour
 {
 	public float maxSpeed = 4.6f;
 	public float maxDistance = 10f;
@@ -30,44 +30,31 @@ public class NetworkTraffic : uLink.MonoBehaviour
 	private double serverLastTimestamp = 0;
 	
 	private bool isInitiaized = false;
-
+	
 	// EVENT HANDLER
 	vp_FPPlayerEventHandler m_Player;
 	
-	
 	protected virtual void OnEnable()
 	{
-		
-		if (m_Player != null) 
-		{
+		if (m_Player != null)
 			m_Player.Register(this);
-		}
-		
 	}
 	protected virtual void OnDisable()
 	{
 		if (m_Player != null)
 			m_Player.Unregister(this);
 	}
-
-
-
+	
 	void Awake()
 	{
 		// GETTING THE PLAYER'S EVENT HANDLER
 		m_Player = transform.GetComponent<vp_FPPlayerEventHandler>();
-
+		
 		arrivalSpeed = maxSpeed / arrivalDistance;
 		
 		curRot = transform.rotation;
 		
 		character = GetComponent<CharacterController>();
-	}
-
-	void OnStart_Jump(){
-
-		Debug.Log("ONSTART_JUMP STARTED!");
-
 	}
 	
 	void Start()
@@ -75,12 +62,12 @@ public class NetworkTraffic : uLink.MonoBehaviour
 		if (networkView.viewID == uLink.NetworkViewID.unassigned) return;
 		
 		isInitiaized = true;
-
+		
 		// Following codes closes input and cameras for CREATOR and PROXY
 		if( !networkView.isMine )
 		{
 			m_Player.AllowGameplayInput.Set (false);
-
+			
 			foreach (Transform child in gameObject.transform) 
 			{
 				if(child.name == "FPSCamera")
@@ -93,14 +80,14 @@ public class NetworkTraffic : uLink.MonoBehaviour
 							break;
 						}
 					}
-
+					
 					child.transform.gameObject.GetComponent<Camera>().enabled = false;
 					break;
 				}
 			}
 		}
-
-
+		
+		
 		if (!networkView.isMine) return;
 		
 		enabled = false;
@@ -109,10 +96,10 @@ public class NetworkTraffic : uLink.MonoBehaviour
 		{
 			InvokeRepeating("SendToServer", 0, 1.0f / uLink.Network.sendRate);
 		}
-
+		
 	}
-
-
+	
+	
 	void uLink_OnSerializeNetworkView(uLink.BitStream stream, uLink.NetworkMessageInfo info)
 	{
 		if (stream.isWriting)
@@ -129,7 +116,7 @@ public class NetworkTraffic : uLink.MonoBehaviour
 			Vector3 pos = stream.Read<Vector3>();
 			Vector3 vel = stream.Read<Vector3>();
 			Vector2 rot = stream.Read<Vector2>();
-		
+			
 			UpdateState(pos, vel, rot, info.timestamp);
 		}
 	}
@@ -163,13 +150,13 @@ public class NetworkTraffic : uLink.MonoBehaviour
 			targetDir = offset / targetDistance;
 		}
 		*/
-
-
+		
+		
 		m_Player.Position.Set (pos);
 		m_Player.Velocity.Set (vel);
 		m_Player.Rotation.Set (rot);
-
-
+		
+		
 	}
 	
 	void SendToServer()
@@ -209,43 +196,11 @@ public class NetworkTraffic : uLink.MonoBehaviour
 			targetDistance -= speed * Time.deltaTime;
 		}
 		*/
-
+		
 	}
+	
 
-	//------------------------------------------------------------------------------------------------------
-	// OnStart_ function is not working.
-	// RPC is not working.
-	/*
-	void OnStart_Jump(){
-		Debug.Log("JUMP STARTED!");
-
-		//if (networkView.isOwner) 
-		if (false) 
-		{
-			Debug.Log("CROUCH STARTED ON OWNER!");
-			networkView.RPC("TryActivity", uLink.NetworkPlayer.server, "Crouch");
-		}
-	}
-
-	[RPC]
-	void TryActivity(string activityType, uLink.NetworkMessageInfo info) {
-
-		Debug.Log ("TRYACTIVITY RPC IS WORKING!");
-
-		if (activityType == "Crouch") {
-			if (m_Player.Crouch.TryStart() == false) {
-				//STOP OWNER'S ACTIVITY
-			}
-			else {
-				Debug.Log("CROUCH STARTED!");
-				//START PROXIES ACTIVITY
-			}
-		}
-	}
-	*/
-	//------------------------------------------------------------------------------------------------------
-
-
+	
 	[RPC]
 	void Move(Vector3 pos, Vector3 vel, Vector2 rot, uLink.NetworkMessageInfo info)
 	{
@@ -261,7 +216,8 @@ public class NetworkTraffic : uLink.MonoBehaviour
 		
 		// Add some more code right here if the server is authoritave and you want to do more security checks
 		// The server state is updated with incoming data from the client beeing the "owner" of this game object
-
+		
 		UpdateState(pos, vel, rot, info.timestamp);
 	}
+
 }
