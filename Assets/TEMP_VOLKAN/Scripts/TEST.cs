@@ -35,6 +35,17 @@ public class TEST : uLink.MonoBehaviour {
 	}
 
 
+	void Update ()
+	{
+
+		if (Input.GetKeyUp(KeyCode.J)) 
+		{
+			m_Player.Unregister(this);
+
+		}
+
+	}
+
 
 
 

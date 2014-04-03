@@ -129,7 +129,7 @@ public class NetworkTraffic : uLink.MonoBehaviour
 			Vector3 pos = stream.Read<Vector3>();
 			Vector3 vel = stream.Read<Vector3>();
 			Vector2 rot = stream.Read<Vector2>();
-			
+		
 			UpdateState(pos, vel, rot, info.timestamp);
 		}
 	}
@@ -163,6 +163,7 @@ public class NetworkTraffic : uLink.MonoBehaviour
 			targetDir = offset / targetDistance;
 		}
 		*/
+
 
 		m_Player.Position.Set (pos);
 		m_Player.Velocity.Set (vel);
@@ -208,7 +209,6 @@ public class NetworkTraffic : uLink.MonoBehaviour
 			targetDistance -= speed * Time.deltaTime;
 		}
 		*/
-
 
 	}
 
@@ -261,6 +261,7 @@ public class NetworkTraffic : uLink.MonoBehaviour
 		
 		// Add some more code right here if the server is authoritave and you want to do more security checks
 		// The server state is updated with incoming data from the client beeing the "owner" of this game object
+
 		UpdateState(pos, vel, rot, info.timestamp);
 	}
 }
