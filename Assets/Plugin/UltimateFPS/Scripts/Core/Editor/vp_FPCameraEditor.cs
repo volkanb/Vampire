@@ -121,6 +121,7 @@ public class vp_FPCameraEditor : Editor
 		m_CameraMouseFoldout = EditorGUILayout.Foldout(m_CameraMouseFoldout, "Mouse");
 		if (m_CameraMouseFoldout)
 		{
+			m_Component.isMine = EditorGUILayout.Toggle("isMine", m_Component.isMine);
 			m_Component.MouseSensitivity = EditorGUILayout.Vector2Field("Sensitivity", m_Component.MouseSensitivity);
 			m_Component.MouseSmoothSteps = EditorGUILayout.IntSlider("Smooth Steps", m_Component.MouseSmoothSteps, 1, 20);
 			m_Component.MouseSmoothWeight = EditorGUILayout.Slider("Smooth Weight", m_Component.MouseSmoothWeight, 0, 1);

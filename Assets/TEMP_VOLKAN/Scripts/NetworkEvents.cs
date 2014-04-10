@@ -102,5 +102,80 @@ public class NetworkEvents: uLink.MonoBehaviour
 	//----------------------------------------------------------------------------------------------------------
 
 
+	//----------------------------------------------------------------------------------------------------------
+	// Following codes syncs owner's crouches with server and other proxies
+	void OnStart_Crouch()
+	{
+		if (networkView.isOwner) 
+			networkView.UnreliableRPC("CrouchStartServer", uLink.NetworkPlayer.server);
+	}
+	void OnStop_Crouch()
+	{
+		if (networkView.isOwner) 
+			networkView.UnreliableRPC("CrouchStopServer", uLink.NetworkPlayer.server);
+	}
+	[RPC]
+	void CrouchStartServer(uLink.NetworkMessageInfo info)
+	{
+		m_Player.Crouch.TryStart();
+		networkView.UnreliableRPC("CrouchStartProxies", uLink.RPCMode.OthersExceptOwner);
+	}
+	[RPC]
+	void CrouchStopServer(uLink.NetworkMessageInfo info)
+	{		
+		m_Player.Crouch.TryStop();
+		networkView.UnreliableRPC("CrouchStopProxies", uLink.RPCMode.OthersExceptOwner);
+	}
+	[RPC]
+	void CrouchStartProxies(uLink.NetworkMessageInfo info)
+	{
+		m_Player.Crouch.TryStart();
+	}
+	[RPC]
+	void CrouchStopProxies(uLink.NetworkMessageInfo info)
+	{		
+		m_Player.Crouch.TryStop();
+	}
+	//----------------------------------------------------------------------------------------------------------
+
+	
+	//----------------------------------------------------------------------------------------------------------
+	// Following codes syncs owner's zooms with server and other proxies
+	void OnStart_Zoom()
+	{
+		if (networkView.isOwner) 
+			networkView.UnreliableRPC("ZoomStartServer", uLink.NetworkPlayer.server);
+	}
+	void OnStop_Zoom()
+	{
+		if (networkView.isOwner) 
+			networkView.UnreliableRPC("ZoomStopServer", uLink.NetworkPlayer.server);
+	}
+	[RPC]
+	void ZoomStartServer(uLink.NetworkMessageInfo info)
+	{
+		m_Player.Zoom.TryStart();
+		networkView.UnreliableRPC("ZoomStartProxies", uLink.RPCMode.OthersExceptOwner);
+	}
+	[RPC]
+	void ZoomStopServer(uLink.NetworkMessageInfo info)
+	{		
+		m_Player.Zoom.TryStop();
+		networkView.UnreliableRPC("ZoomStopProxies", uLink.RPCMode.OthersExceptOwner);
+	}
+	[RPC]
+	void ZoomStartProxies(uLink.NetworkMessageInfo info)
+	{
+		m_Player.Zoom.TryStart();
+	}
+	[RPC]
+	void ZoomStopProxies(uLink.NetworkMessageInfo info)
+	{		
+		m_Player.Zoom.TryStop();
+	}
+	//----------------------------------------------------------------------------------------------------------
+
+
+
 
 }

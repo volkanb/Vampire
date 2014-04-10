@@ -86,7 +86,7 @@ public class vp_SimpleHUD : MonoBehaviour
 			return;
 
 		// display a simple 'Health' HUD
-		GUI.Box(new Rect(10, Screen.height - 30, 100, 22), "Health: " + (int)(m_Player.Health.Get() * 100.0f) + "%");
+		GUI.Box(new Rect(10, Screen.height - 30, 100, 22), "Health: " + (int)(m_Player.Health.Get()) + "%");
 
 		// display a simple 'Clips' HUD
 		GUI.Box(new Rect(Screen.width - 220, Screen.height - 30, 100, 22), "Clips: " + m_Player.GetItemCount.Send("AmmoClip"));

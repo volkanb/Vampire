@@ -3,37 +3,33 @@ using uLink;
 
 public class NetworkStateSync : uLink.MonoBehaviour
 {
-	public float maxSpeed = 4.6f;
-	public float maxDistance = 10f;
-	public float arrivalDistance = 1;
-	
-	[HideInInspector]
-	public Vector3 velocity;
-	
-	public bool moveCharacter = true;
-	
-	[HideInInspector]
-	public float arrivalSpeed;
-	
-	private Vector3 targetDir;
-	private float targetDistance;
-	
-	private bool firstState = true;
-	
-	public float rotationDamping = 0.85f;
-	
-	private Quaternion curRot;
-	private Quaternion targetRot;
-	
-	private CharacterController character;
-	
+	// FOLLOWING VARIABLES ARE USED FOR INTERPOLATION (LERP)
+	//---------------------------------------------------------------------------------
 	private double serverLastTimestamp = 0;
-	
 	private bool isInitiaized = false;
+
+	private Vector3 lastPos;
+	private Vector3 lastVel;
+	private Vector2 lastRot;
+
+	private Vector3 targetPos;
+	private Vector3 targetVel;
+	private Vector2 targetRot;
+
+	private double lastTimestamp;
+	private double targetTimestamp;
+
+	private float timeToBeCovered;
+	private float timeCovered;
+
+	private float fraction;
+	//---------------------------------------------------------------------------------
 	
 	// EVENT HANDLER
 	vp_FPPlayerEventHandler m_Player;
-	
+
+
+
 	protected virtual void OnEnable()
 	{
 		if (m_Player != null)
@@ -44,21 +40,34 @@ public class NetworkStateSync : uLink.MonoBehaviour
 		if (m_Player != null)
 			m_Player.Unregister(this);
 	}
-	
+
+
+
 	void Awake()
 	{
 		// GETTING THE PLAYER'S EVENT HANDLER
 		m_Player = transform.GetComponent<vp_FPPlayerEventHandler>();
-		
-		arrivalSpeed = maxSpeed / arrivalDistance;
-		
-		curRot = transform.rotation;
-		
-		character = GetComponent<CharacterController>();
-	}
 	
+	}
+
+
+
 	void Start()
 	{
+		// Initialization of last/target pos, rot, vel, timestamp values
+		lastPos = m_Player.Position.Get();
+		lastVel = m_Player.Velocity.Get();
+		lastRot = m_Player.Rotation.Get();
+
+		targetPos = lastPos;
+		targetRot = lastRot;
+		targetVel = lastVel;
+
+		lastTimestamp = 0;
+		targetTimestamp = 0;
+
+
+
 		if (networkView.viewID == uLink.NetworkViewID.unassigned) return;
 		
 		isInitiaized = true;
@@ -98,7 +107,8 @@ public class NetworkStateSync : uLink.MonoBehaviour
 		}
 		
 	}
-	
+
+
 	
 	void uLink_OnSerializeNetworkView(uLink.BitStream stream, uLink.NetworkMessageInfo info)
 	{
@@ -120,44 +130,34 @@ public class NetworkStateSync : uLink.MonoBehaviour
 			UpdateState(pos, vel, rot, info.timestamp);
 		}
 	}
-	
+
+
+
 	private void UpdateState(Vector3 pos, Vector3 vel, Vector2 rot, double timestamp)
 	{
 		/*
-		float deltaTime = (float)(uLink.Network.time - timestamp);
-		Vector3 target = pos + vel * deltaTime;
-		
-		if (firstState)
-		{
-			firstState = false;
-			targetDistance = 0;
-			transform.position = target;
-			return;
-		}
-		
-		targetRot = rot;
-		Vector3 offset = target - transform.position;
-		targetDistance = offset.magnitude;
-		
-		if (targetDistance > maxDistance)
-		{
-			// Detected a too big distance error! Snap to correct position!
-			targetDistance = 0;
-			transform.position = target;
-		}
-		else if (targetDistance > 0)
-		{
-			targetDir = offset / targetDistance;
-		}
-		*/
-		
-		
 		m_Player.Position.Set (pos);
 		m_Player.Velocity.Set (vel);
 		m_Player.Rotation.Set (rot);
-		
-		
+		*/
+
+		lastPos = targetPos;
+		lastRot = targetRot;
+		lastVel = targetVel;
+		lastTimestamp = targetTimestamp;
+
+
+		targetPos = pos;
+		targetRot = rot;
+		targetVel = vel;
+		targetTimestamp = timestamp;
+
+		timeToBeCovered = (float)(targetTimestamp - lastTimestamp);
+		timeCovered = 0f;
+
 	}
+
+
 	
 	void SendToServer()
 	{
@@ -166,39 +166,24 @@ public class NetworkStateSync : uLink.MonoBehaviour
 		// an auth server or non-auth server. Both can handle this RPC!
 		networkView.UnreliableRPC("Move", uLink.NetworkPlayer.server, m_Player.Position.Get() , m_Player.Velocity.Get(), m_Player.Rotation.Get());
 	}
-	
+
+
 	void Update()
 	{
-		/*
-		if (!isInitiaized && networkView.viewID != uLink.NetworkViewID.unassigned)
+
+		if (!networkView.isOwner) 
 		{
-			Start();
-			return;
+			// FOLLOWING CODES HANDLE THE SMOOTH MOVEMENT OF SERVER AND PROXIES
+			timeCovered += Time.deltaTime;
+			fraction = (timeCovered / timeToBeCovered);
+
+			m_Player.Position.Set ( Vector3.Lerp( lastPos, targetPos, fraction ) );
+			m_Player.Velocity.Set ( Vector3.Lerp( lastVel, targetVel, fraction ) );
+			m_Player.Rotation.Set ( Vector2.Lerp( lastRot, targetRot, fraction ) );
+
 		}
-		
-		// Executes the smooth movement of character controller for proxies and the game object in the server.
-		curRot = Quaternion.Lerp(targetRot, curRot, rotationDamping);
-		transform.rotation = curRot;
-		
-		if (targetDistance == 0)
-		{
-			return;
-		}
-		
-		float speed = (targetDistance > arrivalDistance) ? maxSpeed : arrivalSpeed * targetDistance;
-		
-		velocity = speed * targetDir; 
-		
-		if (moveCharacter)
-		{
-			character.SimpleMove(velocity);
-			
-			targetDistance -= speed * Time.deltaTime;
-		}
-		*/
 		
 	}
-	
 
 	
 	[RPC]
