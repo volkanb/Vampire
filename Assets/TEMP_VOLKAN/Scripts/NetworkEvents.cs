@@ -5,6 +5,9 @@ public class NetworkEvents: uLink.MonoBehaviour
 {
 	// EVENT HANDLER
 	vp_FPPlayerEventHandler m_Player;
+
+	// DAMAGE HANDLER
+	private vp_PlayerDamageHandler damHandler = null;
 	
 	
 	protected virtual void OnEnable()
@@ -22,6 +25,11 @@ public class NetworkEvents: uLink.MonoBehaviour
 	{
 		// GETTING THE PLAYER'S EVENT HANDLER
 		m_Player = transform.GetComponent<vp_FPPlayerEventHandler>();
+	}
+
+	void Start()
+	{
+		damHandler = GetComponent<vp_PlayerDamageHandler> ();
 	}
 
 	//----------------------------------------------------------------------------------------------------------
@@ -47,6 +55,14 @@ public class NetworkEvents: uLink.MonoBehaviour
 	{		
 		m_Player.Attack.TryStop();
 		networkView.UnreliableRPC("AttackStopProxies", uLink.RPCMode.OthersExceptOwner);
+
+		// RESEND AMMO COUNT FROM SERVER TO OWNER IN ORDER TO MAKE TWO EQUAL
+		networkView.UnreliableRPC("SetAmmoOwner", info.sender, m_Player.CurrentWeaponAmmoCount.Get());
+	}
+	[RPC]
+	void SetAmmoOwner(int ammoCount, uLink.NetworkMessageInfo info)
+	{
+		m_Player.CurrentWeaponAmmoCount.Set (ammoCount);
 	}
 	[RPC]
 	void AttackStartProxies(uLink.NetworkMessageInfo info)
@@ -175,6 +191,99 @@ public class NetworkEvents: uLink.MonoBehaviour
 	}
 	//----------------------------------------------------------------------------------------------------------
 
+	//----------------------------------------------------------------------------------------------------------
+	// Following codes syncs owner's jumps with server and other proxies
+	void OnStart_Jump()
+	{
+		if (networkView.isOwner) 
+			networkView.UnreliableRPC("JumpStartServer", uLink.NetworkPlayer.server);
+	}
+	void OnStop_Jump()
+	{
+		if (networkView.isOwner) 
+			networkView.UnreliableRPC("JumpStopServer", uLink.NetworkPlayer.server);
+	}
+	[RPC]
+	void JumpStartServer(uLink.NetworkMessageInfo info)
+	{
+		m_Player.Jump.TryStart();
+		networkView.UnreliableRPC("JumpStartProxies", uLink.RPCMode.OthersExceptOwner);
+	}
+	[RPC]
+	void JumpStopServer(uLink.NetworkMessageInfo info)
+	{		
+		m_Player.Jump.TryStop();
+		networkView.UnreliableRPC("JumpStopProxies", uLink.RPCMode.OthersExceptOwner);
+	}
+	[RPC]
+	void JumpStartProxies(uLink.NetworkMessageInfo info)
+	{
+		m_Player.Jump.TryStart();
+	}
+	[RPC]
+	void JumpStopProxies(uLink.NetworkMessageInfo info)
+	{		
+		m_Player.Jump.TryStop();
+	}
+	//----------------------------------------------------------------------------------------------------------
+
+	//----------------------------------------------------------------------------------------------------------
+	// Following codes syncs owner's run with server and other proxies
+	void OnStart_Run()
+	{
+		if (networkView.isOwner) 
+			networkView.UnreliableRPC("RunStartServer", uLink.NetworkPlayer.server);
+	}
+	void OnStop_Run()
+	{
+		if (networkView.isOwner) 
+			networkView.UnreliableRPC("RunStopServer", uLink.NetworkPlayer.server);
+	}
+	[RPC]
+	void RunStartServer(uLink.NetworkMessageInfo info)
+	{
+		m_Player.Run.TryStart();
+		networkView.UnreliableRPC("RunStartProxies", uLink.RPCMode.OthersExceptOwner);
+	}
+	[RPC]
+	void RunStopServer(uLink.NetworkMessageInfo info)
+	{		
+		m_Player.Run.TryStop();
+		networkView.UnreliableRPC("RunStopProxies", uLink.RPCMode.OthersExceptOwner);
+	}
+	[RPC]
+	void RunStartProxies(uLink.NetworkMessageInfo info)
+	{
+		m_Player.Run.TryStart();
+	}
+	[RPC]
+	void RunStopProxies(uLink.NetworkMessageInfo info)
+	{		
+		m_Player.Run.TryStop();
+	}
+	//----------------------------------------------------------------------------------------------------------
+
+	//----------------------------------------------------------------------------------------------------------
+	// Following codes syncs health with server
+	public void DamageOthers(float damage)
+	{
+		networkView.UnreliableRPC("DamageFromServer", uLink.RPCMode.Others, damage, m_Player.Health.Get());
+	}
+	[RPC]
+	void DamageFromServer(float damage, float health, uLink.NetworkMessageInfo info)
+	{	
+		float damageToBeDone = m_Player.Health.Get() - health;
+
+		if (damageToBeDone <= 1)
+			damHandler.Damage (damageToBeDone);
+		else
+			Debug.LogError (damageToBeDone.ToString() + " IS THE DAMAGETOBEDONE ," + health.ToString() + " IS THE HEALTH COMıNG FROM SERVER,  " + m_Player.Health.Get() + " IS OUR HEALTH ");
+
+
+
+	}
+	// DAMAGE HATALIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII 
+	//----------------------------------------------------------------------------------------------------------
 
 
 

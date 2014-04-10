@@ -24,9 +24,14 @@ public class NetworkStateSync : uLink.MonoBehaviour
 
 	private float fraction;
 	//---------------------------------------------------------------------------------
+
+	public float failRadius = 0.2f;
 	
 	// EVENT HANDLER
 	vp_FPPlayerEventHandler m_Player;
+
+	// CHARACTER CONTROLLER
+	private CharacterController character;
 
 
 
@@ -47,6 +52,9 @@ public class NetworkStateSync : uLink.MonoBehaviour
 	{
 		// GETTING THE PLAYER'S EVENT HANDLER
 		m_Player = transform.GetComponent<vp_FPPlayerEventHandler>();
+
+		// GETTING THE PLAYER'S CHARACTER CONTROLLER
+		character = GetComponent<CharacterController>();
 	
 	}
 
@@ -119,6 +127,7 @@ public class NetworkStateSync : uLink.MonoBehaviour
 			stream.Write(m_Player.Position.Get());
 			stream.Write(m_Player.Velocity.Get());
 			stream.Write(m_Player.Rotation.Get());
+			stream.Write(m_Player.InputMoveVector.Get());
 		}
 		else
 		{
@@ -126,21 +135,20 @@ public class NetworkStateSync : uLink.MonoBehaviour
 			Vector3 pos = stream.Read<Vector3>();
 			Vector3 vel = stream.Read<Vector3>();
 			Vector2 rot = stream.Read<Vector2>();
+			Vector2 inpMov = stream.Read<Vector2>();
 			
-			UpdateState(pos, vel, rot, info.timestamp);
+			UpdateState(pos, vel, rot, inpMov, info.timestamp);
 		}
 	}
 
 
 
-	private void UpdateState(Vector3 pos, Vector3 vel, Vector2 rot, double timestamp)
+	private void UpdateState(Vector3 pos, Vector3 vel, Vector2 rot, Vector2 inpMov, double timestamp)
 	{
+	
 		/*
-		m_Player.Position.Set (pos);
-		m_Player.Velocity.Set (vel);
-		m_Player.Rotation.Set (rot);
-		*/
-
+		 * 
+		 * // set edilen değerleri lerp yapma işi
 		lastPos = targetPos;
 		lastRot = targetRot;
 		lastVel = targetVel;
@@ -154,6 +162,26 @@ public class NetworkStateSync : uLink.MonoBehaviour
 
 		timeToBeCovered = (float)(targetTimestamp - lastTimestamp);
 		timeCovered = 0f;
+		*/
+
+		// rotation lerp için 
+		lastRot = targetRot;
+		lastPos = targetPos;
+
+		lastTimestamp = targetTimestamp;
+
+		targetRot = rot;
+		targetPos = pos;
+
+		targetTimestamp = timestamp;
+
+		timeToBeCovered = (float)(targetTimestamp - lastTimestamp);
+
+		timeCovered = 0f;
+
+
+		m_Player.InputMoveVector.Set (inpMov);
+
 
 	}
 
@@ -164,13 +192,13 @@ public class NetworkStateSync : uLink.MonoBehaviour
 		// This code is only executed on the client which is the owner of this game object
 		// Sends Movement RPC to server. The nice part is that this code works when using 
 		// an auth server or non-auth server. Both can handle this RPC!
-		networkView.UnreliableRPC("Move", uLink.NetworkPlayer.server, m_Player.Position.Get() , m_Player.Velocity.Get(), m_Player.Rotation.Get());
+		networkView.UnreliableRPC("Move", uLink.NetworkPlayer.server, m_Player.Position.Get() , m_Player.Velocity.Get(), m_Player.Rotation.Get(), m_Player.InputMoveVector.Get() );
 	}
 
 
 	void Update()
 	{
-
+		/*
 		if (!networkView.isOwner) 
 		{
 			// FOLLOWING CODES HANDLE THE SMOOTH MOVEMENT OF SERVER AND PROXIES
@@ -182,12 +210,34 @@ public class NetworkStateSync : uLink.MonoBehaviour
 			m_Player.Rotation.Set ( Vector2.Lerp( lastRot, targetRot, fraction ) );
 
 		}
-		
+		*/
+
+
+		if (!networkView.isOwner) 
+		{
+			// FOLLOWING CODES HANDLE THE SMOOTH ROTATION OF SERVER AND PROXIES
+			timeCovered += Time.deltaTime;
+			fraction = (timeCovered / timeToBeCovered);
+
+			m_Player.Rotation.Set (Vector2.Lerp (lastRot, targetRot, fraction));
+
+
+			// IF PLAYER DIVERGES FROM SERVER POSITION, SNAP THE POSITION
+			if (Vector3.Distance(m_Player.Position.Get(), targetPos) >= failRadius) 
+			{
+				m_Player.Position.Set( targetPos );
+				Debug.Log("SNAPPING");
+			}
+
+
+		}
+
+
 	}
 
 	
 	[RPC]
-	void Move(Vector3 pos, Vector3 vel, Vector2 rot, uLink.NetworkMessageInfo info)
+	void Move(Vector3 pos, Vector3 vel, Vector2 rot, Vector2 inpMov, uLink.NetworkMessageInfo info)
 	{
 		// This code is only executed in the auth server
 		if (info.sender != networkView.owner || info.timestamp <= serverLastTimestamp)
@@ -202,7 +252,7 @@ public class NetworkStateSync : uLink.MonoBehaviour
 		// Add some more code right here if the server is authoritave and you want to do more security checks
 		// The server state is updated with incoming data from the client beeing the "owner" of this game object
 		
-		UpdateState(pos, vel, rot, info.timestamp);
+		UpdateState(pos, vel, rot, inpMov, info.timestamp);
 	}
 
 }

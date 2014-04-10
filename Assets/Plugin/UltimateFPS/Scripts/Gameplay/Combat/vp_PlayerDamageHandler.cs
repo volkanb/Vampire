@@ -19,7 +19,10 @@ using System.Collections.Generic;
 
 public class vp_PlayerDamageHandler : vp_DamageHandler
 {
-	
+
+	public bool sendHealth = false;
+	private NetworkEvents netwEvents;
+
 	private vp_FPPlayerEventHandler m_Player = null;
 	protected float m_RespawnOffset = 0.0f;
 
@@ -30,7 +33,13 @@ public class vp_PlayerDamageHandler : vp_DamageHandler
 	public Vector2 FallImpactPitch = new Vector2(1.0f, 1.5f);	// random pitch range for fall impact sounds
 	public List<AudioClip> FallImpactSounds = new List<AudioClip>();
 	protected float m_FallImpactMultiplier = 2;
-	
+
+
+	void Start() 
+	{
+		netwEvents = gameObject.GetComponent<NetworkEvents> ();
+	}
+
 
 	/// <summary>
 	/// 
@@ -75,7 +84,6 @@ public class vp_PlayerDamageHandler : vp_DamageHandler
 	/// </summary>
 	public override void Damage(float damage)
 	{
-
 		if (!enabled)
 			return;
 
@@ -86,6 +94,12 @@ public class vp_PlayerDamageHandler : vp_DamageHandler
 
 		m_Player.HUDDamageFlash.Send(damage);
 
+
+		// FOLLOWING CODES MAKE SURE THAT PROXIES AND OWNERS SYNC HEALTH WITH SERVER
+		if (sendHealth && netwEvents != null ) 
+		{
+			netwEvents.DamageOthers(damage);
+		}
 	}
 
 	/// <summary>
@@ -95,6 +109,7 @@ public class vp_PlayerDamageHandler : vp_DamageHandler
 	/// </summary>
 	public override void Die()
 	{
+		Debug.LogError("IM DEAD");
 
 		if (!enabled || !vp_Utility.IsActive(gameObject))
 			return;
