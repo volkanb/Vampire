@@ -277,6 +277,7 @@ public class AIPathVampire : MonoBehaviour {
 		jumpTime=Time.time;
 		startHasRun = true;
 		OnEnable ();
+		GetComponent<log>().EnterLog("Search");
 	}
 	
 	/** Run at start and when reenabled.
@@ -746,13 +747,9 @@ public class AIPathVampire : MonoBehaviour {
 			else
 			{
 				target.GetComponent<AIPathHuman>().isChanneling=true;
-				Debug.Log(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth);
-				Debug.Log(GetComponentInChildren<vp_DamageHandler2>().MaxHealth);
 				if(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<GetComponentInChildren<vp_DamageHandler2>().MaxHealth)
 				{
 					GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth+=0.015f;
-					Debug.Log(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth);
-					Debug.Log("bacın");
 				}
 			}
 			break;

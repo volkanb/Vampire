@@ -1,16 +1,21 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\TEMP_VOLKAN\Scripts\vp_SupplySpot.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Plugin\Other\log.cs">
     <Files>
-      <File FileName="Assets\TEMP_VOLKAN\Scripts\NetworkEvents.cs" Line="57" Column="83" />
+      <File FileName="Assets\Plugin\Other\log.cs" Line="101" Column="3" />
+      <File FileName="Assets\TEMP_VOLKAN\Scripts\NetworkEvents.cs" Line="1" Column="1" />
       <File FileName="Assets\Plugin\UltimateFPS\Scripts\Gameplay\Combat\vp_DamageHandler.cs" Line="1" Column="1" />
       <File FileName="Assets\Plugin\UltimateFPS\Scripts\Gameplay\Combat\vp_PlayerDamageHandler.cs" Line="1" Column="1" />
-      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Core\Utility\vp_Layer.cs" Line="19" Column="2" />
-      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPPlayerEventHandler.cs" Line="27" Column="72" />
+      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Core\Utility\vp_Layer.cs" Line="1" Column="1" />
+      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPPlayerEventHandler.cs" Line="1" Column="1" />
       <File FileName="Assets\Plugin\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPInput.cs" Line="1" Column="1" />
-      <File FileName="Assets\TEMP_VOLKAN\Scripts\vp_SupplySpot.cs" Line="8" Column="32" />
-      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Gameplay\World\Interaction\vp_Interactable.cs" Line="31" Column="15" />
-      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Gameplay\Items\vp_SimpleInventory.cs" Line="405" Column="1" />
+      <File FileName="Assets\TEMP_VOLKAN\Scripts\vp_SupplySpot.cs" Line="1" Column="1" />
+      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Gameplay\World\Interaction\vp_Interactable.cs" Line="1" Column="1" />
+      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Gameplay\Items\vp_SimpleInventory.cs" Line="1" Column="1" />
+      <File FileName="Assets\Plugin\Other\logFile.cs" Line="16" Column="8" />
+      <File FileName="Assets\Plugin\AstarPathfindingProject\Core\AI\AIPathHuman.cs" Line="794" Column="5" />
+      <File FileName="Assets\Plugin\AstarPathfindingProject\Core\AI\AIPathSlayer.cs" Line="303" Column="3" />
+      <File FileName="Assets\Plugin\AstarPathfindingProject\Core\AI\AIPathVampire.cs" Line="749" Column="58" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

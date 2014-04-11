@@ -5,8 +5,18 @@ using System;
 
 public class log : MonoBehaviour {
 	
-	public string  fileName = "MyFile.txt";
-	
+	string  fileName ="";
+	float logDelayTime;
+	// Use this for initialization
+	void Start () 
+	{
+		while(fileName=="")
+		{
+			fileName=GameObject.Find("Control").GetComponent<logFile>().fileName;
+		}
+		
+	}
+
 	void WriteFile(string filepathIncludingFileName,string message)	
 	{
 		int i=0;
@@ -82,30 +92,37 @@ public class log : MonoBehaviour {
 
 	public void EnterLog(string CurrentState)
 	{
-		if (File.Exists(fileName)) 
+		logDelayTime=Time.time;
+		while(fileName=="")
 		{
-			WriteFile(fileName,System.DateTime.Now.Day+"/"+System.DateTime.Now.Month+"/"+System.DateTime.Now.Year+" "+System.DateTime.Now.TimeOfDay+" "+gameObject.name+" "+CurrentState);
+			fileName=GameObject.Find("Control").GetComponent<logFile>().fileName;
+			if(Time.time-logDelayTime>2.5f){break;}
+		}
+
+		if(File.Exists(fileName)&& (fileName!="")) 
+		{
+			WriteFile(fileName,System.DateTime.Now.Day+"/"+System.DateTime.Now.Month+"/"+System.DateTime.Now.Year+" "+System.DateTime.Now.TimeOfDay+" "+gameObject.name+" "+gameObject.GetInstanceID()+" "+CurrentState);
 		}
 		else
 		{
-			var sr = File.CreateText(fileName);
-			sr.Close();
-			WriteFile(fileName,System.DateTime.Now.Day+"/"+System.DateTime.Now.Month+"/"+System.DateTime.Now.Year+" "+System.DateTime.Now.TimeOfDay+" "+gameObject.name+" "+CurrentState);
+			Debug.Log("can not write to log file");
 		}
 
 
 	}
-	// Use this for initialization
-	void Start () 
-	{
 
-	
-	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
-	
+
 	}
+
+	/*int j=0;
+	while(File.Exists(fileName)) 
+	{
+		fileName="MyFile"+j+".txt";
+		WriteFile(fileName,System.DateTime.Now.Day+"/"+System.DateTime.Now.Month+"/"+System.DateTime.Now.Year+" "+System.DateTime.Now.TimeOfDay+" "+gameObject.name+" "+CurrentState);
+	}*/
 }
 

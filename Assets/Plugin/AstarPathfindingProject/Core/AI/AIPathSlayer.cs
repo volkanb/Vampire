@@ -300,6 +300,7 @@ public class AIPathSlayer : MonoBehaviour {
 	protected virtual void Start () {
 		startHasRun = true;
 		OnEnable ();
+		GetComponent<log>().EnterLog("Search");
 	}
 	
 	/** Run at start and when reenabled.

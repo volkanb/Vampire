@@ -239,6 +239,7 @@ public class AIPathHuman : MonoBehaviour {
 	protected virtual void Start () {
 		startHasRun = true;
 		OnEnable ();
+		GetComponent<log>().EnterLog("Wander");
 	}
 	
 	/** Run at start and when reenabled.
