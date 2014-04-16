@@ -204,7 +204,7 @@ public class AIPathVampire : MonoBehaviour {
 		foreach (GameObject go in targets)
 		{
 			Vector3 diff=go.transform.position-transform.position;
-			if(/*(diff.magnitude<100) && */(go.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth>0) 
+			if(/*(diff.magnitude<100) && */(go.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0) 
 			&& (go.GetComponent<AIPathHuman>().isRescued==false) && (go.GetComponent<AIPathHuman>().isPossessed==false))
 			{
 				myList.Add(go);
@@ -549,13 +549,13 @@ public class AIPathVampire : MonoBehaviour {
 			case State.SEARCH:
 			//Debug.Log("a");
 			Vector3 pos=target.position-transform.position;	
-			if(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
+			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
-				GetComponentInChildren<vp_DamageHandler2>().animation.Play("death");
-				GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth=1;
+				GetComponent<vp_DamageHandler2>().capsule.animation.Play("death");
+				GetComponent<vp_DamageHandler2>().m_CurrentHealth=1;
 				isDown=true;
 				lastState=State.SEARCH;
-				GetComponentInChildren<vp_DamageHandler2>().reanimTime=Time.time;
+				GetComponent<vp_DamageHandler2>().reanimTime=Time.time;
 				lastPos=transform.position;
 				state=State.DOWN;
 				GetComponent<log>().EnterLog("Down");
@@ -616,18 +616,18 @@ public class AIPathVampire : MonoBehaviour {
 
 			case State.ATTACKHUMAN:
 			//Debug.Log("b");
-			if(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
+			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
-				GetComponentInChildren<vp_DamageHandler2>().animation.Play("death");
-				GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth=1;
+				GetComponent<vp_DamageHandler2>().capsule.animation.Play("death");
+				GetComponent<vp_DamageHandler2>().m_CurrentHealth=1;
 				isDown=true;
 				lastState=State.ATTACKHUMAN;
-				GetComponentInChildren<vp_DamageHandler2>().reanimTime=Time.time;
+				GetComponent<vp_DamageHandler2>().reanimTime=Time.time;
 				lastPos=transform.position;
 				state=State.DOWN;
 				GetComponent<log>().EnterLog("Down");
 			}
-			else if((target.GetComponent<AIPathHuman>().isRescued==true) || (target.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)|| (target.GetComponent<AIPathHuman>().isPossessed==true) ||  (target.GetComponent<AIPathHuman>().isChanneling==true))
+			else if((target.GetComponent<AIPathHuman>().isRescued==true) || (target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)|| (target.GetComponent<AIPathHuman>().isPossessed==true) ||  (target.GetComponent<AIPathHuman>().isChanneling==true))
 			{
 				Player.Attack.TryStop();
 				state=State.SEARCH;
@@ -642,18 +642,19 @@ public class AIPathVampire : MonoBehaviour {
 
 			case State.ATTACK:
 			//Debug.Log("c");
-			if(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
+			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
-				GetComponentInChildren<vp_DamageHandler2>().animation.Play("death");
-				GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth=1;
+				//GetComponentInChildren<Animation>().animation.Play("death");
+				GetComponent<vp_DamageHandler2>().capsule.animation.Play("death");
+				GetComponent<vp_DamageHandler2>().m_CurrentHealth=1;
 				isDown=true;
 				lastState=State.ATTACK;
-				GetComponentInChildren<vp_DamageHandler2>().reanimTime=Time.time;
+				GetComponent<vp_DamageHandler2>().reanimTime=Time.time;
 				lastPos=transform.position;
 				state=State.DOWN;
 				GetComponent<log>().EnterLog("Down");
 			}
-			else if(target.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
+			else if(target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				Player.Attack.TryStop();
 				state=State.SEARCH;
@@ -681,16 +682,16 @@ public class AIPathVampire : MonoBehaviour {
 				GetComponentInChildren<vp_DamageHandler2>().playReanim();
 				state=lastState;
 			}*/
-			else if((Time.time-GetComponentInChildren<vp_DamageHandler2>().reanimTime>4f) && (animSet==false))
+			else if((Time.time-GetComponent<vp_DamageHandler2>().reanimTime>4f) && (animSet==false))
 			{
 				animSet=true;
 				/*Player.SetWeapon.TryStart(1);
 				isDown=false;
 				GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth=1;*/
-				GetComponentInChildren<vp_DamageHandler2>().playReanim();
+				GetComponent<vp_DamageHandler2>().playReanim();
 				//state=lastState;
 			}
-			else if((GetComponentInChildren<vp_DamageHandler2>().isReanimPlaying()==false) && (animSet==true))
+			else if((GetComponent<vp_DamageHandler2>().isReanimPlaying()==false) && (animSet==true))
 			{
 				if(isDead==true)
 				{
@@ -701,7 +702,7 @@ public class AIPathVampire : MonoBehaviour {
 				{
 					Player.SetWeapon.TryStart(1);
 					isDown=false;
-					GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth=1;
+					GetComponent<vp_DamageHandler2>().m_CurrentHealth=1;
 					animSet=false;
 					state=lastState;
 				}
@@ -720,20 +721,20 @@ public class AIPathVampire : MonoBehaviour {
 			break;
 
 			case State.CHANNELING:
-			if(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
+			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				target.GetComponent<AIPathHuman>().isChanneling=false;
-				GetComponentInChildren<vp_DamageHandler2>().animation.Play("death");
-				GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth=1;
+				GetComponent<vp_DamageHandler2>().capsule.animation.Play("death");
+				GetComponent<vp_DamageHandler2>().m_CurrentHealth=1;
 				isDown=true;
 				lastState=State.ATTACK;
-				GetComponentInChildren<vp_DamageHandler2>().reanimTime=Time.time;
+				GetComponent<vp_DamageHandler2>().reanimTime=Time.time;
 				lastPos=transform.position;
 				state=State.DOWN;
 				GetComponent<log>().EnterLog("Down");
 
 			}
-			else if( (target.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1) || (target.GetComponent<AIPathHuman>().isPossessed==true))
+			else if( (target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1) || (target.GetComponent<AIPathHuman>().isPossessed==true))
 			{
 				target.GetComponent<AIPathHuman>().isChanneling=false;
 				state=State.SEARCH;
@@ -747,9 +748,9 @@ public class AIPathVampire : MonoBehaviour {
 			else
 			{
 				target.GetComponent<AIPathHuman>().isChanneling=true;
-				if(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<GetComponentInChildren<vp_DamageHandler2>().MaxHealth)
+				if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<GetComponent<vp_DamageHandler2>().MaxHealth)
 				{
-					GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth+=0.015f;
+					GetComponent<vp_DamageHandler2>().m_CurrentHealth+=0.015f;
 				}
 			}
 			break;
@@ -791,7 +792,7 @@ public class AIPathVampire : MonoBehaviour {
 
 		if(state!=State.CHANNELING)
 		{
-			if((state==State.SEARCH) && (other.tag=="Human") && (other.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth>0)) {target=other.gameObject.transform; state=State.ATTACKHUMAN; GetComponent<log>().EnterLog("AttackHuman");}
+			if((state==State.SEARCH) && (other.tag=="Human") && (other.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0)) {target=other.gameObject.transform; state=State.ATTACKHUMAN; GetComponent<log>().EnterLog("AttackHuman");}
 		}
 	}
 	

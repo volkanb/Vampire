@@ -44,6 +44,8 @@ public class vp_DamageHandler2 : MonoBehaviour
 	private vp_FPPlayerEventHandler m_Player = null;
 	//public bool isVampire=false;
 	bool isPlayed=false;
+	public GameObject capsule;
+
 	/// <summary>
 	/// 
 	/// </summary>
@@ -51,12 +53,12 @@ public class vp_DamageHandler2 : MonoBehaviour
 	/// 
 	public void playReanim()
 	{
-		animation.Play("reanimate");
+		capsule.animation.Play("reanimate");
 	}
 	public bool isReanimPlaying()
 	{
 
-		if(animation["reanimate"].enabled==true)
+		if(capsule.animation["reanimate"].enabled==true)
 		{
 			return true;
 		}
@@ -64,7 +66,7 @@ public class vp_DamageHandler2 : MonoBehaviour
 	}
 	protected virtual void Awake()
 	{
-		m_Player = transform.parent.parent.GetComponent<vp_FPPlayerEventHandler>();
+		m_Player = transform.GetComponent<vp_FPPlayerEventHandler>();
 		m_Audio = audio;
 
 		m_CurrentHealth = MaxHealth;
@@ -120,9 +122,9 @@ public class vp_DamageHandler2 : MonoBehaviour
 	/// </summary>
 	public virtual void Die()
 	{
-		if(transform.parent.parent.tag=="Vampire")
+		if(transform.tag=="Vampire")
 		{
-			if(transform.parent.parent.GetComponent<AIPathVampire>().isDown==true)
+			if(transform.GetComponent<AIPathVampire>().isDown==true)
 			{
 				if (!enabled || !vp_Utility.IsActive(gameObject))
 					return;
@@ -147,7 +149,7 @@ public class vp_DamageHandler2 : MonoBehaviour
 				{
 					isPlayed=true;
 					reanimTime=Time.time;
-					animation.Play("death");
+					capsule.animation.Play("death");
 
 				}
 			}
@@ -160,7 +162,7 @@ public class vp_DamageHandler2 : MonoBehaviour
 			//vp_Utility.Activate(gameObject, false);
 			/*vp_Utility.Activate(gameObject.transform.parent.parent.gameObject, false);
 				Destroy(gameObject.transform.parent.parent.gameObject);*/
-			animation.Play("death");
+			capsule.animation.Play("death");
 			
 			if (DeathEffect != null)
 				Object.Instantiate(DeathEffect, transform.position, transform.rotation);
@@ -282,9 +284,11 @@ public class vp_DamageHandler2 : MonoBehaviour
 	public GameObject DeathEffect = null;
 	void Update()
 	{
-		if(transform.parent.parent.tag=="Vampire")
+		gameObject.layer=0;
+		capsule.layer=0;
+		if(transform.tag=="Vampire")
 		{
-			if(transform.parent.parent.GetComponent<AIPathVampire>().isDown==false)
+			if(transform.GetComponent<AIPathVampire>().isDown==false)
 			{
 				isPlayed=false;
 			}

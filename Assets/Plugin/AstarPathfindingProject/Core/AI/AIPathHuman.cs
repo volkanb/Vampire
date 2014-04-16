@@ -159,6 +159,7 @@ public class AIPathHuman : MonoBehaviour {
 	float stopTimeLimit;
 	float radius=2f;
 	public bool isChanneling=false;
+	public GameObject cam;
 
 	//Align
 	float targetDegree;
@@ -378,7 +379,7 @@ public class AIPathHuman : MonoBehaviour {
 		switch(state)
 		{
 			case State.WANDER:
-			if(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
+			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
 				GetComponent<log>().EnterLog("Dead");
@@ -438,7 +439,7 @@ public class AIPathHuman : MonoBehaviour {
 			break;
 
 			case State.RUN:
-			if(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
+			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
 				GetComponent<log>().EnterLog("Dead");
@@ -448,7 +449,7 @@ public class AIPathHuman : MonoBehaviour {
 				target=transform;
 				state=State.WANDER;
 			}*/
-			else if(target.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
+			else if(target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				target=transform;
 				state=State.WANDER;
@@ -491,15 +492,15 @@ public class AIPathHuman : MonoBehaviour {
 
 			case State.FOLLOW:
 			Vector3 targetPos=GameObject.Find("SlayerBase").transform.position-transform.position;	
-			if(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
+			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
 				GetComponent<log>().EnterLog("Dead");
 			}
 			else if(targetPos.magnitude<5f) {Player.Attack.TryStop(); state=State.RESCUED; GetComponent<log>().EnterLog("Rescued");}
-			else if(target.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
+			else if(target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
-				if((vampireTarget!=null) && (vampireTarget.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth>0))
+				if((vampireTarget!=null) && (vampireTarget.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0))
 				{
 					target=vampireTarget.transform;
 					Player.Attack.TryStop();
@@ -523,17 +524,21 @@ public class AIPathHuman : MonoBehaviour {
 				
 				RaycastHit objectHit;
 				Vector3 fwd = transform.TransformDirection(Vector3.forward);
-				Debug.DrawRay(transform.position, fwd * 50, Color.red);
+				Debug.DrawRay(cam.transform.position, fwd * 50, Color.red);
 				
-				if((Player.CurrentWeaponAmmoCount.Get()>0) &&(Physics.Raycast(transform.position, fwd, out objectHit, 100)))
+				if((Player.CurrentWeaponAmmoCount.Get()>0) &&(Physics.Raycast(cam.transform.position, fwd, out objectHit, 100)))
 				{
-					if(objectHit.transform.parent.parent!=null)
+					if( (objectHit.transform.tag=="Vampire") || (objectHit.transform.tag=="PossessedHuman"))
+					{
+						Player.Attack.TryStart();	
+					}	
+					/*if(objectHit.transform.parent.parent!=null)
 					{
 						if( (objectHit.transform.parent.parent.tag=="Vampire") || (objectHit.transform.parent.parent.tag=="PossessedHuman"))
 						{
 							Player.Attack.TryStart();	
 						}	
-					}
+					}*/
 				}
 				else {Player.Reload.TryStart();}
 			}
@@ -570,7 +575,7 @@ public class AIPathHuman : MonoBehaviour {
 			break;
 
 			case State.DEFEND:
-			if(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
+			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
 				GetComponent<log>().EnterLog("Dead");
@@ -581,7 +586,7 @@ public class AIPathHuman : MonoBehaviour {
 				state=State.FOLLOW;
 				GetComponent<log>().EnterLog("Follow");
 			}
-			else if(target.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
+			else if(target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				Player.Attack.TryStop();
 				target=gameObject.transform;
@@ -598,9 +603,9 @@ public class AIPathHuman : MonoBehaviour {
 					
 					RaycastHit objectHit;
 					Vector3 fwd = transform.TransformDirection(Vector3.forward);
-					Debug.DrawRay(transform.position, fwd * 50, Color.red);
+					Debug.DrawRay(cam.transform.position, fwd * 50, Color.red);
 					
-					if((Player.CurrentWeaponAmmoCount.Get()>0) &&(Physics.Raycast(transform.position, fwd, out objectHit, 100)))
+					/*if((Player.CurrentWeaponAmmoCount.Get()>0) &&(Physics.Raycast(transform.position, fwd, out objectHit, 100)))
 					{
 						if(objectHit.transform.parent)
 						{
@@ -612,6 +617,13 @@ public class AIPathHuman : MonoBehaviour {
 								}	
 							}
 						}
+					}*/
+					if((Player.CurrentWeaponAmmoCount.Get()>0) &&(Physics.Raycast(cam.transform.position, fwd, out objectHit, 100)))
+					{
+						if( (objectHit.transform.tag=="Vampire") || (objectHit.transform.tag=="PossessedHuman"))
+						{
+							Player.Attack.TryStart();	
+						}	
 					}
 					else {Player.Reload.TryStart();}
 				}
@@ -636,7 +648,7 @@ public class AIPathHuman : MonoBehaviour {
 
 
 			case State.POSSESSED:
-			if(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
+			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
 				GetComponent<log>().EnterLog("Dead");
@@ -683,12 +695,12 @@ public class AIPathHuman : MonoBehaviour {
 			break;
 
 			case State.ATTACK:
-			if(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
+			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
 				GetComponent<log>().EnterLog("Dead");
 			}
-			else if(target.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
+			else if(target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				Player.Attack.TryStop();
 				target=transform;
@@ -743,7 +755,7 @@ public class AIPathHuman : MonoBehaviour {
 			break;
 
 			case State.CHANNELING:
-			if(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
+			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				target=transform;
 				vampireTarget=null;

@@ -154,7 +154,7 @@ public class AIPathSlayer : MonoBehaviour {
 	public bool isAttacking=false;
 	GameObject random;
 	GameObject closest;
-
+	public GameObject cam;
 
 	//Align
 	float targetDegree;
@@ -208,7 +208,7 @@ public class AIPathSlayer : MonoBehaviour {
 		foreach (GameObject go in targets)
 		{
 			Vector3 diff=go.transform.position-transform.position;
-			if((go.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth>0) && (go.GetComponent<AIPathHuman>().isPossessed==false) 
+			if((go.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0) && (go.GetComponent<AIPathHuman>().isPossessed==false) 
 			&&(go.GetComponent<AIPathHuman>().isFollowing==false) && (go.GetComponent<AIPathHuman>().isRescued==false))
 			{
 				myList.Add(go);
@@ -441,7 +441,7 @@ public class AIPathSlayer : MonoBehaviour {
 		{
 			case State.SEARCH:
 			Vector3 zonePos=target.position-transform.position;	
-			if(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
+			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
 				GetComponent<log>().EnterLog("Dead");
@@ -495,12 +495,12 @@ public class AIPathSlayer : MonoBehaviour {
 			break;
 
 			case State.GOTOHUMAN:
-			if(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
+			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
 				GetComponent<log>().EnterLog("Dead");
 			}
-			else if((target.GetComponent<AIPathHuman>().isFollowing==true) || (target.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1) || (target.GetComponent<AIPathHuman>().isPossessed==true) )
+			else if((target.GetComponent<AIPathHuman>().isFollowing==true) || (target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1) || (target.GetComponent<AIPathHuman>().isPossessed==true) )
 			{
 				state=State.SEARCH;
 				GetComponent<log>().EnterLog("Search");
@@ -564,13 +564,13 @@ public class AIPathSlayer : MonoBehaviour {
 
 			case State.ESCORT:
 
-			if(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
+			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				isEscorting=false;
 				state=State.DEAD;
 				GetComponent<log>().EnterLog("Dead");
 			}
-			else if((currentlyEscorting.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1) || (currentlyEscorting.GetComponent<AIPathHuman>().isRescued==true))
+			else if((currentlyEscorting.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1) || (currentlyEscorting.GetComponent<AIPathHuman>().isRescued==true))
 			{
 				isEscorting=false;
 				state=State.SEARCH;
@@ -620,7 +620,7 @@ public class AIPathSlayer : MonoBehaviour {
 
 			case  State.DEFEND:
 			Vector3 runPos=target.position-transform.position;
-			if(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
+			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
 				GetComponent<log>().EnterLog("Dead");
@@ -631,9 +631,27 @@ public class AIPathSlayer : MonoBehaviour {
 				state=State.STAKE;
 				GetComponent<log>().EnterLog("Stake");
 			}
-			else if((target.tag!="Vampire") && ((target.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1) || (runPos.magnitude>=20f)))
+			else if((target.tag=="VampirePlayer") && (target.GetComponent<vp_PlayerDamageHandler2>()!=null) && (target.GetComponent<vp_PlayerDamageHandler2>().isDown==true) && (target.GetComponent<vp_PlayerDamageHandler2>().isDead==false))
 			{
-				if((currentlyEscorting!=null) && (currentlyEscorting.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth>0) && (isEscorting==true))
+				Player.Attack.TryStop(); 
+				state=State.STAKE;
+				GetComponent<log>().EnterLog("Stake");
+			}
+			else if((target.tag=="VampirePlayer") && (target.GetComponent<vp_PlayerDamageHandler2>().isDown==false) && (target.GetComponent<vp_PlayerDamageHandler2>().isDead==false) && (runPos.magnitude>=15f))
+			{
+				if((currentlyEscorting!=null) && (currentlyEscorting.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0) && (isEscorting==true))
+				{
+					target=GameObject.Find("SlayerBase").transform;
+					isAttacking=false;
+					Player.Attack.TryStop(); 
+					state=State.ESCORT;
+					GetComponent<log>().EnterLog("Escort");
+				}
+				else {Player.Attack.TryStop(); isAttacking=false; state=State.SEARCH; GetComponent<log>().EnterLog("Search");}
+			}
+			else if((target.tag!="Vampire") && (target.tag!="VampirePlayer") && ((target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1) || (runPos.magnitude>=20f)))
+			{
+				if((currentlyEscorting!=null) && (currentlyEscorting.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0) && (isEscorting==true))
 				{
 					target=GameObject.Find("SlayerBase").transform;
 					isAttacking=false;
@@ -655,13 +673,21 @@ public class AIPathSlayer : MonoBehaviour {
 					isAttacking=true;
 					
 					RaycastHit objectHit;
-					Vector3 fwd = transform.TransformDirection(Vector3.forward);
-					Debug.DrawRay(transform.position, fwd * 50, Color.red);
-					
-					if((Player.CurrentWeaponAmmoCount.Get()>0) &&(Physics.Raycast(transform.position, fwd, out objectHit, 100)))
+					Vector3 fwd = cam.transform.TransformDirection(Vector3.forward);
+					Debug.DrawRay(cam.transform.position, fwd * 50, Color.red);
+
+					if((Player.CurrentWeaponAmmoCount.Get()>0) &&(Physics.Raycast(cam.transform.position, fwd, out objectHit, 100)))
 					{
-						Debug.Log(objectHit.collider.name);
-						if(objectHit.transform.parent)
+						//Debug.Log(objectHit.collider.name);
+						if((objectHit.transform.tag=="VampirePlayer") || (objectHit.transform.tag=="Vampire") || (objectHit.transform.tag=="PossessedHuman") )
+						{
+							Player.Attack.TryStart();	
+						}
+						/*if(objectHit.transform.tag=="VampirePlayer")
+						{
+							Player.Attack.TryStart();	
+						}
+						else if(objectHit.transform.parent)
 						{
 							if(objectHit.transform.parent.parent)
 							{
@@ -669,8 +695,11 @@ public class AIPathSlayer : MonoBehaviour {
 								{
 									Player.Attack.TryStart();	
 								}
+
 							}
-						}
+
+							
+						}*/
 
 					}
 					if(Player.CurrentWeaponAmmoCount.Get()<1)
@@ -690,7 +719,7 @@ public class AIPathSlayer : MonoBehaviour {
 			case State.STAKE:
 			isAttacking=false;
 			Vector3 runPos1=target.position-transform.position;
-			if(GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1)
+			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
 				GetComponent<log>().EnterLog("Dead");
@@ -700,9 +729,14 @@ public class AIPathSlayer : MonoBehaviour {
 				state=State.DEFEND;
 				GetComponent<log>().EnterLog("Defend");
 			}
-			else if( ((target.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1) || (runPos1.magnitude>=20f)) && (target.GetComponent<AIPathVampire>().isDead==true) )
+			else if((target.tag=="VampirePlayer") && (target.GetComponent<vp_PlayerDamageHandler2>()) && (target.GetComponent<vp_PlayerDamageHandler2>().isDown==false) && (target.GetComponent<vp_PlayerDamageHandler2>().isDead==false))
 			{
-				if((currentlyEscorting!=null) && (currentlyEscorting.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth>0) && (isEscorting==true))
+				state=State.DEFEND;
+				GetComponent<log>().EnterLog("Defend");
+			}
+			else if( (target.GetComponent<vp_DamageHandler2>()) && ((target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1) || (runPos1.magnitude>=20f)) && (target.GetComponent<AIPathVampire>().isDead==true) )
+			{
+				if((currentlyEscorting!=null) && (currentlyEscorting.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0) && (isEscorting==true))
 				{
 					target=GameObject.Find("SlayerBase").transform;
 					Player.Attack.TryStop(); 
@@ -711,9 +745,31 @@ public class AIPathSlayer : MonoBehaviour {
 				}
 				else {Player.Attack.TryStop(); isAttacking=false; state=State.SEARCH; GetComponent<log>().EnterLog("Search");}
 			}
-			else if( ((target.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth<1) || (runPos1.magnitude>=20f)) && (target.tag!="Vampire") )
+			else if( (target.GetComponent<vp_DamageHandler2>()) && ((target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1) || (runPos1.magnitude>=20f)) && (target.tag!="Vampire") )
 			{
-				if((currentlyEscorting!=null) && (currentlyEscorting.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth>0) && (isEscorting==true))
+				if((currentlyEscorting!=null) && (currentlyEscorting.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0) && (isEscorting==true))
+				{
+					target=GameObject.Find("SlayerBase").transform;
+					Player.Attack.TryStop(); 
+					state=State.ESCORT;
+					GetComponent<log>().EnterLog("Escort");
+				}
+				else {Player.Attack.TryStop(); isAttacking=false; state=State.SEARCH; GetComponent<log>().EnterLog("Search");}
+			}
+			else if( (target.GetComponent<vp_PlayerDamageHandler2>()) && ((target.GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth<1) || (runPos1.magnitude>=20f)) && (target.GetComponent<vp_PlayerDamageHandler2>().isDead==true) )
+			{
+				if((currentlyEscorting!=null) && (currentlyEscorting.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0) && (isEscorting==true))
+				{
+					target=GameObject.Find("SlayerBase").transform;
+					Player.Attack.TryStop(); 
+					state=State.ESCORT;
+					GetComponent<log>().EnterLog("Escort");
+				}
+				else {Player.Attack.TryStop(); isAttacking=false; state=State.SEARCH; GetComponent<log>().EnterLog("Search");}
+			}
+			else if( (target.GetComponent<vp_PlayerDamageHandler2>()) && ((target.GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth<1) || (runPos1.magnitude>=20f)) && (target.tag!="VampirePlayer") )
+			{
+				if((currentlyEscorting!=null) && (currentlyEscorting.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0) && (isEscorting==true))
 				{
 					target=GameObject.Find("SlayerBase").transform;
 					Player.Attack.TryStop(); 
@@ -774,7 +830,8 @@ public class AIPathSlayer : MonoBehaviour {
 	void OnTriggerEnter(Collider other)
 	{
 		if( (other.tag=="Vampire") || (other.tag=="PossessedHuman")){target=other.gameObject.transform; Player.Attack.TryStop(); state=State.DEFEND; GetComponent<log>().EnterLog("Defend");}
-		else if((other.tag=="Human") && (state==State.SEARCH) && (other.GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth>0)) {target=other.gameObject.transform; state=State.GOTOHUMAN; GetComponent<log>().EnterLog("GotoHuman");} 
+		if(other.tag=="VampirePlayer") {target=other.gameObject.transform; Player.Attack.TryStop(); state=State.DEFEND; GetComponent<log>().EnterLog("Defend");}
+		else if((other.tag=="Human") && (state==State.SEARCH) && (other.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0)) {target=other.gameObject.transform; state=State.GOTOHUMAN; GetComponent<log>().EnterLog("GotoHuman");} 
 	}
 	
 	/** Point to where the AI is heading.

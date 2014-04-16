@@ -186,18 +186,10 @@ public class vp_FPWeaponMeleeAttack : vp_Component
 					SpawnImpactFX(hit);
 
 
-					if(hit.collider.transform.parent)
+					/*if(hit.collider.transform.parent)
 					{
 						if(hit.collider.transform.parent.parent)
 						{
-							/*if(gameObject.transform.parent.parent.parent.tag=="Vampire")
-							{
-								if(hit.collider.transform.parent.parent.tag=="Human")
-								{
-									if(hit.collider.GetComponent<vp_DamageHandler2>().m_CurrentHealth<=1) {hit.collider.GetComponent<vp_DamageHandler2>().isVampire=true;}
-								}
-							}*/
-
 							if((gameObject.transform.parent.parent.parent.tag=="Slayer") && (Player.CurrentWeaponName.Get()=="4Mace") )
 							{
 								
@@ -211,6 +203,25 @@ public class vp_FPWeaponMeleeAttack : vp_Component
 
 							}
 						}
+					}*/
+					//Debug.Log((hit.collider.transform.tag));
+					if((gameObject.transform.parent.parent.parent.tag=="Slayer") && (Player.CurrentWeaponName.Get()=="4Mace") )
+					{
+						if(hit.collider.transform.tag=="Vampire")
+						{
+							if((hit.collider.transform.GetComponent<AIPathVampire>().isDown==true) && (hit.collider.GetComponent<vp_DamageHandler2>().m_CurrentHealth<=1))
+							{
+								hit.collider.transform.GetComponent<AIPathVampire>().isDead=true;
+							}
+						}
+						if(hit.collider.transform.tag=="VampirePlayer")
+						{
+							if((hit.collider.transform.GetComponent<vp_PlayerDamageHandler2>().isDown==true) && (hit.collider.GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth<=1))
+							{
+								hit.collider.transform.GetComponent<vp_PlayerDamageHandler2>().isDead=true;
+							}
+						}
+						
 					}
 
 

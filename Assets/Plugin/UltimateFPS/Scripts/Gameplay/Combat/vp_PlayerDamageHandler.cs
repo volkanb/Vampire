@@ -109,7 +109,7 @@ public class vp_PlayerDamageHandler : vp_DamageHandler
 	/// </summary>
 	public override void Die()
 	{
-		Debug.LogError("IM DEAD");
+//		Debug.LogError("IM DEAD");
 
 		if (!enabled || !vp_Utility.IsActive(gameObject))
 			return;
