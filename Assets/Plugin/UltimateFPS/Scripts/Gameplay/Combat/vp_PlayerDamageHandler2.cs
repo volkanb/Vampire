@@ -253,7 +253,6 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 		{
 			Respawn();
 		}
-
 	}
 
 
