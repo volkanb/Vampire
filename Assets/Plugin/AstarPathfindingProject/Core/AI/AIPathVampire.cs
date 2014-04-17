@@ -781,7 +781,7 @@ public class AIPathVampire : MonoBehaviour {
 	void OnTriggerEnter(Collider other)
 	{
 
-		if((other.tag=="Slayer") || (other.tag=="ArmedHuman")) 
+		if( ((other.tag=="Slayer") || (other.tag=="ArmedHuman")) && (other.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0))
 		{
 			if(target!=null){if(target.tag=="Human"){target.GetComponent<AIPathHuman>().isChanneling=false;}}
 			target=other.gameObject.transform;

@@ -38,6 +38,31 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 	float downTime;
 	bool isSet=false;
 	public GameObject capsule;
+	bool isKeyHolding;
+	float channelingTime;
+	GameObject target;
+
+	GameObject getClosestHuman()
+	{
+		ArrayList myList = new ArrayList();
+		GameObject[] targets;
+		targets=GameObject.FindGameObjectsWithTag("Human");
+		//add armed human
+		target=null;
+		//float distance=Mathf.Infinity;
+		foreach (GameObject go in targets)
+		{
+			Vector3 diff=go.transform.position-transform.position;
+			if((diff.magnitude<=1.9f) && (go.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0) 
+			 && (go.GetComponent<AIPathHuman>().isRescued==false) && (go.GetComponent<AIPathHuman>().isPossessed==false))
+			{
+				target=go;
+				break;
+			}
+		}	
+		return target;
+	}
+
 	void Start() 
 	{
 		netwEvents = gameObject.GetComponent<NetworkEvents> ();
@@ -253,8 +278,41 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 		{
 			Respawn();
 		}
+
+		else if( (Input.GetKey(KeyCode.E)) && (isKeyHolding==false) && (getClosestHuman()!=null))
+		{
+			target=getClosestHuman();
+			isKeyHolding=true;
+			channelingTime=Time.time;
+		}
+		else if( (Input.GetKey(KeyCode.E)) &&  (isKeyHolding==true) && ((target.transform.position-transform.position).magnitude>1.9f) )
+		{
+			target.GetComponent<AIPathHuman>().isChanneling=false;
+			isKeyHolding=false;
+			target=null;
+		}
+		else if( (Input.GetKey(KeyCode.E)) && (Time.time-channelingTime>4f) &&  (isKeyHolding==true) && ((target.transform.position-transform.position).magnitude<=1.9f) )
+		{
+			target.GetComponent<AIPathHuman>().isPossessed=true;
+		}
+		else if( (Input.GetKey(KeyCode.E)) && (isKeyHolding==true) && ((target.transform.position-transform.position).magnitude<=1.9f))
+		{
+			target.GetComponent<AIPathHuman>().isChanneling=true;
+			if(GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth<GetComponent<vp_PlayerDamageHandler2>().MaxHealth)
+			{
+				GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth+=0.015f;
+			}
+		}
+
+		else if ((Input.GetKeyUp(KeyCode.E)) && (isKeyHolding==true))
+		{
+			target.GetComponent<AIPathHuman>().isChanneling=false;
+			isKeyHolding=false;
+			target=null;
+		}
+
+
+
 	}
 
-
 }
-

@@ -829,8 +829,9 @@ public class AIPathSlayer : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other)
 	{
-		if( (other.tag=="Vampire") || (other.tag=="PossessedHuman")){target=other.gameObject.transform; Player.Attack.TryStop(); state=State.DEFEND; GetComponent<log>().EnterLog("Defend");}
-		if(other.tag=="VampirePlayer") {target=other.gameObject.transform; Player.Attack.TryStop(); state=State.DEFEND; GetComponent<log>().EnterLog("Defend");}
+		if( (other.tag=="Vampire") && (other.GetComponent<AIPathVampire>().isDead==false)) {target=other.gameObject.transform; Player.Attack.TryStop(); state=State.DEFEND; GetComponent<log>().EnterLog("Defend");}
+		else if( (other.tag=="PossessedHuman") && (other.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0)) {target=other.gameObject.transform; Player.Attack.TryStop(); state=State.DEFEND; GetComponent<log>().EnterLog("Defend");}
+		else if((other.tag=="VampirePlayer") && (other.GetComponent<vp_PlayerDamageHandler2>().isDead==false)) {target=other.gameObject.transform; Player.Attack.TryStop(); state=State.DEFEND; GetComponent<log>().EnterLog("Defend");}
 		else if((other.tag=="Human") && (state==State.SEARCH) && (other.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0)) {target=other.gameObject.transform; state=State.GOTOHUMAN; GetComponent<log>().EnterLog("GotoHuman");} 
 	}
 	

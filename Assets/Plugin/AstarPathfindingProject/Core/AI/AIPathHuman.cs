@@ -171,6 +171,43 @@ public class AIPathHuman : MonoBehaviour {
 	//float timeToTarget = 0.1f;
 	void alignMe()
 	{
+
+		if(target.GetComponent<AIPathSlayer>().target!=null)
+		{
+			Vector3 dir =  target.GetComponent<AIPathSlayer>().target.transform.position - transform.position;
+			
+			
+			float degree= Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
+			targetDegree=degree;
+			
+			float angle = transform.eulerAngles.y;
+			float rotation = Mathf.DeltaAngle(angle, targetDegree);
+			float rotationSize = Mathf.Abs(rotation);
+			float targetRotation = 0.0f;
+			if (rotationSize > targetRadius)
+			{
+				targetRotation = maxRotationSpeed;
+				
+				/*if (rotationSize < slowRadius)
+					targetRotation = maxRotationSpeed * rotationSize / slowRadius;*/
+				targetRotation *= rotation / rotationSize;
+				/*float angular = targetRotation - aSpeed;
+				angular /= timeToTarget;
+				float angularAcceleration = Mathf.Abs(angular);
+				if (angularAcceleration > maxAngularAcceleration)
+				{
+					angular /= angularAcceleration;
+					angular *= maxAngularAcceleration;
+				}
+				
+				aSpeed += angular;*/
+				transform.Rotate(Vector3.up, targetRotation * Time.deltaTime);
+			}
+		}
+	}
+	void alignMe2()
+	{
+		
 		
 		Vector3 dir =  target.transform.position - transform.position;
 		
@@ -449,7 +486,13 @@ public class AIPathHuman : MonoBehaviour {
 				target=transform;
 				state=State.WANDER;
 			}*/
-			else if(target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
+			else if( (target.tag=="Vampire") && (target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1))
+			{
+				target=transform;
+				state=State.WANDER;
+				GetComponent<log>().EnterLog("Wander");
+			}
+			else if( (target.tag=="VampirePlayer") && (target.GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth<1))
 			{
 				target=transform;
 				state=State.WANDER;
@@ -478,9 +521,9 @@ public class AIPathHuman : MonoBehaviour {
 				{
 					Vector3 pos=transform.position-target.position;
 					pos.Normalize();
-					GetComponent<CharacterController>().SimpleMove(pos*1.3f);
+					GetComponent<CharacterController>().SimpleMove(pos*1.6f);
 				}
-				else if(runPos.magnitude>=20f)
+				else if(runPos.magnitude>=15f)
 				{
 					target=gameObject.transform;
 					state=State.WANDER;
@@ -495,28 +538,10 @@ public class AIPathHuman : MonoBehaviour {
 			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
+				Player.Attack.TryStop();
 				GetComponent<log>().EnterLog("Dead");
 			}
 			else if(targetPos.magnitude<5f) {Player.Attack.TryStop(); state=State.RESCUED; GetComponent<log>().EnterLog("Rescued");}
-			else if(target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
-			{
-				if((vampireTarget!=null) && (vampireTarget.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0))
-				{
-					target=vampireTarget.transform;
-					Player.Attack.TryStop();
-					isFollowing=false;
-					state=State.DEFEND;
-					GetComponent<log>().EnterLog("Defend");
-				}
-				else
-				{
-					Player.Attack.TryStop();
-					target=gameObject.transform;
-					isFollowing=false;
-					state=State.IDLE;
-					GetComponent<log>().EnterLog("Idle");
-				}
-			}
 			else if(target.GetComponent<AIPathSlayer>().isAttacking==true)
 			{
 				alignMe();
@@ -528,7 +553,7 @@ public class AIPathHuman : MonoBehaviour {
 				
 				if((Player.CurrentWeaponAmmoCount.Get()>0) &&(Physics.Raycast(cam.transform.position, fwd, out objectHit, 100)))
 				{
-					if( (objectHit.transform.tag=="Vampire") || (objectHit.transform.tag=="PossessedHuman"))
+					if( (objectHit.transform.tag=="Vampire") || (objectHit.transform.tag=="PossessedHuman") || (objectHit.transform.tag=="VampirePlayer") )
 					{
 						Player.Attack.TryStart();	
 					}	
@@ -542,8 +567,36 @@ public class AIPathHuman : MonoBehaviour {
 				}
 				else {Player.Reload.TryStart();}
 			}
+			else if((target.tag=="Slayer") && (target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1))
+			{
+				if((vampireTarget!=null) && (vampireTarget.tag=="Vampire") && (vampireTarget.GetComponent<AIPathVampire>().isDead==false))
+				{
+					target=vampireTarget.transform;
+					Player.Attack.TryStop();
+					isFollowing=false;
+					state=State.DEFEND;
+					GetComponent<log>().EnterLog("Defend");
+				}
+				else if((vampireTarget!=null) && (vampireTarget.tag=="VampirePlayer") && (vampireTarget.GetComponent<vp_PlayerDamageHandler2>().isDead==false))
+				{
+					target=vampireTarget.transform;
+					Player.Attack.TryStop();
+					isFollowing=false;
+					state=State.DEFEND;
+					GetComponent<log>().EnterLog("Defend");
+				}
+				else 
+				{
+					Player.Attack.TryStop();
+					target=gameObject.transform;
+					isFollowing=false;
+					state=State.IDLE;
+					GetComponent<log>().EnterLog("Idle");
+				}
+			}
 			else
 			{
+				Player.Attack.TryStop();
 				if (!canMove) { return; }
 				
 				Vector3 dir = CalculateVelocity(GetFeetPosition());
@@ -586,7 +639,14 @@ public class AIPathHuman : MonoBehaviour {
 				state=State.FOLLOW;
 				GetComponent<log>().EnterLog("Follow");
 			}
-			else if(target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
+			else if( (target.tag=="Vampire") && (target.GetComponent<AIPathVampire>().isDead==true))/*(target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)*/
+			{
+				Player.Attack.TryStop();
+				target=gameObject.transform;
+				state=State.IDLE;
+				GetComponent<log>().EnterLog("Idle");
+			}
+			else if( (target.tag=="VampirePlayer") && (target.GetComponent<vp_PlayerDamageHandler2>().isDead==true))/*(target.GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth<1)*/
 			{
 				Player.Attack.TryStop();
 				target=gameObject.transform;
@@ -598,7 +658,7 @@ public class AIPathHuman : MonoBehaviour {
 				Vector3 attackPos=target.position-transform.position;
 				if(attackPos.magnitude<10f)
 				{
-					alignMe();
+					alignMe2();
 					//transform.LookAt(target.transform.position);
 					
 					RaycastHit objectHit;
@@ -620,7 +680,7 @@ public class AIPathHuman : MonoBehaviour {
 					}*/
 					if((Player.CurrentWeaponAmmoCount.Get()>0) &&(Physics.Raycast(cam.transform.position, fwd, out objectHit, 100)))
 					{
-						if( (objectHit.transform.tag=="Vampire") || (objectHit.transform.tag=="PossessedHuman"))
+						if( (objectHit.transform.tag=="Vampire") || (objectHit.transform.tag=="PossessedHuman") || (objectHit.transform.tag=="VampirePlayer") )
 						{
 							Player.Attack.TryStart();	
 						}	
@@ -742,7 +802,7 @@ public class AIPathHuman : MonoBehaviour {
 				else if(pos.magnitude<radius)
 				{
 					//transform.LookAt(target.transform.position);
-					alignMe();
+					alignMe2();
 					Player.Attack.TryStart();
 				}
 			}
@@ -769,10 +829,12 @@ public class AIPathHuman : MonoBehaviour {
 			}*/
 			else if(isChanneling==false)
 			{
-				target=transform;
+				/*target=transform;
 				vampireTarget=null;
 				state=State.WANDER;
-				GetComponent<log>().EnterLog("Wander");
+				GetComponent<log>().EnterLog("Wander");*/
+				state=State.RUN;
+				GetComponent<log>().EnterLog("Run");
 			}
 			else if(isPossessed==true)
 			{
@@ -792,9 +854,9 @@ public class AIPathHuman : MonoBehaviour {
 	{
 		if(isPossessed==false)
 		{
-			if( ((other.tag=="Vampire") || (other.tag=="PossessedHuman"))&& (isArmed==false) ) {state=State.RUN; target=other.gameObject.transform; vampireTarget=other.gameObject.transform; GetComponent<log>().EnterLog("Run");}
-			else if( ((other.tag=="Vampire") || (other.tag=="PossessedHuman")) && (isArmed==true) && (isFollowing==false) ) {state=State.DEFEND; vampireTarget=other.gameObject.transform; target=other.gameObject.transform; GetComponent<log>().EnterLog("Defend");}
-			else if( ((other.tag=="Vampire") || (other.tag=="PossessedHuman")) && (isArmed==true) && (isFollowing==true) ) {vampireTarget=other.gameObject.transform;} 
+			if( ((other.tag=="Vampire") || (other.tag=="PossessedHuman") || (other.tag=="VampirePlayer") )&& (isArmed==false) ) {state=State.RUN; target=other.gameObject.transform; vampireTarget=other.gameObject.transform; GetComponent<log>().EnterLog("Run");}
+			else if( ((other.tag=="Vampire") || (other.tag=="PossessedHuman")  || (other.tag=="VampirePlayer") ) && (isArmed==true) && (isFollowing==false) ) {state=State.DEFEND; vampireTarget=other.gameObject.transform; target=other.gameObject.transform; GetComponent<log>().EnterLog("Defend");}
+			else if( ((other.tag=="Vampire") || (other.tag=="PossessedHuman")  || (other.tag=="VampirePlayer") ) && (isArmed==true) && (isFollowing==true) ) {vampireTarget=other.gameObject.transform;} 
 		}
 		else
 		{
