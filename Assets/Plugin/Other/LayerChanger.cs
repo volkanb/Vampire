@@ -10,18 +10,28 @@ public class LayerChanger : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
 		if(GameObject.Find("Arms"))
 		{
-			GameObject.Find("Arms").layer=1;
+			if(GameObject.Find("Arms").transform.parent.parent.parent.parent.GetComponent<Camera>().enabled==false)
+			{
+				GameObject.Find("Arms").layer=1;
+			}
 		}
 		if(GameObject.Find("Mesh"))
 		{
-			GameObject.Find("Mesh").layer=1;
+			if(GameObject.Find("Mesh").transform.parent.parent.parent.parent.GetComponent<Camera>().enabled==false)
+			{
+				GameObject.Find("Mesh").layer=1;
+			}
 		}
 		if(GameObject.Find("Mesh_____"))
 		{
-			GameObject.Find("Mesh_____").layer=1;
+			if(GameObject.Find("Mesh_____").transform.parent.parent.parent.parent.GetComponent<Camera>().enabled==false)
+			{
+				GameObject.Find("Mesh_____").layer=1;
+			}
 		}
 
 	}

@@ -205,7 +205,7 @@ public class vp_FPWeaponMeleeAttack : vp_Component
 						}
 					}*/
 					//Debug.Log((hit.collider.transform.tag));
-					if((gameObject.transform.parent.parent.parent.tag=="Slayer") && (Player.CurrentWeaponName.Get()=="4Mace") )
+					if( ((gameObject.transform.parent.parent.parent.tag=="Slayer") ||(gameObject.transform.parent.parent.parent.tag=="SlayerPlayer"))  && (Player.CurrentWeaponName.Get()=="3Mace") )
 					{
 						if(hit.collider.transform.tag=="Vampire")
 						{

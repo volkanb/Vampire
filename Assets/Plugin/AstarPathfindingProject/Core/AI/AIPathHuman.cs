@@ -542,7 +542,7 @@ public class AIPathHuman : MonoBehaviour {
 				GetComponent<log>().EnterLog("Dead");
 			}
 			else if(targetPos.magnitude<5f) {Player.Attack.TryStop(); state=State.RESCUED; GetComponent<log>().EnterLog("Rescued");}
-			else if(target.GetComponent<AIPathSlayer>().isAttacking==true)
+			else if((target.tag=="Slayer") &&(target.GetComponent<AIPathSlayer>().isAttacking==true))
 			{
 				alignMe();
 				//transform.LookAt(target.GetComponent<AIPathSlayer>().target.transform.position);
@@ -569,6 +569,35 @@ public class AIPathHuman : MonoBehaviour {
 			}
 			else if((target.tag=="Slayer") && (target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1))
 			{
+
+				if((vampireTarget!=null) && (vampireTarget.tag=="Vampire") && (vampireTarget.GetComponent<AIPathVampire>().isDead==false))
+				{
+					target=vampireTarget.transform;
+					Player.Attack.TryStop();
+					isFollowing=false;
+					state=State.DEFEND;
+					GetComponent<log>().EnterLog("Defend");
+				}
+				else if((vampireTarget!=null) && (vampireTarget.tag=="VampirePlayer") && (vampireTarget.GetComponent<vp_PlayerDamageHandler2>().isDead==false))
+				{
+					target=vampireTarget.transform;
+					Player.Attack.TryStop();
+					isFollowing=false;
+					state=State.DEFEND;
+					GetComponent<log>().EnterLog("Defend");
+				}
+				else 
+				{
+					Player.Attack.TryStop();
+					target=gameObject.transform;
+					isFollowing=false;
+					state=State.IDLE;
+					GetComponent<log>().EnterLog("Idle");
+				}
+			}
+			else if((target.tag=="SlayerPlayer") && ((isFollowing==false) || (target.GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth<1)))
+			{
+				
 				if((vampireTarget!=null) && (vampireTarget.tag=="Vampire") && (vampireTarget.GetComponent<AIPathVampire>().isDead==false))
 				{
 					target=vampireTarget.transform;
@@ -597,31 +626,35 @@ public class AIPathHuman : MonoBehaviour {
 			else
 			{
 				Player.Attack.TryStop();
-				if (!canMove) { return; }
-				
-				Vector3 dir = CalculateVelocity(GetFeetPosition());
-				
-				//Rotate towards targetDirection (filled in by CalculateVelocity)
-				if (targetDirection != Vector3.zero) 
+				Vector3 pos=target.position-transform.position;	
+				if(pos.magnitude>=1.9f)
 				{
-					RotateTowards (targetDirection);
-				}
-				
-				if (navController != null) 
-				{
-					navController.SimpleMove (GetFeetPosition(),dir);
-				} 
-				else if (controller != null) 
-				{
-					controller.SimpleMove (dir);
-				} 
-				else if (rigid != null) 
-				{
-					rigid.AddForce (dir);
-				} 
-				else 
-				{
-					transform.Translate (dir*Time.deltaTime, Space.World);
+					if (!canMove) { return; }
+					
+					Vector3 dir = CalculateVelocity(GetFeetPosition());
+					
+					//Rotate towards targetDirection (filled in by CalculateVelocity)
+					if (targetDirection != Vector3.zero) 
+					{
+						RotateTowards (targetDirection);
+					}
+					
+					if (navController != null) 
+					{
+						navController.SimpleMove (GetFeetPosition(),dir);
+					} 
+					else if (controller != null) 
+					{
+						controller.SimpleMove (dir);
+					} 
+					else if (rigid != null) 
+					{
+						rigid.AddForce (dir);
+					} 
+					else 
+					{
+						transform.Translate (dir*Time.deltaTime, Space.World);
+					}
 				}
 
 			}
@@ -700,6 +733,10 @@ public class AIPathHuman : MonoBehaviour {
 			break;
 
 			case State.RESCUED:
+			if(target.tag=="SlayerPlayer")
+			{
+				target.GetComponent<vp_PlayerDamageHandler2>().target=null;
+			}
 			target=gameObject.transform;
 			isRescued=true;
 			Player.Attack.TryStop();
@@ -760,7 +797,14 @@ public class AIPathHuman : MonoBehaviour {
 				state=State.DEAD;
 				GetComponent<log>().EnterLog("Dead");
 			}
-			else if(target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
+			else if((target.tag!="SlayerPlayer") &&(target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1))
+			{
+				Player.Attack.TryStop();
+				target=transform;
+				state=State.POSSESSED;
+				GetComponent<log>().EnterLog("Possessed");
+			}
+			else if((target.tag=="SlayerPlayer") &&(target.GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth<1))
 			{
 				Player.Attack.TryStop();
 				target=transform;
@@ -860,7 +904,7 @@ public class AIPathHuman : MonoBehaviour {
 		}
 		else
 		{
-			if( (other.tag=="Slayer") || (other.tag=="Human") || (other.tag=="ArmedHuman") )
+			if( (other.tag=="Slayer") || (other.tag=="Human") || (other.tag=="ArmedHuman") || (other.tag=="SlayerPlayer"))
 			{
 				target=other.gameObject.transform;
 				state=State.ATTACK;

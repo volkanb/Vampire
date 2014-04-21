@@ -40,7 +40,7 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 	public GameObject capsule;
 	bool isKeyHolding;
 	float channelingTime;
-	GameObject target;
+	public GameObject target;
 
 	GameObject getClosestHuman()
 	{
@@ -63,8 +63,42 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 		return target;
 	}
 
+	GameObject getClosestHuman1()
+	{
+		ArrayList myList = new ArrayList();
+		GameObject[] targets;
+		GameObject[] targets2;
+		targets=GameObject.FindGameObjectsWithTag("Human");
+		targets2=GameObject.FindGameObjectsWithTag("ArmedHuman");
+		//add armed human
+		target=null;
+		//float distance=Mathf.Infinity;
+		foreach (GameObject go in targets)
+		{
+			Vector3 diff=go.transform.position-transform.position;
+			if((diff.magnitude<=1.9f) && (go.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0) 
+			&& (go.GetComponent<AIPathHuman>().isRescued==false) && (go.GetComponent<AIPathHuman>().isPossessed==false) && (go.GetComponent<AIPathHuman>().isFollowing==false))
+			{
+				target=go;
+				break;
+			}
+		}	
+		foreach (GameObject go in targets2)
+		{
+			Vector3 diff=go.transform.position-transform.position;
+			if((diff.magnitude<=1.9f) && (go.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0) 
+			&& (go.GetComponent<AIPathHuman>().isRescued==false) && (go.GetComponent<AIPathHuman>().isPossessed==false) && (go.GetComponent<AIPathHuman>().isFollowing==false))
+			{
+				target=go;
+				break;
+			}
+		}
+		return target;
+	}
+
 	void Start() 
 	{
+		target=null;
 		netwEvents = gameObject.GetComponent<NetworkEvents> ();
 	}
 
@@ -138,24 +172,46 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 	public override void Die()
 	{
 //		Debug.LogError("IM DEAD");
-		if(isSet==false)
+		if(gameObject.tag=="VampirePlayer")
 		{
-			downTime=Time.time;
-			isSet=true;
-			capsule.animation.Play("death");
+			if(isSet==false)
+			{
+				downTime=Time.time;
+				isSet=true;
+				capsule.animation.Play("death");
+			}
+			isDown=true;
+
+			if (!enabled || !vp_Utility.IsActive(gameObject))
+				return;
+
+			if (DeathEffect != null)
+				Object.Instantiate(DeathEffect, transform.position, transform.rotation);
+			
+			m_Player.SetWeapon.Argument = 0;
+			m_Player.SetWeapon.Start();
+			m_Player.Dead.Start();
+			m_Player.AllowGameplayInput.Set(false);
 		}
-		isDown=true;
 
-		if (!enabled || !vp_Utility.IsActive(gameObject))
-			return;
+		else
+		{
+			capsule.animation.Play("death");
 
-		if (DeathEffect != null)
-			Object.Instantiate(DeathEffect, transform.position, transform.rotation);
-		
-		m_Player.SetWeapon.Argument = 0;
-		m_Player.SetWeapon.Start();
-		m_Player.Dead.Start();
-		m_Player.AllowGameplayInput.Set(false);
+			if (!enabled || !vp_Utility.IsActive(gameObject))
+				return;
+			
+			if (DeathEffect != null)
+				Object.Instantiate(DeathEffect, transform.position, transform.rotation);
+			
+			m_Player.SetWeapon.Argument = 0;
+			m_Player.SetWeapon.Start();
+			m_Player.Dead.Start();
+			m_Player.AllowGameplayInput.Set(false);
+			
+			if (Respawns)
+				vp_Timer.In(Random.Range(MinRespawnTime, MaxRespawnTime), Respawn);
+		}
 
 	}
 
@@ -274,41 +330,74 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 		if (m_Player.Dead.Active && Time.timeScale < 1.0f)
 			vp_TimeUtility.FadeTimeScale(1.0f, 0.05f);
 
-		if ((Respawns) && (isDead==false) && (isDown==true) && (Time.time-downTime>=4.0f))
+		if(gameObject.tag=="VampirePlayer")
 		{
-			Respawn();
-		}
-
-		else if( (Input.GetKey(KeyCode.E)) && (isKeyHolding==false) && (getClosestHuman()!=null))
-		{
-			target=getClosestHuman();
-			isKeyHolding=true;
-			channelingTime=Time.time;
-		}
-		else if( (Input.GetKey(KeyCode.E)) &&  (isKeyHolding==true) && ((target.transform.position-transform.position).magnitude>1.9f) )
-		{
-			target.GetComponent<AIPathHuman>().isChanneling=false;
-			isKeyHolding=false;
-			target=null;
-		}
-		else if( (Input.GetKey(KeyCode.E)) && (Time.time-channelingTime>4f) &&  (isKeyHolding==true) && ((target.transform.position-transform.position).magnitude<=1.9f) )
-		{
-			target.GetComponent<AIPathHuman>().isPossessed=true;
-		}
-		else if( (Input.GetKey(KeyCode.E)) && (isKeyHolding==true) && ((target.transform.position-transform.position).magnitude<=1.9f))
-		{
-			target.GetComponent<AIPathHuman>().isChanneling=true;
-			if(GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth<GetComponent<vp_PlayerDamageHandler2>().MaxHealth)
+			if ((Respawns) && (isDead==false) && (isDown==true) && (Time.time-downTime>=4.0f))
 			{
-				GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth+=0.015f;
+				Respawn();
 			}
-		}
 
-		else if ((Input.GetKeyUp(KeyCode.E)) && (isKeyHolding==true))
+			else if( (Input.GetKey(KeyCode.E)) && (isKeyHolding==false) && (getClosestHuman()!=null))
+			{
+				target=getClosestHuman();
+				isKeyHolding=true;
+				channelingTime=Time.time;
+			}
+			else if( (Input.GetKey(KeyCode.E)) &&  (isKeyHolding==true) && ((target.transform.position-transform.position).magnitude>1.9f) )
+			{
+				target.GetComponent<AIPathHuman>().isChanneling=false;
+				isKeyHolding=false;
+				target=null;
+			}
+			else if( (Input.GetKey(KeyCode.E)) && (Time.time-channelingTime>4f) &&  (isKeyHolding==true) && ((target.transform.position-transform.position).magnitude<=1.9f) )
+			{
+				target.GetComponent<AIPathHuman>().isPossessed=true;
+				target.GetComponent<vp_DamageHandler2>().capsule.renderer.material.color=Color.magenta;
+			}
+			else if( (Input.GetKey(KeyCode.E)) && (isKeyHolding==true) && ((target.transform.position-transform.position).magnitude<=1.9f))
+			{
+				target.GetComponent<AIPathHuman>().isChanneling=true;
+				if(GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth<GetComponent<vp_PlayerDamageHandler2>().MaxHealth)
+				{
+					GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth+=0.015f;
+				}
+			}
+
+			else if ((Input.GetKeyUp(KeyCode.E)) && (isKeyHolding==true))
+			{
+				target.GetComponent<AIPathHuman>().isChanneling=false;
+				isKeyHolding=false;
+				target=null;
+			}
+
+		}
+		else if(gameObject.tag=="SlayerPlayer")
 		{
-			target.GetComponent<AIPathHuman>().isChanneling=false;
-			isKeyHolding=false;
-			target=null;
+			if( (Input.GetKeyDown(KeyCode.E)) &&(target!=null) && ((target.transform.position-transform.position).magnitude<=1.9f) )
+			{
+				target.GetComponent<AIPathHuman>().isFollowing=false;
+				target.GetComponent<AIPathHuman>().target=gameObject.transform;
+				target=null;
+			}
+
+			else if( (Input.GetKeyDown(KeyCode.E)) && (getClosestHuman1()!=null) )
+			{
+				target=getClosestHuman1();
+				if(((target.transform.position-transform.position).magnitude<=1.9f) && (target.GetComponent<AIPathHuman>().isFollowing==false))
+				{
+					vp_FPPlayerEventHandler Human =(vp_FPPlayerEventHandler)target.transform.root.GetComponentInChildren(typeof(vp_FPPlayerEventHandler));
+					Human.SetWeapon.TryStart(1);
+					target.GetComponent<AIPathHuman>().isArmed=true;
+					target.tag="ArmedHuman";
+					target.GetComponent<vp_DamageHandler2>().capsule.renderer.material.color=Color.cyan;
+					target.GetComponent<AIPathHuman>().isFollowing=true;
+					target.GetComponent<AIPathHuman>().target=gameObject.transform;
+				}
+
+			}
+
+
+
 		}
 
 

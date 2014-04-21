@@ -654,7 +654,13 @@ public class AIPathVampire : MonoBehaviour {
 				state=State.DOWN;
 				GetComponent<log>().EnterLog("Down");
 			}
-			else if(target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
+			else if((target.tag=="Slayer") && (target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1))
+			{
+				Player.Attack.TryStop();
+				state=State.SEARCH;
+				GetComponent<log>().EnterLog("Search");
+			}
+			else if((target.tag=="SlayerPlayer") && (target.GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth<1))
 			{
 				Player.Attack.TryStop();
 				state=State.SEARCH;
@@ -744,6 +750,7 @@ public class AIPathVampire : MonoBehaviour {
 			else if(Time.time-channelingTime>4f)
 			{
 				target.GetComponent<AIPathHuman>().isPossessed=true;
+				target.GetComponent<vp_DamageHandler2>().capsule.renderer.material.color=Color.magenta;
 			}
 			else
 			{
@@ -781,7 +788,15 @@ public class AIPathVampire : MonoBehaviour {
 	void OnTriggerEnter(Collider other)
 	{
 
-		if( ((other.tag=="Slayer") || (other.tag=="ArmedHuman")) && (other.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0))
+		if( ((other.tag=="Slayer") || (other.tag=="ArmedHuman")) && (other.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0) && (isDown==false))
+		{
+			if(target!=null){if(target.tag=="Human"){target.GetComponent<AIPathHuman>().isChanneling=false;}}
+			target=other.gameObject.transform;
+			Player.Attack.TryStop();
+			state=State.ATTACK; 
+			GetComponent<log>().EnterLog("Attack");
+		}
+		else if( (other.tag=="SlayerPlayer") && (other.GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth>0) && (isDown==false))
 		{
 			if(target!=null){if(target.tag=="Human"){target.GetComponent<AIPathHuman>().isChanneling=false;}}
 			target=other.gameObject.transform;

@@ -448,7 +448,7 @@ public class AIPathSlayer : MonoBehaviour {
 			}
 			else if((zonePos.magnitude>6f) && (target.tag=="zone"))
 			{
-				Player.SetWeapon.TryStart(3);
+				Player.SetWeapon.TryStart(2);
 				if(Player.CurrentWeaponAmmoCount.Get()<2)
 				{
 					Player.Reload.TryStart();
@@ -507,7 +507,7 @@ public class AIPathSlayer : MonoBehaviour {
 			}
 			else
 			{
-				Player.SetWeapon.TryStart(3);
+				Player.SetWeapon.TryStart(2);
 				if(Player.CurrentWeaponAmmoCount.Get()<2)
 				{
 					Player.Reload.TryStart();
@@ -550,6 +550,7 @@ public class AIPathSlayer : MonoBehaviour {
 					isEscorting=true;
 					target.GetComponent<AIPathHuman>().isArmed=true;
 					target.tag="ArmedHuman";
+					target.GetComponent<vp_DamageHandler2>().capsule.renderer.material.color=Color.cyan;
 					target.GetComponent<AIPathHuman>().isFollowing=true;
 					target.GetComponent<AIPathHuman>().target=gameObject.transform;
 					currentlyEscorting=target.gameObject;	
@@ -578,7 +579,7 @@ public class AIPathSlayer : MonoBehaviour {
 			}
 			else
 			{
-				Player.SetWeapon.TryStart(3);
+				Player.SetWeapon.TryStart(2);
 				if(Player.CurrentWeaponAmmoCount.Get()<2)
 				{
 					Player.Reload.TryStart();
@@ -811,7 +812,7 @@ public class AIPathSlayer : MonoBehaviour {
 				}
 				else if(pos.magnitude<stakeRadius)
 				{
-					Player.SetWeapon.TryStart(4);
+					Player.SetWeapon.TryStart(3);
 					//transform.LookAt(target.transform.position);
 					alignMe();
 					Player.Attack.TryStart();
@@ -833,6 +834,7 @@ public class AIPathSlayer : MonoBehaviour {
 		else if( (other.tag=="PossessedHuman") && (other.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0)) {target=other.gameObject.transform; Player.Attack.TryStop(); state=State.DEFEND; GetComponent<log>().EnterLog("Defend");}
 		else if((other.tag=="VampirePlayer") && (other.GetComponent<vp_PlayerDamageHandler2>().isDead==false)) {target=other.gameObject.transform; Player.Attack.TryStop(); state=State.DEFEND; GetComponent<log>().EnterLog("Defend");}
 		else if((other.tag=="Human") && (state==State.SEARCH) && (other.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0)) {target=other.gameObject.transform; state=State.GOTOHUMAN; GetComponent<log>().EnterLog("GotoHuman");} 
+		else if((other.tag=="ArmedHuman") && (other.GetComponent<AIPathHuman>().isFollowing==false)&& (state==State.SEARCH) && (other.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0)) {target=other.gameObject.transform; state=State.GOTOHUMAN; GetComponent<log>().EnterLog("GotoHuman");} 
 	}
 	
 	/** Point to where the AI is heading.

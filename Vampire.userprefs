@@ -1,18 +1,14 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Plugin\AstarPathfindingProject\Core\AI\AIPathVampire.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Plugin\UltimateFPS\Scripts\Gameplay\Combat\vp_PlayerDamageHandler2.cs">
     <Files>
-      <File FileName="Assets\Plugin\AstarPathfindingProject\Core\AI\AIPathHuman.cs" Line="757" Column="22" />
-      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Gameplay\Combat\vp_PlayerDamageHandler2.cs" Line="277" Column="85" />
-      <File FileName="Assets\Plugin\AstarPathfindingProject\Core\AI\AIPathSlayer.cs" Line="621" Column="23" />
-      <File FileName="Assets\Plugin\AstarPathfindingProject\Core\AI\AIPathVampire.cs" Line="784" Column="123" />
-      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Gameplay\Combat\vp_DamageHandler2.cs" Line="1" Column="1" />
-      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Gameplay\Combat\vp_PlayerDamageHandler.cs" Line="1" Column="1" />
-      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Gameplay\Combat\vp_HitscanBullet.cs" Line="1" Column="1" />
+      <File FileName="Assets\Plugin\AstarPathfindingProject\Core\AI\AIPathSlayer.cs" Line="553" Column="6" />
+      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Gameplay\Combat\vp_PlayerDamageHandler2.cs" Line="200" Column="4" />
+      <File FileName="Assets\Plugin\Other\LayerChanger.cs" Line="1" Column="1" />
+      <File FileName="Assets\Plugin\AstarPathfindingProject\Core\AI\AIPathVampire.cs" Line="753" Column="92" />
       <File FileName="Assets\Plugin\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPWeaponMeleeAttack.cs" Line="1" Column="1" />
-      <File FileName="Assets\Plugin\AstarPathfindingProject\Core\AI\AIPathHuman.cs" Line="1" Column="1" />
-      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Gameplay\Items\vp_SimpleInventory.cs" Line="201" Column="13" />
-      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPWeaponHandler.cs" Line="1" Column="1" />
+      <File FileName="Assets\Plugin\AstarPathfindingProject\Core\AI\AIPathHuman.cs" Line="883" Column="24" />
+      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Gameplay\Combat\vp_DamageHandler2.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
