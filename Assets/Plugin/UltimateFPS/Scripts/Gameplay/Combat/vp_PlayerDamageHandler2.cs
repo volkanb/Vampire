@@ -20,6 +20,9 @@ using System.Collections.Generic;
 public class vp_PlayerDamageHandler2 : vp_DamageHandler
 {
 
+	public bool is_Client = false;
+	public bool RPCDamageEnable = false;
+
 	public bool sendHealth = false;
 	private NetworkEvents netwEvents;
 
@@ -146,22 +149,29 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 	/// </summary>
 	public override void Damage(float damage)
 	{
-		if (!enabled)
-			return;
-
-		if (!vp_Utility.IsActive(gameObject))
-			return;
-
-		base.Damage(damage);
-
-		m_Player.HUDDamageFlash.Send(damage);
-
-
-		// FOLLOWING CODES MAKE SURE THAT PROXIES AND OWNERS SYNC HEALTH WITH SERVER
-		if (sendHealth && netwEvents != null ) 
+		if (RPCDamageEnable) 
 		{
-			netwEvents.DamageOthers(damage);
+
+			
+			if (!enabled)
+				return;
+			
+			if (!vp_Utility.IsActive(gameObject))
+				return;
+			
+			base.Damage(damage);
+			
+			m_Player.HUDDamageFlash.Send(damage);
+
+
+
+			if( is_Client ) 
+				RPCDamageEnable = false;
+			else
+				netwEvents.DamageOthers(damage);
+
 		}
+
 	}
 
 	/// <summary>

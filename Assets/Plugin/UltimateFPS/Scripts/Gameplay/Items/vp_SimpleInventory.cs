@@ -198,7 +198,7 @@ public class vp_SimpleInventory : MonoBehaviour
 		InventoryItemStatus type;
 
 		if (!ItemStatusDictionary.TryGetValue(name, out type))
-			Debug.Log("Error: (" + this + "). Unknown item type: '" + name + "'.");
+			Debug.LogError("Error: (" + this + "). Unknown item type: '" + name + "'.");
 
 		return type;
 	

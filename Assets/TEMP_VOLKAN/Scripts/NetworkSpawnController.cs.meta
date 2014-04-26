@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: a3959c01e4f7f6b4da8afcdc24a2ce20
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - SlayerProxyPref: {instanceID: 0}
+  - SlayerOwnerPref: {instanceID: 0}
+  - SlayerCreatorPref: {instanceID: 0}
+  - SlayerSpawnLocation: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 

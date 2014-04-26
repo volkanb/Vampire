@@ -94,12 +94,13 @@ public class vp_PlayerDamageHandler : vp_DamageHandler
 
 		m_Player.HUDDamageFlash.Send(damage);
 
-
+		/*
 		// FOLLOWING CODES MAKE SURE THAT PROXIES AND OWNERS SYNC HEALTH WITH SERVER
 		if (sendHealth && netwEvents != null ) 
 		{
 			netwEvents.DamageOthers(damage);
 		}
+		*/
 	}
 
 	/// <summary>

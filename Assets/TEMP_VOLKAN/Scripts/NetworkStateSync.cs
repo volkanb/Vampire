@@ -7,34 +7,34 @@ public class NetworkStateSync : uLink.MonoBehaviour
 	//---------------------------------------------------------------------------------
 	private double serverLastTimestamp = 0;
 	private bool isInitiaized = false;
-
+	
 	private Vector3 lastPos;
 	private Vector3 lastVel;
 	private Vector2 lastRot;
-
+	
 	private Vector3 targetPos;
 	private Vector3 targetVel;
 	private Vector2 targetRot;
-
+	
 	private double lastTimestamp;
 	private double targetTimestamp;
-
+	
 	private float timeToBeCovered;
 	private float timeCovered;
-
+	
 	private float fraction;
 	//---------------------------------------------------------------------------------
-
+	
 	public float failRadius = 0.2f;
 	
 	// EVENT HANDLER
 	vp_FPPlayerEventHandler m_Player;
-
+	
 	// CHARACTER CONTROLLER
 	private CharacterController character;
-
-
-
+	
+	
+	
 	protected virtual void OnEnable()
 	{
 		if (m_Player != null)
@@ -45,37 +45,37 @@ public class NetworkStateSync : uLink.MonoBehaviour
 		if (m_Player != null)
 			m_Player.Unregister(this);
 	}
-
-
-
+	
+	
+	
 	void Awake()
 	{
 		// GETTING THE PLAYER'S EVENT HANDLER
 		m_Player = transform.GetComponent<vp_FPPlayerEventHandler>();
-
+		
 		// GETTING THE PLAYER'S CHARACTER CONTROLLER
 		character = GetComponent<CharacterController>();
-	
+		
 	}
-
-
-
+	
+	
+	
 	void Start()
 	{
 		// Initialization of last/target pos, rot, vel, timestamp values
 		lastPos = m_Player.Position.Get();
 		lastVel = m_Player.Velocity.Get();
 		lastRot = m_Player.Rotation.Get();
-
+		
 		targetPos = lastPos;
 		targetRot = lastRot;
 		targetVel = lastVel;
-
+		
 		lastTimestamp = 0;
 		targetTimestamp = 0;
-
-
-
+		
+		
+		
 		if (networkView.viewID == uLink.NetworkViewID.unassigned) return;
 		
 		isInitiaized = true;
@@ -115,8 +115,8 @@ public class NetworkStateSync : uLink.MonoBehaviour
 		}
 		
 	}
-
-
+	
+	
 	
 	void uLink_OnSerializeNetworkView(uLink.BitStream stream, uLink.NetworkMessageInfo info)
 	{
@@ -140,12 +140,12 @@ public class NetworkStateSync : uLink.MonoBehaviour
 			UpdateState(pos, vel, rot, inpMov, info.timestamp);
 		}
 	}
-
-
-
+	
+	
+	
 	private void UpdateState(Vector3 pos, Vector3 vel, Vector2 rot, Vector2 inpMov, double timestamp)
 	{
-	
+		
 		/*
 		 * 
 		 * // set edilen değerleri lerp yapma işi
@@ -163,29 +163,29 @@ public class NetworkStateSync : uLink.MonoBehaviour
 		timeToBeCovered = (float)(targetTimestamp - lastTimestamp);
 		timeCovered = 0f;
 		*/
-
+		
 		// rotation lerp için 
 		lastRot = targetRot;
 		lastPos = targetPos;
-
+		
 		lastTimestamp = targetTimestamp;
-
+		
 		targetRot = rot;
 		targetPos = pos;
-
+		
 		targetTimestamp = timestamp;
-
+		
 		timeToBeCovered = (float)(targetTimestamp - lastTimestamp);
-
+		
 		timeCovered = 0f;
-
-
+		
+		
 		m_Player.InputMoveVector.Set (inpMov);
-
-
+		
+		
 	}
-
-
+	
+	
 	
 	void SendToServer()
 	{
@@ -194,8 +194,8 @@ public class NetworkStateSync : uLink.MonoBehaviour
 		// an auth server or non-auth server. Both can handle this RPC!
 		networkView.UnreliableRPC("Move", uLink.NetworkPlayer.server, m_Player.Position.Get() , m_Player.Velocity.Get(), m_Player.Rotation.Get(), m_Player.InputMoveVector.Get() );
 	}
-
-
+	
+	
 	void Update()
 	{
 		/*
@@ -211,30 +211,30 @@ public class NetworkStateSync : uLink.MonoBehaviour
 
 		}
 		*/
-
-
+		
+		
 		if (!networkView.isOwner) 
 		{
 			// FOLLOWING CODES HANDLE THE SMOOTH ROTATION OF SERVER AND PROXIES
 			timeCovered += Time.deltaTime;
 			fraction = (timeCovered / timeToBeCovered);
-
+			
 			m_Player.Rotation.Set (Vector2.Lerp (lastRot, targetRot, fraction));
-
-
+			
+			
 			// IF PLAYER DIVERGES FROM SERVER POSITION, SNAP THE POSITION
 			if (Vector3.Distance(m_Player.Position.Get(), targetPos) >= failRadius) 
 			{
 				m_Player.Position.Set( targetPos );
 				Debug.Log("SNAPPING");
 			}
-
-
+			
+			
 		}
-
-
+		
+		
 	}
-
+	
 	
 	[RPC]
 	void Move(Vector3 pos, Vector3 vel, Vector2 rot, Vector2 inpMov, uLink.NetworkMessageInfo info)
@@ -254,5 +254,5 @@ public class NetworkStateSync : uLink.MonoBehaviour
 		
 		UpdateState(pos, vel, rot, inpMov, info.timestamp);
 	}
-
+	
 }

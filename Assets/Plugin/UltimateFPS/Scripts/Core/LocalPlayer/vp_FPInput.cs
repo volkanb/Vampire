@@ -105,9 +105,9 @@ public class vp_FPInput : MonoBehaviour
 	void InputInteract()
 	{
 
-		//if (Input.GetButtonUp("Interact"))	// suggested input axis
-		if(Input.GetKeyDown(KeyCode.F))
-			Player.Interact.TryStart();
+		if (Input.GetButtonUp("Interact"))	// suggested input axis
+		//if (Input.GetKeyDown (KeyCode.F)) 
+			Player.Interact.TryStart ();
 		else
 			Player.Interact.TryStop();
 

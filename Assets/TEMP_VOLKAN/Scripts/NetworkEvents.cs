@@ -6,8 +6,9 @@ public class NetworkEvents: uLink.MonoBehaviour
 	// EVENT HANDLER
 	vp_FPPlayerEventHandler m_Player;
 
-	// DAMAGE HANDLER
-	private vp_PlayerDamageHandler damHandler = null;
+	// DAMAGE HANDLER WHiCH HAS THE DAMAGE() FUNC iN iT
+	public vp_PlayerDamageHandler2 PlayerDamageHandler = null;
+	public vp_DamageHandler2 DamageHandler = null;
 	
 	
 	protected virtual void OnEnable()
@@ -25,15 +26,17 @@ public class NetworkEvents: uLink.MonoBehaviour
 	{
 		// GETTING THE PLAYER'S EVENT HANDLER
 		m_Player = transform.GetComponent<vp_FPPlayerEventHandler>();
-	}
 
-	void Start()
-	{
-		damHandler = GetComponent<vp_PlayerDamageHandler> ();
+		// GETTING THE PLAYER'S DAMAGE HANDLER
+		DamageHandler = transform.GetComponent<vp_DamageHandler2>();
+
+		if( DamageHandler == null )
+			PlayerDamageHandler = transform.GetComponent<vp_PlayerDamageHandler2>();
+
 	}
 
 	//----------------------------------------------------------------------------------------------------------
-	// Following codes syncs owner's attacks with server and other proxies
+	// Following codes syncs owner's attacks with server and other proxies, also sets the ammo count on owner and proxies
 	void OnStart_Attack()
 	{
 		if (networkView.isOwner) 
@@ -52,17 +55,10 @@ public class NetworkEvents: uLink.MonoBehaviour
 	}
 	[RPC]
 	void AttackStopServer(uLink.NetworkMessageInfo info)
-	{		
+	{	
 		m_Player.Attack.TryStop();
 		networkView.UnreliableRPC("AttackStopProxies", uLink.RPCMode.OthersExceptOwner);
-
-		// RESEND AMMO COUNT FROM SERVER TO OWNER IN ORDER TO MAKE TWO EQUAL
-		networkView.UnreliableRPC("SetAmmoOwner", info.sender, m_Player.CurrentWeaponAmmoCount.Get());
-	}
-	[RPC]
-	void SetAmmoOwner(int ammoCount, uLink.NetworkMessageInfo info)
-	{
-		m_Player.CurrentWeaponAmmoCount.Set (ammoCount);
+		networkView.UnreliableRPC("SetAmmo", uLink.RPCMode.Others, m_Player.CurrentWeaponAmmoCount.Get());
 	}
 	[RPC]
 	void AttackStartProxies(uLink.NetworkMessageInfo info)
@@ -73,6 +69,12 @@ public class NetworkEvents: uLink.MonoBehaviour
 	void AttackStopProxies(uLink.NetworkMessageInfo info)
 	{		
 		m_Player.Attack.TryStop();
+	}
+
+	[RPC]
+	void SetAmmo( int ammoCount, uLink.NetworkMessageInfo info )
+	{
+		m_Player.CurrentWeaponAmmoCount.Set(ammoCount);
 	}
 	//----------------------------------------------------------------------------------------------------------
 	
@@ -263,28 +265,75 @@ public class NetworkEvents: uLink.MonoBehaviour
 	}
 	//----------------------------------------------------------------------------------------------------------
 
+
 	//----------------------------------------------------------------------------------------------------------
-	// Following codes syncs health with server
-	public void DamageOthers(float damage)
+	// Following codes syncs owner's interact with server
+	void OnStart_Interact()
 	{
-		networkView.UnreliableRPC("DamageFromServer", uLink.RPCMode.Others, damage, m_Player.Health.Get());
+		if (networkView.isOwner) 
+			networkView.UnreliableRPC("InteractStartServer", uLink.NetworkPlayer.server);
+	}
+	void OnStop_Interact()
+	{
+		if (networkView.isOwner) 
+			networkView.UnreliableRPC("InteractStopServer", uLink.NetworkPlayer.server);
 	}
 	[RPC]
-	void DamageFromServer(float damage, float health, uLink.NetworkMessageInfo info)
-	{	
-		float damageToBeDone = m_Player.Health.Get() - health;
-
-		if (damageToBeDone <= 1)
-			damHandler.Damage (damageToBeDone);
-		else
-			Debug.LogError (damageToBeDone.ToString() + " IS THE DAMAGETOBEDONE ," + health.ToString() + " IS THE HEALTH COMıNG FROM SERVER,  " + m_Player.Health.Get() + " IS OUR HEALTH ");
-
-
-
+	void InteractStartServer(uLink.NetworkMessageInfo info)
+	{
+		m_Player.Interact.TryStart();
 	}
-	// DAMAGE HATALIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII 
+	[RPC]
+	void InteractStopServer(uLink.NetworkMessageInfo info)
+	{		
+		m_Player.Interact.TryStop();
+	}
 	//----------------------------------------------------------------------------------------------------------
 
 
 
+	//----------------------------------------------------------------------------------------------------------
+	// Following codes syncs server's damage with others
+	public void DamageOthers(float damage)
+	{ 
+		networkView.UnreliableRPC("DamageSync", uLink.RPCMode.Others, damage);
+		Debug.Log ("DAMAGE OTHERS CALLED WITH DAMAGE : " + damage);
+	}
+
+	[RPC]
+	public void DamageSync(float damage, uLink.NetworkMessageInfo info)
+	{
+		if ( DamageHandler != null )
+		{
+			// AI KULLANANLAR İÇİN DAMAGEHANDLER2.cs'yi KURCALA !!!!!!!!
+		}
+		else
+		{
+			PlayerDamageHandler.RPCDamageEnable = true;
+			PlayerDamageHandler.Damage( damage );
+		}
+
+	}
+
+	//----------------------------------------------------------------------------------------------------------
+
+	//----------------------------------------------------------------------------------------------------------
+	// Following codes syncs server's clip count with others
+	public void SupplySpotStart()
+	{ 
+		networkView.UnreliableRPC("SupplySpotStartOthers", uLink.RPCMode.Others);
+	}
+	
+	[RPC]
+	void SupplySpotStartOthers(uLink.NetworkMessageInfo info)
+	{
+		int toAdd = 10 - m_Player.GetItemCount.Send("AmmoClip");
+		
+		m_Player.AddItem.Try(new object[] { "AmmoClip", toAdd });
+
+		m_Player.Health.Set(100f);
+
+	}
+	
+	//----------------------------------------------------------------------------------------------------------
 }
