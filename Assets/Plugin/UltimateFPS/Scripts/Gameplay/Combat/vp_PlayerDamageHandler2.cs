@@ -20,10 +20,13 @@ using System.Collections.Generic;
 public class vp_PlayerDamageHandler2 : vp_DamageHandler
 {
 
+	private float prevDamage;
+
 	public bool is_Client = false;
 	public bool RPCDamageEnable = false;
 
-	public bool sendHealth = false;
+	// GETTING THE COMPONENTS OF STATE SYNC AND EVENTS
+	private NetworkStateSync netwStateSync;
 	private NetworkEvents netwEvents;
 
 	private vp_FPPlayerEventHandler m_Player = null;
@@ -103,6 +106,8 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 	{
 		target=null;
 		netwEvents = gameObject.GetComponent<NetworkEvents> ();
+		netwStateSync = gameObject.GetComponent<NetworkStateSync> ();
+		prevDamage = 0f;
 	}
 
 
@@ -152,23 +157,39 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 		if (RPCDamageEnable) 
 		{
 
+			if( ( damage - (float)Mathf.FloorToInt(damage) ) > 0 )
+			{
+				Debug.Log("DAMAGE FAIL. REVERSING DAMAGE. FAILED DAMAGE QUATITY IS : " + damage);
+				damage = prevDamage;
+			}
+
 			
 			if (!enabled)
 				return;
 			
 			if (!vp_Utility.IsActive(gameObject))
 				return;
-			
-			base.Damage(damage);
-			
-			m_Player.HUDDamageFlash.Send(damage);
+
 
 
 
 			if( is_Client ) 
 				RPCDamageEnable = false;
 			else
-				netwEvents.DamageOthers(damage);
+			{
+				// FOLLOWING CODE INVOKES DAMAGE TO OTHERS BY PASSING IT AT THE SEND RATE
+				Debug.Log("DAMAGE IS : " + damage);
+				netwStateSync.damageToBeDone += damage;
+				//netwEvents.DamageOthers(damage);
+				
+				prevDamage = damage;
+				
+			}
+
+
+			base.Damage(damage);
+			
+			m_Player.HUDDamageFlash.Send(damage);
 
 		}
 
@@ -202,6 +223,10 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 			m_Player.SetWeapon.Start();
 			m_Player.Dead.Start();
 			m_Player.AllowGameplayInput.Set(false);
+
+			if (Respawns)
+				vp_Timer.In(Random.Range(MinRespawnTime, MaxRespawnTime), Respawn);
+
 		}
 
 		else
@@ -221,6 +246,7 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 			
 			if (Respawns)
 				vp_Timer.In(Random.Range(MinRespawnTime, MaxRespawnTime), Respawn);
+
 		}
 
 	}
@@ -347,24 +373,24 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 				Respawn();
 			}
 
-			else if( (Input.GetKey(KeyCode.E)) && (isKeyHolding==false) && (getClosestHuman()!=null))
+			else if( ( netwEvents.actionStatus == 1 && is_Client == false ) && (isKeyHolding==false) && (getClosestHuman()!=null))
 			{
 				target=getClosestHuman();
 				isKeyHolding=true;
 				channelingTime=Time.time;
 			}
-			else if( (Input.GetKey(KeyCode.E)) &&  (isKeyHolding==true) && ((target.transform.position-transform.position).magnitude>1.9f) )
+			else if( ( netwEvents.actionStatus == 1 && is_Client == false ) &&  (isKeyHolding==true) && ((target.transform.position-transform.position).magnitude>1.9f) )
 			{
 				target.GetComponent<AIPathHuman>().isChanneling=false;
 				isKeyHolding=false;
 				target=null;
 			}
-			else if( (Input.GetKey(KeyCode.E)) && (Time.time-channelingTime>4f) &&  (isKeyHolding==true) && ((target.transform.position-transform.position).magnitude<=1.9f) )
+			else if( ( netwEvents.actionStatus == 1 && is_Client == false ) && (Time.time-channelingTime>4f) &&  (isKeyHolding==true) && ((target.transform.position-transform.position).magnitude<=1.9f) )
 			{
 				target.GetComponent<AIPathHuman>().isPossessed=true;
 				target.GetComponent<vp_DamageHandler2>().capsule.renderer.material.color=Color.magenta;
 			}
-			else if( (Input.GetKey(KeyCode.E)) && (isKeyHolding==true) && ((target.transform.position-transform.position).magnitude<=1.9f))
+			else if( ( netwEvents.actionStatus == 1 && is_Client == false ) && (isKeyHolding==true) && ((target.transform.position-transform.position).magnitude<=1.9f))
 			{
 				target.GetComponent<AIPathHuman>().isChanneling=true;
 				if(GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth<GetComponent<vp_PlayerDamageHandler2>().MaxHealth)
@@ -373,7 +399,7 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 				}
 			}
 
-			else if ((Input.GetKeyUp(KeyCode.E)) && (isKeyHolding==true))
+			else if ( ( netwEvents.actionStatus == 2  && is_Client == false ) && (isKeyHolding==true))
 			{
 				target.GetComponent<AIPathHuman>().isChanneling=false;
 				isKeyHolding=false;
@@ -383,14 +409,14 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 		}
 		else if(gameObject.tag=="SlayerPlayer")
 		{
-			if( (Input.GetKeyDown(KeyCode.E)) &&(target!=null) && ((target.transform.position-transform.position).magnitude<=1.9f) )
+			if( ( netwEvents.actionStatus == 1  && is_Client == false ) &&(target!=null) && ((target.transform.position-transform.position).magnitude<=1.9f) )
 			{
 				target.GetComponent<AIPathHuman>().isFollowing=false;
 				target.GetComponent<AIPathHuman>().target=gameObject.transform;
 				target=null;
 			}
 
-			else if( (Input.GetKeyDown(KeyCode.E)) && (getClosestHuman1()!=null) )
+			else if( ( netwEvents.actionStatus == 1  && is_Client == false ) && (getClosestHuman1()!=null) )
 			{
 				target=getClosestHuman1();
 				if(((target.transform.position-transform.position).magnitude<=1.9f) && (target.GetComponent<AIPathHuman>().isFollowing==false))

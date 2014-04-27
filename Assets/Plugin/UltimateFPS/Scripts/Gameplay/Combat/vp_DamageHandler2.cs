@@ -17,6 +17,18 @@ using UnityEngine;
 public class vp_DamageHandler2 : MonoBehaviour
 {
 
+
+	private float prevDamage;
+	
+	public bool is_Client = false;
+	public bool RPCDamageEnable = false;
+
+	// GETTING THE COMPONENTS OF STATE SYNC AND EVENTS
+	private NetworkStateSync netwStateSync;
+	private NetworkEvents netwEvents;
+
+
+
 	// health and death
 	public float MaxHealth = 1.0f;			// initial health of the object instance, to be reset on respawn
 	public GameObject [] DeathSpawnObjects = null;	// gameobjects to spawn when object dies.
@@ -79,39 +91,80 @@ public class vp_DamageHandler2 : MonoBehaviour
 	}
 
 
+	void Start() 
+	{
+		netwEvents = gameObject.GetComponent<NetworkEvents> ();
+		netwStateSync = gameObject.GetComponent<NetworkStateSync> ();
+		prevDamage = 0f;
+	}
+
+
 	/// <summary>
 	/// reduces current health by 'damage' points and kills the
 	/// object if health runs out
 	/// </summary>
 	public virtual void Damage(float damage)
 	{
-		if (!enabled)
-			return;
-
-		if (!vp_Utility.IsActive(gameObject))
-			return;
-
-		if (m_CurrentHealth <= 0.0f)
-			return;
-
-		m_CurrentHealth = Mathf.Min(m_CurrentHealth - damage, MaxHealth);
-
-		if (m_CurrentHealth <= 0.0f)
+		if( RPCDamageEnable )
 		{
 
-			if (m_Audio != null)
+			if( ( damage - (float)Mathf.FloorToInt(damage) ) > 0 )
 			{
-				m_Audio.pitch = Time.timeScale;
-				m_Audio.PlayOneShot(DeathSound);
+				Debug.Log("DAMAGE FAIL. REVERSING DAMAGE. FAILED DAMAGE QUATITY IS : " + damage);
+				damage = prevDamage;
 			}
 
-			vp_Timer.In(Random.Range(MinDeathDelay, MaxDeathDelay), Die);
-			return;
+			if (!enabled)
+				return;
+			
+			if (!vp_Utility.IsActive(gameObject))
+				return;
+			
+			if (m_CurrentHealth <= 0.0f)
+				return;
+			
+			m_CurrentHealth = Mathf.Min(m_CurrentHealth - damage, MaxHealth);
+
+
+			if( is_Client ) 
+				RPCDamageEnable = false;
+			else
+			{
+				// FOLLOWING CODE INVOKES DAMAGE TO OTHERS BY PASSING IT AT THE SEND RATE
+				Debug.Log("DAMAGE IS : " + damage);
+				netwStateSync.damageToBeDone += damage;
+				//netwEvents.DamageOthers(damage);
+				
+				prevDamage = damage;
+
+			}
+
+
+			if (m_CurrentHealth <= 0.0f)
+			{
+				
+				if (m_Audio != null)
+				{
+					m_Audio.pitch = Time.timeScale;
+					m_Audio.PlayOneShot(DeathSound);
+				}
+				
+				vp_Timer.In(Random.Range(MinDeathDelay, MaxDeathDelay), Die);
+				return;
+			}
+			//isVampire=false;
+			// TIP: if you want to do things like play a special impact
+			// sound upon every hit (but only if the object survives)
+			// this is the place
+
+
+			
+
 		}
-		//isVampire=false;
-		// TIP: if you want to do things like play a special impact
-		// sound upon every hit (but only if the object survives)
-		// this is the place
+
+
+
+
 
 	}
 
@@ -122,6 +175,7 @@ public class vp_DamageHandler2 : MonoBehaviour
 	/// </summary>
 	public virtual void Die()
 	{
+		Debug.Log ("DEAD!!!");
 		if(transform.tag=="Vampire")
 		{
 			if(transform.GetComponent<AIPathVampire>().isDown==true)

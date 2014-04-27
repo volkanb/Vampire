@@ -274,10 +274,19 @@ public class AIPathHuman : MonoBehaviour {
 	 * \see OnEnable
 	 * \see RepeatTrySearchPath
 	 */
+
+
+	// GETTING THE COMPONENTS OF NETW EVENTS
+	private NetworkEvents netwEvents;
+
+
+
 	protected virtual void Start () {
 		startHasRun = true;
 		OnEnable ();
 		GetComponent<log>().EnterLog("Wander");
+
+		netwEvents = gameObject.GetComponent<NetworkEvents> ();
 	}
 	
 	/** Run at start and when reenabled.
@@ -416,6 +425,8 @@ public class AIPathHuman : MonoBehaviour {
 		switch(state)
 		{
 			case State.WANDER:
+			// INFORM THE PROXY OF STATE CHANGE
+			netwEvents.ChangeStateNPC("WANDER");
 			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
@@ -476,6 +487,8 @@ public class AIPathHuman : MonoBehaviour {
 			break;
 
 			case State.RUN:
+			// INFORM THE PROXY OF STATE CHANGE
+			netwEvents.ChangeStateNPC("RUN");
 			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
@@ -534,6 +547,8 @@ public class AIPathHuman : MonoBehaviour {
 
 
 			case State.FOLLOW:
+			// INFORM THE PROXY OF STATE CHANGE
+			netwEvents.ChangeStateNPC("FOLLOW");
 			Vector3 targetPos=GameObject.Find("SlayerBase").transform.position-transform.position;	
 			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
@@ -661,6 +676,8 @@ public class AIPathHuman : MonoBehaviour {
 			break;
 
 			case State.DEFEND:
+			// INFORM THE PROXY OF STATE CHANGE
+			netwEvents.ChangeStateNPC("DEFEND");
 			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
@@ -725,6 +742,8 @@ public class AIPathHuman : MonoBehaviour {
 			break;
 
 			case State.IDLE:
+			// INFORM THE PROXY OF STATE CHANGE
+			netwEvents.ChangeStateNPC("IDLE");
 			if(isFollowing==true)
 			{
 				state=State.FOLLOW;
@@ -733,6 +752,8 @@ public class AIPathHuman : MonoBehaviour {
 			break;
 
 			case State.RESCUED:
+			// INFORM THE PROXY OF STATE CHANGE
+			netwEvents.ChangeStateNPC("RESCUED");
 			if(target.tag=="SlayerPlayer")
 			{
 				target.GetComponent<vp_PlayerDamageHandler2>().target=null;
@@ -745,6 +766,8 @@ public class AIPathHuman : MonoBehaviour {
 
 
 			case State.POSSESSED:
+			// INFORM THE PROXY OF STATE CHANGE
+			netwEvents.ChangeStateNPC("POSSESSED");
 			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
@@ -792,6 +815,8 @@ public class AIPathHuman : MonoBehaviour {
 			break;
 
 			case State.ATTACK:
+			// INFORM THE PROXY OF STATE CHANGE
+			netwEvents.ChangeStateNPC("ATTACK");
 			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
@@ -853,12 +878,16 @@ public class AIPathHuman : MonoBehaviour {
 			break;
 
 			case State.DEAD:
+			// INFORM THE PROXY OF STATE CHANGE
+			netwEvents.ChangeStateNPC("DEAD");
 			target=gameObject.transform;
 			Player.Attack.TryStop();
 			Destroy(gameObject,5);
 			break;
 
 			case State.CHANNELING:
+			// INFORM THE PROXY OF STATE CHANGE
+			netwEvents.ChangeStateNPC("CHANNELING");
 			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				target=transform;

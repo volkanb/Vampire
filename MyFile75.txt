@@ -1,0 +1,8 @@
+27/4/2014 22:22:10.0739539 HumanCreator1(Clone) -3077362 Wander
+27/4/2014 22:22:14.5632359 HumanCreator1(Clone) -3077362 Follow
+27/4/2014 22:22:14.5952661 HumanCreator1(Clone) -3077362 Idle
+27/4/2014 22:22:14.6252946 HumanCreator1(Clone) -3077362 Follow
+27/4/2014 22:22:22.1039323 HumanCreator1(Clone) -3080472 Wander
+27/4/2014 22:22:34.0876617 HumanCreator1(Clone) -3083470 Wander
+27/4/2014 22:22:46.1128326 HumanCreator1(Clone) -3090626 Wander
+27/4/2014 22:22:58.1241942 HumanCreator1(Clone) -3099878 Wander

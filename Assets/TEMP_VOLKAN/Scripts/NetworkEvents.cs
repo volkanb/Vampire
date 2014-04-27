@@ -9,7 +9,24 @@ public class NetworkEvents: uLink.MonoBehaviour
 	// DAMAGE HANDLER WHiCH HAS THE DAMAGE() FUNC iN iT
 	public vp_PlayerDamageHandler2 PlayerDamageHandler = null;
 	public vp_DamageHandler2 DamageHandler = null;
-	
+
+
+	// COUNTDOWN TIMER VARIABLES
+	//---------------------------------
+	public bool roundStarted;
+	private float remainingTime;
+	private float endingTime;
+	public int remainingMinutes;
+	public int remainingSeconds;
+	public float RoundTime;
+	//---------------------------------
+
+	// ROUND CONTROLLER VARIABLES
+	//---------------------------------
+	public int VampireTeamScore;
+	public int SlayerTeamScore;
+	//---------------------------------
+
 	
 	protected virtual void OnEnable()
 	{	
@@ -34,6 +51,120 @@ public class NetworkEvents: uLink.MonoBehaviour
 			PlayerDamageHandler = transform.GetComponent<vp_PlayerDamageHandler2>();
 
 	}
+
+	public int actionStatus = 0;
+
+	void Update() 
+	{
+
+		if (roundStarted) 
+		{
+			remainingTime = endingTime - Time.time;
+			
+			int roundedInt = Mathf.CeilToInt( remainingTime );
+			
+			remainingMinutes = roundedInt / 60;
+			remainingSeconds = roundedInt % 60;
+		}
+
+
+		// CORRECTS THE ACTION VARIABLE AT SERVER
+		if (uLink.Network.isServer) 
+		{
+			if ( actionStatus == 2 )
+				actionStatus = 0;
+		}
+
+		// SENDS ACTION VARIABLE STATUS TO SERVER
+		if ( networkView.isOwner )
+		{
+			if ( actionStatus == 2 ) 
+			{
+				actionStatus = 0;
+			}
+			else if (Input.GetButton ("Action")) 
+			{
+				if ( actionStatus == 0 )
+				{
+					actionStatus = 1;
+					SendAction(actionStatus);
+				}
+			}
+			else if ( Input.GetButtonUp("Action") )
+			{
+				if ( actionStatus == 1 )
+				{
+					actionStatus = 2;
+					SendAction(actionStatus);
+				}
+			}
+		}
+
+
+
+	}
+
+
+	// SHOWS COUNTDOWN TIMER
+	void OnGUI()
+	{
+		if (networkView.isOwner && roundStarted) 
+		{
+			string text = string.Format("{0:00}:{1:00}", remainingMinutes, remainingSeconds); 
+			GUI.Label ( new Rect (400, 25, 100, 30), text);
+		}
+	}
+
+	//----------------------------------------------------------------------------------------------------------
+	// Following codes syncs server's round scores with others
+	
+	public void IncreaseSlayerScore()
+	{
+		networkView.UnreliableRPC("IncreaseSlayerScoreOnOthers", uLink.RPCMode.Others);	
+	}
+
+	public void IncreaseVampireScore()
+	{
+		networkView.UnreliableRPC("IncreaseVampireScoreOnOthers", uLink.RPCMode.Others);
+	}
+	
+	[RPC]
+	void IncreaseSlayerScoreOnOthers()
+	{
+		SlayerTeamScore++;
+	}
+
+	[RPC]
+	void IncreaseVampireScoreOnOthers()
+	{
+		VampireTeamScore++;
+	}
+	
+	//----------------------------------------------------------------------------------------------------------
+
+
+
+	//----------------------------------------------------------------------------------------------------------
+	// Following codes syncs server's round start and end with others
+
+	public void StartRoundOnOthers (float RT)
+	{
+		networkView.UnreliableRPC("StartRound", uLink.RPCMode.Owner, RT);
+
+	}
+
+	[RPC]
+	void StartRound( float RT )
+	{
+		Debug.Log ("ROUND STARTED");
+		RoundTime = RT;
+		endingTime = (Time.time + (RoundTime*60f));
+		roundStarted = true;
+
+	}
+
+	//----------------------------------------------------------------------------------------------------------
+
 
 	//----------------------------------------------------------------------------------------------------------
 	// Following codes syncs owner's attacks with server and other proxies, also sets the ammo count on owner and proxies
@@ -305,7 +436,8 @@ public class NetworkEvents: uLink.MonoBehaviour
 	{
 		if ( DamageHandler != null )
 		{
-			// AI KULLANANLAR İÇİN DAMAGEHANDLER2.cs'yi KURCALA !!!!!!!!
+			DamageHandler.RPCDamageEnable = true;
+			DamageHandler.Damage ( damage );
 		}
 		else
 		{
@@ -336,4 +468,91 @@ public class NetworkEvents: uLink.MonoBehaviour
 	}
 	
 	//----------------------------------------------------------------------------------------------------------
+
+
+	//----------------------------------------------------------------------------------------------------------
+	// Following codes syncs NPC'S state change with proxies
+	public void ChangeStateNPC(string s)
+	{ 
+		networkView.UnreliableRPC("ChangeStateOtherNPCs", uLink.RPCMode.Others, s);
+	}
+
+	[RPC]
+	void ChangeStateOtherNPCs(string state, uLink.NetworkMessageInfo info)
+	{
+		switch (state) 
+		{
+		case "WANDER":
+
+			break;
+
+		case "RUN":
+			
+			break;
+
+		case "FOLLOW":
+			m_Player.SetWeapon.TryStart(1);
+			GetComponent<vp_DamageHandler2>().capsule.renderer.material.color = Color.cyan;
+			break;
+
+		case "DEFEND":
+			
+			break;
+
+		case "POSSESSED":
+			m_Player.SetWeapon.TryStart(2);
+			GetComponent<vp_DamageHandler2>().capsule.renderer.material.color = Color.magenta;
+			break;
+
+		case "CHANNELING":
+			
+			break;
+
+		case "DEAD":
+
+			Destroy(gameObject,5);
+			break;
+
+		case "RESCUED":
+
+			Destroy(gameObject,10);
+			break;
+
+		case "IDLE":
+			
+			break;
+
+		
+		default:
+			break;
+		}
+
+		
+	}
+	
+	//----------------------------------------------------------------------------------------------------------
+
+
+	//----------------------------------------------------------------------------------------------------------
+	// Following codes syncs vampire player's bite attemtp with server
+
+
+
+	public void SendAction( int i )
+	{ 
+		if ( networkView.isOwner )
+			networkView.UnreliableRPC("SendActionToServer", uLink.RPCMode.Server, i);
+	}
+
+	
+	[RPC]
+	void SendActionToServer(int i, uLink.NetworkMessageInfo info)
+	{
+		actionStatus = i;
+	}
+
+	
+	//----------------------------------------------------------------------------------------------------------
+
+
 }

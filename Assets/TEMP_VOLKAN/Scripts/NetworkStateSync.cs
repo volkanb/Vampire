@@ -24,7 +24,14 @@ public class NetworkStateSync : uLink.MonoBehaviour
 	
 	private float fraction;
 	//---------------------------------------------------------------------------------
+
+
+	// GETTING THE COMPONENT OF NETW EVENTS
+	private NetworkEvents netwEvents;
 	
+	// DAMAGE BUFFER
+	public float damageToBeDone;
+
 	public float failRadius = 0.2f;
 	
 	// EVENT HANDLER
@@ -104,7 +111,13 @@ public class NetworkStateSync : uLink.MonoBehaviour
 			}
 		}
 		
-		
+
+		// INITIALIZING DAMAGE BUFFER
+		damageToBeDone = 0f;
+
+		// INITIALIZING NETW EVENTS COMPONENT
+		netwEvents = gameObject.GetComponent<NetworkEvents> ();
+
 		if (!networkView.isMine) return;
 		
 		enabled = false;
@@ -122,12 +135,20 @@ public class NetworkStateSync : uLink.MonoBehaviour
 	{
 		if (stream.isWriting)
 		{
+			if( gameObject.name == "HumanCreator1(Clone)" );
+				Debug.Log("IM HUMANCREATOR AND IM SENDING POS ROT");
 			// Send information to all proxies (opponent player's computers)
 			// This code is executed on the creator (server) when server is auth, or on the owner (client) when the server is non-auth.
 			stream.Write(m_Player.Position.Get());
 			stream.Write(m_Player.Velocity.Get());
 			stream.Write(m_Player.Rotation.Get());
 			stream.Write(m_Player.InputMoveVector.Get());
+			
+			if (damageToBeDone > 0f) 
+			{
+				netwEvents.DamageOthers(damageToBeDone);
+				damageToBeDone = 0f;
+			}
 		}
 		else
 		{
@@ -211,7 +232,8 @@ public class NetworkStateSync : uLink.MonoBehaviour
 
 		}
 		*/
-		
+
+
 		
 		if (!networkView.isOwner) 
 		{
