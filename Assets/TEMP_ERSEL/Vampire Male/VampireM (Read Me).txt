@@ -1,0 +1,20 @@
+Vampire with Blades - 3776 Triangles
+Only VampireM - 3336 Triangles
+Only Blades - 440 Triangles
+
+14 Animations
+Walk 
+Run Forward
+Run Backward
+Idle Relaxed
+Idle Battle
+Attack 1
+Attack 2
+Attack 3
+Attack 4
+Damage Receive 1
+Damage Receive 2
+Jump
+Death 1
+Death 2
+
