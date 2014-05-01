@@ -161,6 +161,10 @@ public class AIPathHuman : MonoBehaviour {
 	public bool isChanneling=false;
 	public GameObject cam;
 
+
+
+
+
 	//Align
 	float targetDegree;
 	//float aSpeed;
@@ -279,7 +283,8 @@ public class AIPathHuman : MonoBehaviour {
 	// GETTING THE COMPONENTS OF NETW EVENTS
 	private NetworkEvents netwEvents;
 
-
+	// GETTING THE COMPONENTS OF NETW ROUND CONTROLLER
+	private NetworkRoundController netwRoundController;
 
 	protected virtual void Start () {
 		startHasRun = true;
@@ -287,6 +292,8 @@ public class AIPathHuman : MonoBehaviour {
 		GetComponent<log>().EnterLog("Wander");
 
 		netwEvents = gameObject.GetComponent<NetworkEvents> ();
+		netwRoundController = GameObject.Find("NetworkControlUnits").GetComponentInChildren<NetworkRoundController>();
+
 	}
 	
 	/** Run at start and when reenabled.
@@ -439,6 +446,10 @@ public class AIPathHuman : MonoBehaviour {
 				gameObject.tag="PossessedHuman";
 				Player.SetWeapon.TryStart(2);
 				state=State.POSSESSED;
+
+				// INCREASE VAMPIRE TEAM SCORE
+				netwRoundController.IncreaseVampireScore();
+
 				GetComponent<log>().EnterLog("Possessed");
 			}
 			else if(isFollowing==true)
@@ -556,7 +567,14 @@ public class AIPathHuman : MonoBehaviour {
 				Player.Attack.TryStop();
 				GetComponent<log>().EnterLog("Dead");
 			}
-			else if(targetPos.magnitude<5f) {Player.Attack.TryStop(); state=State.RESCUED; GetComponent<log>().EnterLog("Rescued");}
+			else if(targetPos.magnitude<5f) {
+				Player.Attack.TryStop(); 
+				state=State.RESCUED; 
+
+				// INCREASE SLAYER TEAM SCORE
+				netwRoundController.IncreaseSlayerScore();
+
+				GetComponent<log>().EnterLog("Rescued");}
 			else if((target.tag=="Slayer") &&(target.GetComponent<AIPathSlayer>().isAttacking==true))
 			{
 				alignMe();
@@ -761,13 +779,17 @@ public class AIPathHuman : MonoBehaviour {
 			target=gameObject.transform;
 			isRescued=true;
 			Player.Attack.TryStop();
-			Destroy(gameObject,10);
+
+
+			StartCoroutine( NetworkDestroyWithDelay( gameObject,  10f ) );
+			//Destroy(gameObject,10);
 			break;
 
 
 			case State.POSSESSED:
 			// INFORM THE PROXY OF STATE CHANGE
 			netwEvents.ChangeStateNPC("POSSESSED");
+
 			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
@@ -812,6 +834,7 @@ public class AIPathHuman : MonoBehaviour {
 				
 			}
 
+
 			break;
 
 			case State.ATTACK:
@@ -827,6 +850,7 @@ public class AIPathHuman : MonoBehaviour {
 				Player.Attack.TryStop();
 				target=transform;
 				state=State.POSSESSED;
+
 				GetComponent<log>().EnterLog("Possessed");
 			}
 			else if((target.tag=="SlayerPlayer") &&(target.GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth<1))
@@ -834,6 +858,7 @@ public class AIPathHuman : MonoBehaviour {
 				Player.Attack.TryStop();
 				target=transform;
 				state=State.POSSESSED;
+
 				GetComponent<log>().EnterLog("Possessed");
 			}
 			else
@@ -882,7 +907,10 @@ public class AIPathHuman : MonoBehaviour {
 			netwEvents.ChangeStateNPC("DEAD");
 			target=gameObject.transform;
 			Player.Attack.TryStop();
-			Destroy(gameObject,5);
+
+
+			StartCoroutine( NetworkDestroyWithDelay( gameObject,  10f ) );
+			//Destroy(gameObject,5);
 			break;
 
 			case State.CHANNELING:
@@ -916,6 +944,10 @@ public class AIPathHuman : MonoBehaviour {
 				gameObject.tag="PossessedHuman";
 				Player.SetWeapon.TryStart(2);
 				state=State.POSSESSED;
+
+				// INCREASE VAMPIRE TEAM SCORE
+				netwRoundController.IncreaseVampireScore();
+
 				GetComponent<log>().EnterLog("Possessed");
 			}
 
@@ -1070,5 +1102,13 @@ public class AIPathHuman : MonoBehaviour {
 		float offset = lookAhead / magn;
 		offset = Mathf.Clamp (offset+closest,0.0F,1.0F);
 		return (b-a)*offset + a;
+	}
+
+	public IEnumerator NetworkDestroyWithDelay( GameObject go , float delay  )
+	{
+		yield return new WaitForSeconds(delay);
+
+		uLink.Network.Destroy (go);
+
 	}
 }

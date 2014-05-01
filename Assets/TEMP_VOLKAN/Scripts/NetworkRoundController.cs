@@ -9,6 +9,8 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 	public GameObject[] vampirePlayers = new GameObject[20];
 	public GameObject[] slayerPlayers = new GameObject[20];
 
+	public int SlayerBotNumber = 0;
+	public int VampireBotNumber = 0;
 
 	public bool roundStarted;
 	private float remainingTime;
@@ -26,9 +28,13 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 
 	public bool anybodyInTheGame;
 
+	private NetworkSpawnController netwSpawnController;
 
 	// Use this for initialization
 	void Start () {
+
+		netwSpawnController = gameObject.transform.parent.GetComponentInChildren<NetworkSpawnController> ();
+
 
 		CurrentSlayerPlayerNumber = 0;
 		CurrentVampirePlayerNumber = 0;
@@ -103,14 +109,15 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 			vampireGameObject.GetComponent<NetworkEvents>().StartRoundOnOthers(RoundTime);
 		}
 
-
-
 		networkView.UnreliableRPC("StartRoundOnOthers", uLink.RPCMode.Others, RoundTime );
-
 
 
 		// START THE ROUND TIMER
 		endingTime = (Time.time + (RoundTime*60f));
+
+		//TRIGGER THE BOT INSTANTIATIONS
+		netwSpawnController.InstantiateBots ( SlayerBotNumber, VampireBotNumber );
+
 
 	}
 
@@ -126,13 +133,11 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 		}
 
 
-
-
 		if (uLink.Network.connections.Length > 0)
 			uLink.Network.Disconnect();
-			
-		Application.LoadLevel (Application.loadedLevel);
 
+
+		Application.LoadLevel (Application.loadedLevel);
 
 	}
 
@@ -145,6 +150,19 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 	public void IncreaseSlayerScore()
 	{
 		SlayerTeamScore++;
+
+		CollectPlayers ();
+
+		foreach( GameObject player in slayerPlayers )
+		{
+			player.GetComponentInChildren<NetworkEvents>().IncreaseSlayerScore();
+		}
+		foreach( GameObject player in vampirePlayers )
+		{
+			player.GetComponentInChildren<NetworkEvents>().IncreaseSlayerScore();
+		}
+
+
 		if( SlayerTeamScore >= WinningScore )
 			EndTheRound("S");
 
@@ -153,8 +171,24 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 	public void IncreaseVampireScore()
 	{
 		VampireTeamScore++;
-		if( SlayerTeamScore >= WinningScore )
+
+		CollectPlayers ();
+		
+		foreach( GameObject player in vampirePlayers )
+		{
+			player.GetComponentInChildren<NetworkEvents>().IncreaseVampireScore();
+		}
+		foreach( GameObject player in slayerPlayers )
+		{
+			player.GetComponentInChildren<NetworkEvents>().IncreaseVampireScore();
+		}
+		
+		
+		if( VampireTeamScore >= WinningScore )
 			EndTheRound("V");
+
 	}
+
+
 
 }

@@ -14,6 +14,12 @@ public class NetworkSpawnController : uLink.MonoBehaviour {
 	public GameObject VampireOwnerPref = null;
 	public GameObject VampireCreatorPref = null;
 
+	public GameObject VampireAIProxyPref = null;
+	public GameObject VampireAICreatorPref = null;
+
+	public GameObject SlayerAIProxyPref = null;
+	public GameObject SlayerAICreatorPref = null;
+
 	public Transform SlayerSpawnLocation = null;
 	public Transform VampireSpawnLocation = null;
 
@@ -52,6 +58,22 @@ public class NetworkSpawnController : uLink.MonoBehaviour {
 				roundController.roundStarted = true;
 				roundController.StartTheRound();
 			}
+
+	}
+
+	public void InstantiateBots( int SlayerBotNumber, int VampireBotNumber )
+	{
+		while (SlayerBotNumber != 0) 
+		{
+			uLink.Network.Instantiate (SlayerAIProxyPref, SlayerAICreatorPref, SlayerSpawnLocation.position, SlayerSpawnLocation.rotation, 0, "SlayerBot");
+			SlayerBotNumber--;
+		}
+
+		while (VampireBotNumber != 0) 
+		{
+			uLink.Network.Instantiate (VampireAIProxyPref, VampireAICreatorPref, VampireSpawnLocation.position, VampireSpawnLocation.rotation, 0, "VampireBot");
+			VampireBotNumber--;
+		}
 
 	}
 	

@@ -3,6 +3,14 @@ using uLink;
 
 public class NetworkEvents: uLink.MonoBehaviour 
 {
+
+	// GETTING THE COMPONENT OF NETW STATESYNC
+	private NetworkStateSync netwStateSync;
+
+	// VAMPIRE AND SLAYER BASE POSITIONS
+	private Vector3 SlayerBasePos;
+	private Vector3 VampireBasePos;
+
 	// EVENT HANDLER
 	vp_FPPlayerEventHandler m_Player;
 
@@ -52,12 +60,24 @@ public class NetworkEvents: uLink.MonoBehaviour
 
 	}
 
+	void Start()
+	{
+		// INITIALIZING NETW STATESYNC COMPONENT
+		netwStateSync = gameObject.GetComponent<NetworkStateSync>();
+
+
+		// VAMPIRE AND SLAYER BASE POSITIONS INITIALIZE
+		VampireBasePos = GameObject.Find ("VampireBase").transform.position;
+		SlayerBasePos = GameObject.Find ("SlayerBase").transform.position;
+	}
+
+
 	public int actionStatus = 0;
 
 	void Update() 
 	{
 
-		if (roundStarted) 
+		if (roundStarted && !netwStateSync.isBot) 
 		{
 			remainingTime = endingTime - Time.time;
 			
@@ -121,6 +141,7 @@ public class NetworkEvents: uLink.MonoBehaviour
 	public void IncreaseSlayerScore()
 	{
 		networkView.UnreliableRPC("IncreaseSlayerScoreOnOthers", uLink.RPCMode.Others);	
+		Debug.Log("SLAYER TEAM SCORE INCREASED !!!");
 	}
 
 	public void IncreaseVampireScore()
@@ -510,12 +531,12 @@ public class NetworkEvents: uLink.MonoBehaviour
 
 		case "DEAD":
 
-			Destroy(gameObject,5);
+			//Destroy(gameObject,5);
 			break;
 
 		case "RESCUED":
 
-			Destroy(gameObject,10);
+
 			break;
 
 		case "IDLE":
@@ -552,6 +573,55 @@ public class NetworkEvents: uLink.MonoBehaviour
 	}
 
 	
+	//----------------------------------------------------------------------------------------------------------
+
+
+	//----------------------------------------------------------------------------------------------------------
+	// Following codes syncs servers respawn at base attempts with others
+		
+	
+	public void RespawnAtBase()
+	{ 
+		vp_PlayerDamageHandler2 PDH2 = null;
+		PDH2 = gameObject.GetComponent<vp_PlayerDamageHandler2>();
+
+		vp_DamageHandler2 DH2 = null;
+		DH2 = gameObject.GetComponent<vp_DamageHandler2>();
+
+		// BURADA SıKıNTı VAR BOTLAR RESPAWN OLMUYO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		if (DH2 != null) 
+		{
+			// IF THIS INSTANCE IS A AI OBJECT
+			if ( gameObject.tag == "Vampire" )
+			{
+				m_Player.Position.Set(VampireBasePos);
+			}
+			else if ( gameObject.tag == "Slayer" )
+			{
+				m_Player.Position.Set(SlayerBasePos);
+			}
+
+			DH2.CallRespawn();
+
+		}
+		else if ( PDH2 != null )
+		{
+			// IF THIS INSTANCE IS A PLAYER
+
+			if ( gameObject.tag == "VampirePlayer" )
+			{
+				m_Player.Position.Set(VampireBasePos);
+			}
+			else if ( gameObject.tag == "SlayerPlayer" )
+			{
+				m_Player.Position.Set(SlayerBasePos);
+			}
+
+			PDH2.CallRespawn();
+
+		}
+	}
+
 	//----------------------------------------------------------------------------------------------------------
 
 

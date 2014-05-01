@@ -5,6 +5,10 @@ public class Spawner : uLink.MonoBehaviour {
 
 	private NetworkRoundController roundController;
 
+	public int HumanNumberTreshold = 0;
+	public float HumanInstantiateDelay = 0;
+
+
 	public GameObject HumanProxy = null;
 	public GameObject HumanCreator = null;
 
@@ -33,18 +37,18 @@ public class Spawner : uLink.MonoBehaviour {
 			GameObject[] humans;
 			humans=GameObject.FindGameObjectsWithTag("Human");
 
-			if(humans.Length>=4)
+			if(humans.Length>= HumanNumberTreshold )
 			{
 				isDelay=false;
 			}
-			else if(humans.Length<4)
+			else if(humans.Length< HumanNumberTreshold )
 			{
 				if(isDelay==false)
 				{
 					delay=Time.time;
 					isDelay=true;
 				}
-				if(Time.time-delay>12)
+				if(Time.time-delay> HumanInstantiateDelay )
 				{
 					//Instantiate(human, transform.position, Quaternion.identity);	
 					uLink.Network.Instantiate (HumanProxy, HumanCreator, zone.position, Quaternion.identity, 0, "Human");

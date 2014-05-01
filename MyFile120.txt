@@ -1,0 +1,13 @@
+30/4/2014 21:33:31.3761606 HumanCreator1(Clone) -11364 Wander
+30/4/2014 21:33:48.5456387 HumanCreator1(Clone) -11364 Follow
+30/4/2014 21:33:48.5616527 HumanCreator1(Clone) -11364 Idle
+30/4/2014 21:33:48.5806714 HumanCreator1(Clone) -11364 Follow
+30/4/2014 21:33:48.5976872 HumanCreator1(Clone) -11364 Idle
+30/4/2014 21:33:48.6096984 HumanCreator1(Clone) -11364 Follow
+30/4/2014 21:33:48.6267150 HumanCreator1(Clone) -11364 Idle
+30/4/2014 21:33:50.6782630 HumanCreator1(Clone) -11364 Follow
+30/4/2014 21:33:50.6952785 HumanCreator1(Clone) -11364 Idle
+30/4/2014 21:33:50.7132964 HumanCreator1(Clone) -11364 Follow
+30/4/2014 21:33:50.7283110 HumanCreator1(Clone) -11364 Idle
+30/4/2014 21:33:50.7433242 HumanCreator1(Clone) -11364 Follow
+30/4/2014 21:33:53.5886916 HumanCreator1(Clone) -11868 Wander

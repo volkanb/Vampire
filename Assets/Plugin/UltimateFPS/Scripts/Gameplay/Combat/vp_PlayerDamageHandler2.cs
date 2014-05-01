@@ -224,9 +224,6 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 			m_Player.Dead.Start();
 			m_Player.AllowGameplayInput.Set(false);
 
-			if (Respawns)
-				vp_Timer.In(Random.Range(MinRespawnTime, MaxRespawnTime), Respawn);
-
 		}
 
 		else
@@ -243,9 +240,14 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 			m_Player.SetWeapon.Start();
 			m_Player.Dead.Start();
 			m_Player.AllowGameplayInput.Set(false);
-			
+
+			// RESPAWN SLAYER PLAYER AT BASE WHEN HE DIES
+			netwEvents.RespawnAtBase();
+
+			/*
 			if (Respawns)
 				vp_Timer.In(Random.Range(MinRespawnTime, MaxRespawnTime), Respawn);
+			*/
 
 		}
 
@@ -438,6 +440,11 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 
 
 
+	}
+
+	public void CallRespawn()
+	{
+		Respawn();
 	}
 
 }

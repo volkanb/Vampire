@@ -212,6 +212,8 @@ public class vp_FPWeaponMeleeAttack : vp_Component
 							if((hit.collider.transform.GetComponent<AIPathVampire>().isDown==true) && (hit.collider.GetComponent<vp_DamageHandler2>().m_CurrentHealth<=1))
 							{
 								hit.collider.transform.GetComponent<AIPathVampire>().isDead=true;
+
+								hit.collider.transform.GetComponent<NetworkEvents>().RespawnAtBase();
 							}
 						}
 						if(hit.collider.transform.tag=="VampirePlayer")
@@ -219,6 +221,8 @@ public class vp_FPWeaponMeleeAttack : vp_Component
 							if((hit.collider.transform.GetComponent<vp_PlayerDamageHandler2>().isDown==true) && (hit.collider.GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth<=1))
 							{
 								hit.collider.transform.GetComponent<vp_PlayerDamageHandler2>().isDead=true;
+
+								hit.collider.transform.GetComponent<NetworkEvents>().RespawnAtBase();
 							}
 						}
 						

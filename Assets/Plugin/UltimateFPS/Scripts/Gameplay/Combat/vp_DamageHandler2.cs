@@ -131,7 +131,6 @@ public class vp_DamageHandler2 : MonoBehaviour
 			else
 			{
 				// FOLLOWING CODE INVOKES DAMAGE TO OTHERS BY PASSING IT AT THE SEND RATE
-				Debug.Log("DAMAGE IS : " + damage);
 				netwStateSync.damageToBeDone += damage;
 				//netwEvents.DamageOthers(damage);
 				
@@ -175,7 +174,6 @@ public class vp_DamageHandler2 : MonoBehaviour
 	/// </summary>
 	public virtual void Die()
 	{
-		Debug.Log ("DEAD!!!");
 		if(transform.tag=="Vampire")
 		{
 			if(transform.GetComponent<AIPathVampire>().isDown==true)
@@ -347,6 +345,11 @@ public class vp_DamageHandler2 : MonoBehaviour
 				isPlayed=false;
 			}
 		}
+	}
+
+	public void CallRespawn()
+	{
+		Respawn();
 	}
 }
 

@@ -20,6 +20,8 @@ using System.Collections;
 
 public class vp_FPCameraAI : vp_Component
 {
+	// Determines if the object is OWNER (uLink)
+	public bool isMine = true;
 
 	// character controller of the parent gameobject
 	public vp_FPController FPController = null;
@@ -171,12 +173,22 @@ public class vp_FPCameraAI : vp_Component
 		// input and is needed to retain initial rotation set by user in the editor.
 		m_InitialRotation = new Vector2(Transform.eulerAngles.y, Transform.eulerAngles.x);
 
-		// set parent gameobject layer to 'LocalPlayer', so camera can exclude it
-		Parent.gameObject.layer = vp_Layer.LocalPlayer;
-		foreach (Transform b in Parent)
+
+
+		// Following codes make sure that OWNER has LocalPlayer layer and other do not.
+		if ( isMine )
 		{
-			b.gameObject.layer = vp_Layer.LocalPlayer;
+			
+			// set parent gameobject layer to 'LocalPlayer', so camera can exclude it
+			Parent.gameObject.layer = vp_Layer.LocalPlayer;
+			foreach (Transform b in Parent)
+			{
+				b.gameObject.layer = vp_Layer.LocalPlayer;
+			}
+			
 		}
+
+
 
 		// main camera initialization
 		// render everything except body and weapon
@@ -248,6 +260,29 @@ public class vp_FPCameraAI : vp_Component
 
 	}
 
+	//-------------------------------------------------------------------------------
+	// This fuction is used for recursively changing the layers in an object. Used in Init()
+	
+	void SetLayerRecursively(GameObject obj, int newLayer)
+	{
+		if (null == obj)
+		{
+			return;
+		}
+		obj.layer = newLayer;
+		
+		foreach (Transform child in obj.transform)
+		{
+			if (null == child)
+			{
+				continue;
+			}
+			SetLayerRecursively(child.gameObject, newLayer);
+		}	
+	}
+	//-------------------------------------------------------------------------------
+
+
 	
 	/// <summary>
 	/// in 'Init' we do things that must be run once at the
@@ -257,9 +292,12 @@ public class vp_FPCameraAI : vp_Component
 	/// </summary>
 	protected override void Init()
 	{
-
+		
 		base.Init();
 		
+		if( !isMine )
+			SetLayerRecursively( Parent.gameObject, 25 );
+
 	}
 
 

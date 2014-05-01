@@ -24,7 +24,8 @@ public class NetworkStateSync : uLink.MonoBehaviour
 	
 	private float fraction;
 	//---------------------------------------------------------------------------------
-
+	
+	public bool isBot = false;
 
 	// GETTING THE COMPONENT OF NETW EVENTS
 	private NetworkEvents netwEvents;
@@ -135,15 +136,26 @@ public class NetworkStateSync : uLink.MonoBehaviour
 	{
 		if (stream.isWriting)
 		{
-			if( gameObject.name == "HumanCreator1(Clone)" );
-				Debug.Log("IM HUMANCREATOR AND IM SENDING POS ROT");
-			// Send information to all proxies (opponent player's computers)
-			// This code is executed on the creator (server) when server is auth, or on the owner (client) when the server is non-auth.
-			stream.Write(m_Player.Position.Get());
-			stream.Write(m_Player.Velocity.Get());
-			stream.Write(m_Player.Rotation.Get());
-			stream.Write(m_Player.InputMoveVector.Get());
-			
+			if (isBot) 
+			{
+				// Send information to all proxies (opponent player's computers)
+				// This code is executed on the creator (server) when server is auth, or on the owner (client) when the server is non-auth.
+				stream.Write(m_Player.Position.Get());
+				stream.Write(m_Player.gameObject.transform.rotation.eulerAngles.y);
+			}
+			else
+			{
+
+				// Send information to all proxies (opponent player's computers)
+				// This code is executed on the creator (server) when server is auth, or on the owner (client) when the server is non-auth.
+				stream.Write(m_Player.Position.Get());
+				stream.Write(m_Player.Velocity.Get());
+				stream.Write(m_Player.Rotation.Get());
+				stream.Write(m_Player.InputMoveVector.Get());
+				
+			}
+
+
 			if (damageToBeDone > 0f) 
 			{
 				netwEvents.DamageOthers(damageToBeDone);
@@ -152,13 +164,31 @@ public class NetworkStateSync : uLink.MonoBehaviour
 		}
 		else
 		{
-			// Update the proxy state when statesync arrives.
-			Vector3 pos = stream.Read<Vector3>();
-			Vector3 vel = stream.Read<Vector3>();
-			Vector2 rot = stream.Read<Vector2>();
-			Vector2 inpMov = stream.Read<Vector2>();
-			
-			UpdateState(pos, vel, rot, inpMov, info.timestamp);
+			if (isBot) 
+			{
+				// Update the proxy state when statesync arrives.
+				Vector3 pos = stream.Read<Vector3>();
+				float rotationY = stream.Read<float>();
+
+
+				//-----------------------------------
+				// BOTLAR iÇiN LERP iŞiNDE BU KıSıM DEĞiŞECEK!!!!!!!!!!!!!!!
+				m_Player.Position.Set(pos);
+				gameObject.transform.rotation = Quaternion.Euler( new Vector3(0f,rotationY,0f) );
+				//-----------------------------------
+
+			}
+			else
+			{
+				// Update the proxy state when statesync arrives.
+				Vector3 pos = stream.Read<Vector3>();
+				Vector3 vel = stream.Read<Vector3>();
+				Vector2 rot = stream.Read<Vector2>();
+				Vector2 inpMov = stream.Read<Vector2>();
+				
+				UpdateState(pos, vel, rot, inpMov, info.timestamp);
+			}
+
 		}
 	}
 	
@@ -234,8 +264,8 @@ public class NetworkStateSync : uLink.MonoBehaviour
 		*/
 
 
-		
-		if (!networkView.isOwner) 
+		// THIS SECTION HANDLES PLAYER MOVE LERPING
+		if (!networkView.isOwner && !isBot) 
 		{
 			// FOLLOWING CODES HANDLE THE SMOOTH ROTATION OF SERVER AND PROXIES
 			timeCovered += Time.deltaTime;
