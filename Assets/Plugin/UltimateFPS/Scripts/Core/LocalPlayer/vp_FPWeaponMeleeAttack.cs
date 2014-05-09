@@ -209,12 +209,16 @@ public class vp_FPWeaponMeleeAttack : vp_Component
 					{
 						if(hit.collider.transform.tag=="Vampire")
 						{
-							if((hit.collider.transform.GetComponent<AIPathVampire>().isDown==true) && (hit.collider.GetComponent<vp_DamageHandler2>().m_CurrentHealth<=1))
+							if ( !hit.collider.transform.GetComponent<vp_DamageHandler2>().is_Client ) 
 							{
-								hit.collider.transform.GetComponent<AIPathVampire>().isDead=true;
-
-								hit.collider.transform.GetComponent<NetworkEvents>().RespawnAtBase();
+								if((hit.collider.transform.GetComponent<AIPathVampire>().isDown==true) && (hit.collider.GetComponent<vp_DamageHandler2>().m_CurrentHealth<=1))
+								{
+									hit.collider.transform.GetComponent<AIPathVampire>().isDead=true;
+									
+									// hit.collider.transform.GetComponent<NetworkEvents>().RespawnAtBase();
+								}
 							}
+
 						}
 						if(hit.collider.transform.tag=="VampirePlayer")
 						{

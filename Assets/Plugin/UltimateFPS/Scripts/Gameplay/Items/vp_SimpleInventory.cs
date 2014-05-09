@@ -523,9 +523,10 @@ public class vp_SimpleInventory : MonoBehaviour
 	/// </summary>
 	protected virtual void OnStart_Dead()
 	{
-
+		/*
 		foreach (InventoryItemStatus i in m_ItemStatusDictionary.Values)
 		{
+
 			if (i.ClearOnDeath)
 			{
 				i.Have = 0;
@@ -534,7 +535,9 @@ public class vp_SimpleInventory : MonoBehaviour
 					((InventoryWeaponStatus)i).LoadedAmmo = 0;
 				}
 			}
+
 		}
+		*/
 
 	}
 	

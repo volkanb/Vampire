@@ -1,0 +1,17 @@
+5/5/2014 19:03:30.3322194 SlayerAICreator1(Clone) -320590 Search
+5/5/2014 19:03:30.3382250 VampireAICreator1(Clone) -320706 Search
+5/5/2014 19:03:41.1134944 SlayerAICreator1(Clone) -320590 Defend
+5/5/2014 19:03:45.6589936 SlayerAICreator1(Clone) -320590 Search
+5/5/2014 19:03:48.4342604 SlayerAICreator1(Clone) -320590 Defend
+5/5/2014 19:03:48.9763653 VampireAICreator1(Clone) -320706 Attack
+5/5/2014 19:03:48.9773653 SlayerAICreator1(Clone) -320590 Defend
+5/5/2014 19:03:49.3927648 VampireAICreator1(Clone) -320706 Attack
+5/5/2014 19:03:49.3937654 SlayerAICreator1(Clone) -320590 Defend
+5/5/2014 19:03:49.5596402 SlayerAICreator1(Clone) -320590 Defend
+5/5/2014 19:03:49.5606411 VampireAICreator1(Clone) -320706 Attack
+5/5/2014 19:03:50.6887128 VampireAICreator1(Clone) -320706 Attack
+5/5/2014 19:04:07.9667079 VampireAICreator1(Clone) -320706 Search
+5/5/2014 19:04:15.1142855 SlayerAICreator1(Clone) -320590 Defend
+5/5/2014 19:04:17.6160322 SlayerAICreator1(Clone) -320590 Defend
+5/5/2014 19:04:19.2372334 SlayerAICreator1(Clone) -320590 Search
+5/5/2014 19:04:21.4935407 SlayerAICreator1(Clone) -320590 Defend

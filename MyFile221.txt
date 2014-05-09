@@ -1,0 +1,3 @@
+5/5/2014 19:15:56.8422546 SlayerAICreator1(Clone) -496084 Search
+5/5/2014 19:15:56.8482605 VampireAICreator1(Clone) -496200 Search
+5/5/2014 19:16:01.3981246 SlayerAICreator1(Clone) -496084 Defend

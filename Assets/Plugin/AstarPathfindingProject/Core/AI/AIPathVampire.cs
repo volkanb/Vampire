@@ -140,6 +140,8 @@ public class AIPathVampire : MonoBehaviour {
 	 * Used to test if coroutines should be started in OnEnable to prevent calculating paths
 	 * in the awake stage (or rather before start on frame 0).
 	 */
+	
+	
 	public bool isDead=false;
 	private bool startHasRun = false;
 	public bool isDown=false;
@@ -158,6 +160,8 @@ public class AIPathVampire : MonoBehaviour {
 	float channelingTime;
 	//float slowRadius = 2.0f;
 	//float timeToTarget = 0.1f;
+	public GameObject model;
+	
 	void alignMe()
 	{
 		
@@ -192,7 +196,7 @@ public class AIPathVampire : MonoBehaviour {
 		}
 		
 	}
-
+	
 	GameObject getRandomHuman()
 	{
 		ArrayList myList = new ArrayList();
@@ -205,7 +209,7 @@ public class AIPathVampire : MonoBehaviour {
 		{
 			Vector3 diff=go.transform.position-transform.position;
 			if(/*(diff.magnitude<100) && */(go.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0) 
-			&& (go.GetComponent<AIPathHuman>().isRescued==false) && (go.GetComponent<AIPathHuman>().isPossessed==false))
+			   && (go.GetComponent<AIPathHuman>().isRescued==false) && (go.GetComponent<AIPathHuman>().isPossessed==false))
 			{
 				myList.Add(go);
 			}
@@ -227,7 +231,7 @@ public class AIPathVampire : MonoBehaviour {
 		GameObject[] targets;
 		targets=GameObject.FindGameObjectsWithTag("zone");
 		random=null;
-
+		
 		foreach (GameObject go in targets)
 		{
 			myList.Add(go);
@@ -243,7 +247,7 @@ public class AIPathVampire : MonoBehaviour {
 		if(random==null) {return gameObject;}
 		return random;
 	}
-
+	
 	enum State {SEARCH, ATTACK, ATTACKHUMAN, SUCK, DEAD, DOWN, CHANNELING};
 	State state;
 	State lastState;
@@ -268,6 +272,11 @@ public class AIPathVampire : MonoBehaviour {
 		rigid = rigidbody;
 	}
 	
+	
+	// GETTING THE COMPONENTS OF NETW EVENTS
+	private NetworkEvents netwEvents;
+	
+	
 	/** Starts searching for paths.
 	 * If you override this function you should in most cases call base.Start () at the start of it.
 	 * \see OnEnable
@@ -278,6 +287,9 @@ public class AIPathVampire : MonoBehaviour {
 		startHasRun = true;
 		OnEnable ();
 		GetComponent<log>().EnterLog("Search");
+		
+		netwEvents = gameObject.GetComponent<NetworkEvents> ();
+		
 	}
 	
 	/** Run at start and when reenabled.
@@ -334,7 +346,7 @@ public class AIPathVampire : MonoBehaviour {
 	
 	/** Requests a path to the target */
 	public virtual void SearchPath () {
-
+		
 		if (target == null) {Debug.LogError ("Target is null, aborting all search"); canSearch = false; return;}
 		
 		lastRepath = Time.time;
@@ -408,10 +420,10 @@ public class AIPathVampire : MonoBehaviour {
 		if (controller != null) {
 			return tr.position - Vector3.up*controller.height*0.5F;
 		}
-
+		
 		return tr.position;
 	}
-
+	
 	void attackTarget(Transform target)
 	{
 		Vector3 pos=target.position-transform.position;	
@@ -429,11 +441,15 @@ public class AIPathVampire : MonoBehaviour {
 			
 			if (navController != null)
 			{
+				model.animation.Play("RunForward");
+				netwEvents.VampireAIAnimationSync("RunForward");
 				navController.SimpleMove (GetFeetPosition(),dir*1.5f);
 				//Debug.Log("2");
 			} 
 			else if (controller != null) 
 			{
+				model.animation.Play("RunForward");
+				netwEvents.VampireAIAnimationSync("RunForward");
 				controller.SimpleMove (dir*1.5f);
 				//Debug.Log("3");
 			}
@@ -444,6 +460,8 @@ public class AIPathVampire : MonoBehaviour {
 			}
 			else
 			{
+				model.animation.Play("RunForward");
+				netwEvents.VampireAIAnimationSync("RunForward");
 				transform.Translate (1.5f*dir*Time.deltaTime, Space.World);
 				//Debug.Log("5");
 			}
@@ -456,9 +474,14 @@ public class AIPathVampire : MonoBehaviour {
 			transform.LookAt(newV);*/
 			alignMe ();
 			Player.Attack.TryStart();
+			
+			model.animation["Attack3"].layer=1;
+			model.animation["Attack3"].weight=0.5f;
+			model.animation.Play("Attack3");
+			netwEvents.VampireAIAnimationSync("Attack3", 1, 0.5f);
 		}
 	}
-
+	
 	void attackHuman(Transform target)
 	{
 		Vector3 pos=target.position-transform.position;	
@@ -476,11 +499,15 @@ public class AIPathVampire : MonoBehaviour {
 			
 			if (navController != null)
 			{
+				model.animation.Play("RunForward");
+				netwEvents.VampireAIAnimationSync("RunForward");
 				navController.SimpleMove (GetFeetPosition(),dir*1.5f);
 				//Debug.Log("2");
 			} 
 			else if (controller != null) 
 			{
+				model.animation.Play("RunForward");
+				netwEvents.VampireAIAnimationSync("RunForward");
 				controller.SimpleMove (dir*1.5f);
 				//Debug.Log("3");
 			}
@@ -491,6 +518,8 @@ public class AIPathVampire : MonoBehaviour {
 			}
 			else
 			{
+				model.animation.Play("RunForward");
+				netwEvents.VampireAIAnimationSync("RunForward");
 				transform.Translate (1.5f*dir*Time.deltaTime, Space.World);
 				//Debug.Log("5");
 			}
@@ -500,6 +529,7 @@ public class AIPathVampire : MonoBehaviour {
 			channelingTime=Time.time;
 			state=State.CHANNELING;
 			GetComponent<log>().EnterLog("Channeling");
+			netwEvents.ChangeStateVampireNPC("CHANNELING");
 		}
 	}
 	/*void alignMe()
@@ -537,7 +567,7 @@ public class AIPathVampire : MonoBehaviour {
 		
 		
 	}*/
-
+	
 	public virtual void Update () 
 	{
 		/*if (Input.GetButton("Jump"))
@@ -546,12 +576,15 @@ public class AIPathVampire : MonoBehaviour {
 			Player.Jump.Stop();*/
 		switch(state)
 		{
-			case State.SEARCH:
+		case State.SEARCH:
 			//Debug.Log("a");
 			Vector3 pos=target.position-transform.position;	
 			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
-				GetComponent<vp_DamageHandler2>().capsule.animation.Play("death");
+				//GetComponent<vp_DamageHandler2>().capsule.animation.Play("death");
+				model.animation["Death1"].speed=1;
+				model.animation.Play("Death1");
+				netwEvents.VampireAIAnimationSync("Death1", 99, 100f);
 				GetComponent<vp_DamageHandler2>().m_CurrentHealth=1;
 				isDown=true;
 				lastState=State.SEARCH;
@@ -559,16 +592,19 @@ public class AIPathVampire : MonoBehaviour {
 				lastPos=transform.position;
 				state=State.DOWN;
 				GetComponent<log>().EnterLog("Down");
+				netwEvents.ChangeStateVampireNPC("DOWN");
 			}
 			else if((pos.magnitude>6f) && (target.tag=="zone"))
 			{
 				if (!canMove) { return; }
 				else if(pos.magnitude>=radius)
 				{
-
+					
 					if(Time.time-jumpTime>Random.Range(20,22))
 					{
 						Player.Jump.TryStart();
+						model.animation.Play("Jump");
+						netwEvents.VampireAIAnimationSync("Jump");
 						if(Time.time-jumpTime>Random.Range(24,27))
 						{
 							jumpTime=Time.time;
@@ -587,11 +623,15 @@ public class AIPathVampire : MonoBehaviour {
 					
 					if (navController != null)
 					{
+						model.animation.Play("RunForward");
+						netwEvents.VampireAIAnimationSync("RunForward");
 						navController.SimpleMove (GetFeetPosition(),dir*1.5f);
 						//Debug.Log("2");
 					} 
 					else if (controller != null) 
 					{
+						model.animation.Play("RunForward");
+						netwEvents.VampireAIAnimationSync("RunForward");
 						controller.SimpleMove (dir*1.5f);
 						//Debug.Log("3");
 					}
@@ -602,6 +642,8 @@ public class AIPathVampire : MonoBehaviour {
 					}
 					else
 					{
+						model.animation.Play("RunForward");
+						netwEvents.VampireAIAnimationSync("RunForward");
 						transform.Translate (1.5f*dir*Time.deltaTime, Space.World);
 						//Debug.Log("5");
 					}
@@ -611,14 +653,17 @@ public class AIPathVampire : MonoBehaviour {
 			{
 				target=getRandomZone().transform;
 			}
-
+			
 			break;
-
-			case State.ATTACKHUMAN:
+			
+		case State.ATTACKHUMAN:
 			//Debug.Log("b");
 			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
-				GetComponent<vp_DamageHandler2>().capsule.animation.Play("death");
+				//GetComponent<vp_DamageHandler2>().capsule.animation.Play("death");
+				model.animation["Death1"].speed=1;
+				model.animation.Play("Death1");
+				netwEvents.VampireAIAnimationSync("Death1", 99, 100f);
 				GetComponent<vp_DamageHandler2>().m_CurrentHealth=1;
 				isDown=true;
 				lastState=State.ATTACKHUMAN;
@@ -626,12 +671,14 @@ public class AIPathVampire : MonoBehaviour {
 				lastPos=transform.position;
 				state=State.DOWN;
 				GetComponent<log>().EnterLog("Down");
+				netwEvents.ChangeStateVampireNPC("DOWN");
 			}
 			else if((target.GetComponent<AIPathHuman>().isRescued==true) || (target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)|| (target.GetComponent<AIPathHuman>().isPossessed==true) ||  (target.GetComponent<AIPathHuman>().isChanneling==true))
 			{
 				Player.Attack.TryStop();
 				state=State.SEARCH;
 				GetComponent<log>().EnterLog("Search");
+				netwEvents.ChangeStateVampireNPC("SEARCH");
 			}
 			else
 			{
@@ -639,13 +686,15 @@ public class AIPathVampire : MonoBehaviour {
 				attackHuman(target);
 			}
 			break;
-
-			case State.ATTACK:
+			
+		case State.ATTACK:
 			//Debug.Log("c");
 			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
-				//GetComponentInChildren<Animation>().animation.Play("death");
-				GetComponent<vp_DamageHandler2>().capsule.animation.Play("death");
+				//GetComponent<vp_DamageHandler2>().capsule.animation.Play("death");
+				model.animation["Death1"].speed=1;
+				model.animation.Play("Death1");
+				netwEvents.VampireAIAnimationSync("Death1", 99, 100f);
 				GetComponent<vp_DamageHandler2>().m_CurrentHealth=1;
 				isDown=true;
 				lastState=State.ATTACK;
@@ -653,32 +702,36 @@ public class AIPathVampire : MonoBehaviour {
 				lastPos=transform.position;
 				state=State.DOWN;
 				GetComponent<log>().EnterLog("Down");
+				netwEvents.ChangeStateVampireNPC("DOWN");
 			}
 			else if((target.tag=="Slayer") && (target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1))
 			{
 				Player.Attack.TryStop();
 				state=State.SEARCH;
 				GetComponent<log>().EnterLog("Search");
+				netwEvents.ChangeStateVampireNPC("SEARCH");
 			}
 			else if((target.tag=="SlayerPlayer") && (target.GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth<1))
 			{
 				Player.Attack.TryStop();
 				state=State.SEARCH;
 				GetComponent<log>().EnterLog("Search");
+				netwEvents.ChangeStateVampireNPC("SEARCH");
 			}
 			else
 			{
 				attackTarget(target);
 			}
 			break;
-
-			case State.DOWN:
+			
+		case State.DOWN:
 			transform.position=lastPos;
 			//Debug.Log("d");
 			if(isDead==true)
 			{
 				state=State.DEAD;
 				GetComponent<log>().EnterLog("Dead");
+				netwEvents.ChangeStateVampireNPC("DEAD");
 			}
 			/*else if(Time.time-GetComponentInChildren<vp_DamageHandler2>().reanimTime>4f)
 			{
@@ -694,7 +747,12 @@ public class AIPathVampire : MonoBehaviour {
 				/*Player.SetWeapon.TryStart(1);
 				isDown=false;
 				GetComponentInChildren<vp_DamageHandler2>().m_CurrentHealth=1;*/
-				GetComponent<vp_DamageHandler2>().playReanim();
+				//GetComponent<vp_DamageHandler2>().playReanim();
+				
+				model.animation["Death1"].speed=-1;
+				model.animation["Death1"].time = model.animation["Death1"].length;
+				model.animation.Play("Death1");
+				netwEvents.VampireAIAnimationSync("Death1", 99, -100f);
 				//state=lastState;
 			}
 			else if((GetComponent<vp_DamageHandler2>().isReanimPlaying()==false) && (animSet==true))
@@ -703,6 +761,7 @@ public class AIPathVampire : MonoBehaviour {
 				{
 					state=State.DEAD;
 					GetComponent<log>().EnterLog("Dead");
+					netwEvents.ChangeStateVampireNPC("DEAD");
 				}
 				else
 				{
@@ -712,25 +771,29 @@ public class AIPathVampire : MonoBehaviour {
 					animSet=false;
 					state=lastState;
 				}
-
+				
 			}
 			else 
 			{
 				//transform.position=lastPos;
 			}
 			break;
-
-			case State.DEAD:
+			
+		case State.DEAD:
 			//Debug.Log("e");
 			Player.Attack.TryStop();
-			Destroy(gameObject,10);
+			//Destroy(gameObject,10);
 			break;
-
-			case State.CHANNELING:
+			
+		case State.CHANNELING:
 			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				target.GetComponent<AIPathHuman>().isChanneling=false;
-				GetComponent<vp_DamageHandler2>().capsule.animation.Play("death");
+				//GetComponent<vp_DamageHandler2>().capsule.animation.Play("death");
+				model.animation["Death1"].speed=1;
+				model.animation.Play("Death1");
+				netwEvents.VampireAIAnimationSync("Death1", 99, 100f);
+
 				GetComponent<vp_DamageHandler2>().m_CurrentHealth=1;
 				isDown=true;
 				lastState=State.ATTACK;
@@ -738,19 +801,25 @@ public class AIPathVampire : MonoBehaviour {
 				lastPos=transform.position;
 				state=State.DOWN;
 				GetComponent<log>().EnterLog("Down");
-
+				netwEvents.ChangeStateVampireNPC("DOWN");
+				
 			}
 			else if( (target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1) || (target.GetComponent<AIPathHuman>().isPossessed==true))
 			{
 				target.GetComponent<AIPathHuman>().isChanneling=false;
 				state=State.SEARCH;
 				GetComponent<log>().EnterLog("Search");
-
+				netwEvents.ChangeStateVampireNPC("SEARCH");
+				
 			}
 			else if(Time.time-channelingTime>4f)
 			{
 				target.GetComponent<AIPathHuman>().isPossessed=true;
-				target.GetComponent<vp_DamageHandler2>().capsule.renderer.material.color=Color.magenta;
+				target.GetComponent<AIPathHuman>().model.SetActive(false);
+				target.GetComponent<AIPathHuman>().possessedModel.SetActive(true);
+				target.GetComponent<NetworkEvents>().HumanAIModelSync("possessed");
+				//target.GetComponent<vp_DamageHandler2>().capsule.renderer.material.color=Color.magenta;
+				
 			}
 			else
 			{
@@ -759,9 +828,11 @@ public class AIPathVampire : MonoBehaviour {
 				{
 					GetComponent<vp_DamageHandler2>().m_CurrentHealth+=0.015f;
 				}
+				model.animation.Play("Attack3"); 
+				netwEvents.VampireAIAnimationSync("Attack3");
 			}
 			break;
-
+			
 			/*    Terrain terrain = (Terrain) GetComponent(typeof(Terrain));
 		    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		    RaycastHit hit = new RaycastHit();
@@ -783,11 +854,11 @@ public class AIPathVampire : MonoBehaviour {
 		    }*/
 		}
 	}
-
-
+	
+	
 	void OnTriggerEnter(Collider other)
 	{
-
+		
 		if( ((other.tag=="Slayer") || (other.tag=="ArmedHuman")) && (other.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0) && (isDown==false))
 		{
 			if(target!=null){if(target.tag=="Human"){target.GetComponent<AIPathHuman>().isChanneling=false;}}
@@ -795,6 +866,7 @@ public class AIPathVampire : MonoBehaviour {
 			Player.Attack.TryStop();
 			state=State.ATTACK; 
 			GetComponent<log>().EnterLog("Attack");
+			netwEvents.ChangeStateVampireNPC("ATTACK");
 		}
 		else if( (other.tag=="SlayerPlayer") && (other.GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth>0) && (isDown==false))
 		{
@@ -803,11 +875,18 @@ public class AIPathVampire : MonoBehaviour {
 			Player.Attack.TryStop();
 			state=State.ATTACK; 
 			GetComponent<log>().EnterLog("Attack");
+			netwEvents.ChangeStateVampireNPC("ATTACK");
 		}
-
+		
 		if(state!=State.CHANNELING)
 		{
-			if((state==State.SEARCH) && (other.tag=="Human") && (other.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0)) {target=other.gameObject.transform; state=State.ATTACKHUMAN; GetComponent<log>().EnterLog("AttackHuman");}
+			if((state==State.SEARCH) && (other.tag=="Human") && (other.GetComponent<vp_DamageHandler2>().m_CurrentHealth>0)) 
+			{
+				target=other.gameObject.transform;
+				state=State.ATTACKHUMAN;
+				GetComponent<log>().EnterLog("AttackHuman");
+				netwEvents.ChangeStateVampireNPC("ATTACKHUMAN");
+			}
 		}
 	}
 	
@@ -854,7 +933,7 @@ public class AIPathVampire : MonoBehaviour {
 			if (currentWaypointIndex < vPath.Count-1) {
 				//There is a "next path segment"
 				float dist = XZSqrMagnitude (vPath[currentWaypointIndex], currentPosition);
-					//Mathfx.DistancePointSegmentStrict (vPath[currentWaypointIndex+1],vPath[currentWaypointIndex+2],currentPosition);
+				//Mathfx.DistancePointSegmentStrict (vPath[currentWaypointIndex+1],vPath[currentWaypointIndex+2],currentPosition);
 				if (dist < pickNextWaypointDist*pickNextWaypointDist) {
 					currentWaypointIndex++;
 				} else {
@@ -867,7 +946,7 @@ public class AIPathVampire : MonoBehaviour {
 		
 		Vector3 dir = vPath[currentWaypointIndex] - vPath[currentWaypointIndex-1];
 		Vector3 targetPosition = CalculateTargetPoint (currentPosition,vPath[currentWaypointIndex-1] , vPath[currentWaypointIndex]);
-			//vPath[currentWaypointIndex] + Vector3.ClampMagnitude (dir,forwardLook);
+		//vPath[currentWaypointIndex] + Vector3.ClampMagnitude (dir,forwardLook);
 		
 		
 		
@@ -940,4 +1019,10 @@ public class AIPathVampire : MonoBehaviour {
 		offset = Mathf.Clamp (offset+closest,0.0F,1.0F);
 		return (b-a)*offset + a;
 	}
+	
+	public void ResetVampireState()
+	{
+		state = State.SEARCH;
+	}
+	
 }

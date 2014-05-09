@@ -1,0 +1,11 @@
+5/5/2014 19:46:26.5708946 SlayerAICreator1(Clone) -618636 Search
+5/5/2014 19:46:37.7890138 SlayerAICreator1(Clone) -618636 Defend
+5/5/2014 19:47:00.8494933 SlayerAICreator1(Clone) -618636 Dead
+5/5/2014 19:47:05.4381459 SlayerAICreator1(Clone) -618636 Defend
+5/5/2014 19:47:07.9364734 SlayerAICreator1(Clone) -618636 Search
+5/5/2014 19:47:08.7142118 SlayerAICreator1(Clone) -618636 Defend
+5/5/2014 19:47:17.6593985 SlayerAICreator1(Clone) -618636 Search
+5/5/2014 19:47:21.5273873 SlayerAICreator1(Clone) -618636 Defend
+5/5/2014 19:47:32.0031113 SlayerAICreator1(Clone) -618636 Defend
+5/5/2014 19:47:38.2674984 SlayerAICreator1(Clone) -618636 Defend
+5/5/2014 19:47:44.1293811 SlayerAICreator1(Clone) -618636 Defend

@@ -160,11 +160,10 @@ public class AIPathHuman : MonoBehaviour {
 	float radius=2f;
 	public bool isChanneling=false;
 	public GameObject cam;
-
-
-
-
-
+	public GameObject model;
+	public GameObject armedModel;
+	public GameObject possessedModel;
+	bool dying=false;
 	//Align
 	float targetDegree;
 	//float aSpeed;
@@ -175,7 +174,7 @@ public class AIPathHuman : MonoBehaviour {
 	//float timeToTarget = 0.1f;
 	void alignMe()
 	{
-
+		
 		if(target.GetComponent<AIPathSlayer>().target!=null)
 		{
 			Vector3 dir =  target.GetComponent<AIPathSlayer>().target.transform.position - transform.position;
@@ -243,16 +242,16 @@ public class AIPathHuman : MonoBehaviour {
 			transform.Rotate(Vector3.up, targetRotation * Time.deltaTime);
 		}
 	}
-
-
+	
+	
 	private bool IsThereSomeoneInFront() 
 	{
 		return Physics.Raycast(transform.position, transform.forward, 2f);
 	}
-
+	
 	public enum State {WANDER, FOLLOW, POSSESSED, RUN, DEFEND, IDLE, DEAD, RESCUED, ATTACK,CHANNELING};
 	public State state;
-
+	
 	protected virtual void Awake () {
 		Player = (vp_FPPlayerEventHandler)transform.root.GetComponentInChildren(typeof(vp_FPPlayerEventHandler));
 		walkTimeLimit=Random.Range(2,4);
@@ -278,22 +277,23 @@ public class AIPathHuman : MonoBehaviour {
 	 * \see OnEnable
 	 * \see RepeatTrySearchPath
 	 */
-
-
+	
+	
 	// GETTING THE COMPONENTS OF NETW EVENTS
 	private NetworkEvents netwEvents;
-
+	
 	// GETTING THE COMPONENTS OF NETW ROUND CONTROLLER
 	private NetworkRoundController netwRoundController;
-
+	
 	protected virtual void Start () {
+		dying=false;
 		startHasRun = true;
 		OnEnable ();
 		GetComponent<log>().EnterLog("Wander");
-
+		
 		netwEvents = gameObject.GetComponent<NetworkEvents> ();
 		netwRoundController = GameObject.Find("NetworkControlUnits").GetComponentInChildren<NetworkRoundController>();
-
+		
 	}
 	
 	/** Run at start and when reenabled.
@@ -423,7 +423,7 @@ public class AIPathHuman : MonoBehaviour {
 		if (controller != null) {
 			return tr.position - Vector3.up*controller.height*0.5F;
 		}
-
+		
 		return tr.position;
 	}
 	
@@ -431,13 +431,13 @@ public class AIPathHuman : MonoBehaviour {
 	{
 		switch(state)
 		{
-			case State.WANDER:
-			// INFORM THE PROXY OF STATE CHANGE
-			netwEvents.ChangeStateNPC("WANDER");
+		case State.WANDER:
+			
 			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
 				GetComponent<log>().EnterLog("Dead");
+				netwEvents.ChangeStateNPC("DEAD");
 			}
 			else if(isPossessed==true)
 			{
@@ -446,16 +446,29 @@ public class AIPathHuman : MonoBehaviour {
 				gameObject.tag="PossessedHuman";
 				Player.SetWeapon.TryStart(2);
 				state=State.POSSESSED;
-
+				
 				// INCREASE VAMPIRE TEAM SCORE
 				netwRoundController.IncreaseVampireScore();
-
+				
 				GetComponent<log>().EnterLog("Possessed");
+				netwEvents.ChangeStateNPC("POSSESSED");
+
+
+				possessedModel.SetActive(true);
+				armedModel.SetActive(false);
+				model.SetActive(false);
+
 			}
 			else if(isFollowing==true)
 			{
 				state=State.FOLLOW;
 				GetComponent<log>().EnterLog("Follow");
+				netwEvents.ChangeStateNPC("FOLLOW");
+
+
+				armedModel.SetActive(true);
+				possessedModel.SetActive(false);
+				model.SetActive(false);
 			}
 			else
 			{
@@ -466,44 +479,50 @@ public class AIPathHuman : MonoBehaviour {
 						velocity = maxSpeed * transform.forward * 0.1f;
 						float randomBinomial = Random.value - Random.value;
 						if (Random.value < 0.05)
-						transform.rotation *= Quaternion.AngleAxis(randomBinomial * maxRotation, transform.up);
+							transform.rotation *= Quaternion.AngleAxis(randomBinomial * maxRotation, transform.up);
 						controller.SimpleMove(velocity);
+						model.animation.Play("run");
+						netwEvents.HumanAIAnimationSync("run");
 					}
 					else if (IsThereSomeoneInFront())
 					{
 						float totalAngle = Random.Range(-180f, 180f);
-							
+						
 						float angleSoFar = 0;
 						float angleSpeed = 1;
-							
+						
 						while (angleSoFar < totalAngle) 
 						{
 							float angleThisFrame = Mathf.Sign(totalAngle) * angleSpeed * Time.deltaTime;
-								
+							
 							transform.Rotate(0, angleThisFrame, 0);
-								
+							
 							angleSoFar += angleThisFrame;
 						}
-							
+						
 					}
 					else if(Time.time-walkTime>stopTimeLimit)
 					{
 						walkTime=Time.time;
 					}
 				}
-					
-				else if(Time.time-walkTime<=3.5f){/*play idle animation */}
-			
+				
+				else if(Time.time-walkTime<=3.5f)
+				{
+					model.animation.PlayQueued("idle");
+					netwEvents.HumanAIAnimationSync("run", -1);
+				}
+				
 			}
 			break;
-
-			case State.RUN:
-			// INFORM THE PROXY OF STATE CHANGE
-			netwEvents.ChangeStateNPC("RUN");
+			
+		case State.RUN:
+			
 			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
 				GetComponent<log>().EnterLog("Dead");
+				netwEvents.ChangeStateNPC("DEAD");
 			}
 			/*else if(target==null)
 			{
@@ -515,28 +534,37 @@ public class AIPathHuman : MonoBehaviour {
 				target=transform;
 				state=State.WANDER;
 				GetComponent<log>().EnterLog("Wander");
+				netwEvents.ChangeStateNPC("WANDER");
 			}
 			else if( (target.tag=="VampirePlayer") && (target.GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth<1))
 			{
 				target=transform;
 				state=State.WANDER;
 				GetComponent<log>().EnterLog("Wander");
+				netwEvents.ChangeStateNPC("WANDER");
 			}
 			else if(isChanneling==true)
 			{
 				state=State.CHANNELING;
 				GetComponent<log>().EnterLog("Channeling");
+				netwEvents.ChangeStateNPC("CHANNELING");
 			}
 			/*else if(isPossessed==true)
 			{
 				state=State.POSSESSED;
 				GetComponent<log>().EnterLog("Possessed");
 			}*/
-
+			
 			else if(isFollowing==true)
 			{
 				state=State.FOLLOW;
 				GetComponent<log>().EnterLog("Follow");
+				netwEvents.ChangeStateNPC("FOLLOW");
+
+
+				armedModel.SetActive(true);
+				possessedModel.SetActive(false);
+				model.SetActive(false);
 			}
 			else
 			{
@@ -546,35 +574,42 @@ public class AIPathHuman : MonoBehaviour {
 					Vector3 pos=transform.position-target.position;
 					pos.Normalize();
 					GetComponent<CharacterController>().SimpleMove(pos*1.6f);
+					model.animation.Play("run");
+					netwEvents.HumanAIAnimationSync("run");
 				}
 				else if(runPos.magnitude>=15f)
 				{
 					target=gameObject.transform;
 					state=State.WANDER;
 					GetComponent<log>().EnterLog("Wander");
+					netwEvents.ChangeStateNPC("WANDER");
 				}
 			}
 			break;
-
-
-			case State.FOLLOW:
-			// INFORM THE PROXY OF STATE CHANGE
-			netwEvents.ChangeStateNPC("FOLLOW");
+			
+			
+		case State.FOLLOW:
+			
 			Vector3 targetPos=GameObject.Find("SlayerBase").transform.position-transform.position;	
 			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
 				Player.Attack.TryStop();
 				GetComponent<log>().EnterLog("Dead");
+				netwEvents.ChangeStateNPC("DEAD");
 			}
 			else if(targetPos.magnitude<5f) {
 				Player.Attack.TryStop(); 
 				state=State.RESCUED; 
-
+				
 				// INCREASE SLAYER TEAM SCORE
 				netwRoundController.IncreaseSlayerScore();
-
-				GetComponent<log>().EnterLog("Rescued");}
+				
+				GetComponent<log>().EnterLog("Rescued");
+				
+				netwEvents.ChangeStateNPC("RESCUED");
+			}
+			
 			else if((target.tag=="Slayer") &&(target.GetComponent<AIPathSlayer>().isAttacking==true))
 			{
 				alignMe();
@@ -589,6 +624,10 @@ public class AIPathHuman : MonoBehaviour {
 					if( (objectHit.transform.tag=="Vampire") || (objectHit.transform.tag=="PossessedHuman") || (objectHit.transform.tag=="VampirePlayer") )
 					{
 						Player.Attack.TryStart();	
+						armedModel.animation["stand_Fshot"].layer=1;
+						armedModel.animation["stand_Fshot"].weight=0.5f;
+						armedModel.animation.Play("stand_Fshot");
+						netwEvents.HumanAIAnimationSync("stand_Fshot", 1, 0.5f);
 					}	
 					/*if(objectHit.transform.parent.parent!=null)
 					{
@@ -602,7 +641,7 @@ public class AIPathHuman : MonoBehaviour {
 			}
 			else if((target.tag=="Slayer") && (target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1))
 			{
-
+				
 				if((vampireTarget!=null) && (vampireTarget.tag=="Vampire") && (vampireTarget.GetComponent<AIPathVampire>().isDead==false))
 				{
 					target=vampireTarget.transform;
@@ -610,6 +649,7 @@ public class AIPathHuman : MonoBehaviour {
 					isFollowing=false;
 					state=State.DEFEND;
 					GetComponent<log>().EnterLog("Defend");
+					netwEvents.ChangeStateNPC("DEFEND");
 				}
 				else if((vampireTarget!=null) && (vampireTarget.tag=="VampirePlayer") && (vampireTarget.GetComponent<vp_PlayerDamageHandler2>().isDead==false))
 				{
@@ -618,6 +658,7 @@ public class AIPathHuman : MonoBehaviour {
 					isFollowing=false;
 					state=State.DEFEND;
 					GetComponent<log>().EnterLog("Defend");
+					netwEvents.ChangeStateNPC("DEFEND");
 				}
 				else 
 				{
@@ -626,6 +667,7 @@ public class AIPathHuman : MonoBehaviour {
 					isFollowing=false;
 					state=State.IDLE;
 					GetComponent<log>().EnterLog("Idle");
+					netwEvents.ChangeStateNPC("IDLE");
 				}
 			}
 			else if((target.tag=="SlayerPlayer") && ((isFollowing==false) || (target.GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth<1)))
@@ -638,6 +680,7 @@ public class AIPathHuman : MonoBehaviour {
 					isFollowing=false;
 					state=State.DEFEND;
 					GetComponent<log>().EnterLog("Defend");
+					netwEvents.ChangeStateNPC("DEFEND");
 				}
 				else if((vampireTarget!=null) && (vampireTarget.tag=="VampirePlayer") && (vampireTarget.GetComponent<vp_PlayerDamageHandler2>().isDead==false))
 				{
@@ -646,6 +689,7 @@ public class AIPathHuman : MonoBehaviour {
 					isFollowing=false;
 					state=State.DEFEND;
 					GetComponent<log>().EnterLog("Defend");
+					netwEvents.ChangeStateNPC("DEFEND");
 				}
 				else 
 				{
@@ -654,6 +698,7 @@ public class AIPathHuman : MonoBehaviour {
 					isFollowing=false;
 					state=State.IDLE;
 					GetComponent<log>().EnterLog("Idle");
+					netwEvents.ChangeStateNPC("IDLE");
 				}
 			}
 			else
@@ -675,10 +720,14 @@ public class AIPathHuman : MonoBehaviour {
 					if (navController != null) 
 					{
 						navController.SimpleMove (GetFeetPosition(),dir);
+						armedModel.animation.Play("run");
+						netwEvents.HumanAIAnimationSync("run");
 					} 
 					else if (controller != null) 
 					{
 						controller.SimpleMove (dir);
+						armedModel.animation.Play("run");
+						netwEvents.HumanAIAnimationSync("run");
 					} 
 					else if (rigid != null) 
 					{
@@ -687,25 +736,33 @@ public class AIPathHuman : MonoBehaviour {
 					else 
 					{
 						transform.Translate (dir*Time.deltaTime, Space.World);
+						armedModel.animation.Play("run");
+						netwEvents.HumanAIAnimationSync("run");
 					}
 				}
-
+				
 			}
 			break;
-
-			case State.DEFEND:
-			// INFORM THE PROXY OF STATE CHANGE
-			netwEvents.ChangeStateNPC("DEFEND");
+			
+		case State.DEFEND:
+			
 			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
 				GetComponent<log>().EnterLog("Dead");
+				netwEvents.ChangeStateNPC("DEAD");
 			}
 			else if(isFollowing==true)
 			{
 				Player.Attack.TryStop();
 				state=State.FOLLOW;
 				GetComponent<log>().EnterLog("Follow");
+				netwEvents.ChangeStateNPC("FOLLOW");
+
+
+				armedModel.SetActive(true);
+				model.SetActive(false);
+				possessedModel.SetActive(false);
 			}
 			else if( (target.tag=="Vampire") && (target.GetComponent<AIPathVampire>().isDead==true))/*(target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)*/
 			{
@@ -713,6 +770,7 @@ public class AIPathHuman : MonoBehaviour {
 				target=gameObject.transform;
 				state=State.IDLE;
 				GetComponent<log>().EnterLog("Idle");
+				netwEvents.ChangeStateNPC("IDLE");
 			}
 			else if( (target.tag=="VampirePlayer") && (target.GetComponent<vp_PlayerDamageHandler2>().isDead==true))/*(target.GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth<1)*/
 			{
@@ -720,6 +778,7 @@ public class AIPathHuman : MonoBehaviour {
 				target=gameObject.transform;
 				state=State.IDLE;
 				GetComponent<log>().EnterLog("Idle");
+				netwEvents.ChangeStateNPC("IDLE");
 			}
 			else
 			{
@@ -751,27 +810,45 @@ public class AIPathHuman : MonoBehaviour {
 						if( (objectHit.transform.tag=="Vampire") || (objectHit.transform.tag=="PossessedHuman") || (objectHit.transform.tag=="VampirePlayer") )
 						{
 							Player.Attack.TryStart();	
+							armedModel.animation["stand_Fshot"].layer=1;
+							armedModel.animation["stand_Fshot"].weight=0.5f;
+							armedModel.animation.Play("stand_Fshot");
+							netwEvents.HumanAIAnimationSync("stand_Fshot", 1, 0.5f);
 						}	
 					}
 					else {Player.Reload.TryStart();}
 				}
-				else {Player.Attack.TryStop();target=gameObject.transform; state=State.IDLE; GetComponent<log>().EnterLog("Idle");}
+				else 
+				{
+					Player.Attack.TryStop();
+					target=gameObject.transform; 
+					state=State.IDLE; 
+					GetComponent<log>().EnterLog("Idle");
+					netwEvents.ChangeStateNPC("IDLE");
+				}
 			}
 			break;
-
-			case State.IDLE:
-			// INFORM THE PROXY OF STATE CHANGE
-			netwEvents.ChangeStateNPC("IDLE");
+			
+		case State.IDLE:
+			
+			armedModel.animation.PlayQueued("idle");
+			netwEvents.HumanAIAnimationSync("idle", -1);
+			
 			if(isFollowing==true)
 			{
 				state=State.FOLLOW;
 				GetComponent<log>().EnterLog("Follow");
+				netwEvents.ChangeStateNPC("FOLLOW");
+
+
+				armedModel.SetActive(true);
+				possessedModel.SetActive(false);
+				model.SetActive(false);
 			}
 			break;
-
-			case State.RESCUED:
-			// INFORM THE PROXY OF STATE CHANGE
-			netwEvents.ChangeStateNPC("RESCUED");
+			
+		case State.RESCUED:
+			
 			if(target.tag=="SlayerPlayer")
 			{
 				target.GetComponent<vp_PlayerDamageHandler2>().target=null;
@@ -779,21 +856,21 @@ public class AIPathHuman : MonoBehaviour {
 			target=gameObject.transform;
 			isRescued=true;
 			Player.Attack.TryStop();
-
-
+			
+			
 			StartCoroutine( NetworkDestroyWithDelay( gameObject,  10f ) );
 			//Destroy(gameObject,10);
 			break;
-
-
-			case State.POSSESSED:
-			// INFORM THE PROXY OF STATE CHANGE
-			netwEvents.ChangeStateNPC("POSSESSED");
-
+			
+			
+		case State.POSSESSED:
+			
+			
 			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
 				GetComponent<log>().EnterLog("Dead");
+				netwEvents.ChangeStateNPC("DEAD");
 			}
 			else
 			{
@@ -806,6 +883,8 @@ public class AIPathHuman : MonoBehaviour {
 						if (Random.value < 0.05)
 							transform.rotation *= Quaternion.AngleAxis(randomBinomial * maxRotation, transform.up);
 						controller.SimpleMove(velocity);
+						possessedModel.animation.Play("walk");
+						netwEvents.HumanAIAnimationSync("walk");
 					}
 					else if (IsThereSomeoneInFront())
 					{
@@ -830,36 +909,43 @@ public class AIPathHuman : MonoBehaviour {
 					}
 				}
 				
-				else if(Time.time-walkTime<=3.5f){/*play idle animation */}
+				else if(Time.time-walkTime<=3.5f)
+				{
+					possessedModel.animation.PlayQueued("IdleUsual");
+					netwEvents.HumanAIAnimationSync("IdleUsual", -1);
+				}
 				
 			}
-
-
+			
+			
 			break;
-
-			case State.ATTACK:
-			// INFORM THE PROXY OF STATE CHANGE
-			netwEvents.ChangeStateNPC("ATTACK");
+			
+		case State.ATTACK:
 			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				state=State.DEAD;
 				GetComponent<log>().EnterLog("Dead");
+				netwEvents.ChangeStateNPC("DEAD");
 			}
 			else if((target.tag!="SlayerPlayer") &&(target.GetComponent<vp_DamageHandler2>().m_CurrentHealth<1))
 			{
 				Player.Attack.TryStop();
 				target=transform;
 				state=State.POSSESSED;
-
+				
 				GetComponent<log>().EnterLog("Possessed");
+				netwEvents.ChangeStateNPC("POSSESSED");
+				
 			}
 			else if((target.tag=="SlayerPlayer") &&(target.GetComponent<vp_PlayerDamageHandler2>().m_CurrentHealth<1))
 			{
 				Player.Attack.TryStop();
 				target=transform;
 				state=State.POSSESSED;
-
+				
 				GetComponent<log>().EnterLog("Possessed");
+				netwEvents.ChangeStateNPC("POSSESSED");
+				
 			}
 			else
 			{
@@ -878,10 +964,14 @@ public class AIPathHuman : MonoBehaviour {
 					if (navController != null)
 					{
 						navController.SimpleMove (GetFeetPosition(),dir);
+						possessedModel.animation.Play("RunForward");
+						netwEvents.HumanAIAnimationSync("RunForward");
 					} 
 					else if (controller != null) 
 					{
 						controller.SimpleMove (dir);
+						possessedModel.animation.Play("RunForward");
+						netwEvents.HumanAIAnimationSync("RunForward");
 					}
 					else if (rigid != null) 
 					{
@@ -890,38 +980,55 @@ public class AIPathHuman : MonoBehaviour {
 					else
 					{
 						transform.Translate (dir*Time.deltaTime, Space.World);
+						possessedModel.animation.Play("RunForward");
+						netwEvents.HumanAIAnimationSync("RunForward");
 					}
 				}
-
+				
 				else if(pos.magnitude<radius)
 				{
 					//transform.LookAt(target.transform.position);
 					alignMe2();
 					Player.Attack.TryStart();
+					possessedModel.animation["Attack3"].layer=1;
+					possessedModel.animation["Attack3"].weight=0.5f;
+					possessedModel.animation.Play("Attack3");
+					netwEvents.HumanAIAnimationSync("Attack3", 1, 0.5f);
 				}
 			}
 			break;
-
-			case State.DEAD:
-			// INFORM THE PROXY OF STATE CHANGE
-			netwEvents.ChangeStateNPC("DEAD");
+			
+		case State.DEAD:
+			
+			if((gameObject.tag=="ArmedHuman") && (dying==false))
+			{
+				dying=true;
+				armedModel.animation.Play("death");
+				netwEvents.HumanAIAnimationSync("death");
+			}
+			else if((gameObject.tag=="PossessedHuman") && (dying==false))
+			{
+				dying=true;
+				possessedModel.animation.Play("Death1");
+				netwEvents.HumanAIAnimationSync("Death1");
+			}
 			target=gameObject.transform;
 			Player.Attack.TryStop();
-
-
+			
+			
 			StartCoroutine( NetworkDestroyWithDelay( gameObject,  10f ) );
 			//Destroy(gameObject,5);
 			break;
-
-			case State.CHANNELING:
-			// INFORM THE PROXY OF STATE CHANGE
-			netwEvents.ChangeStateNPC("CHANNELING");
+			
+		case State.CHANNELING:
+			
 			if(GetComponent<vp_DamageHandler2>().m_CurrentHealth<1)
 			{
 				target=transform;
 				vampireTarget=null;
 				state=State.DEAD;
 				GetComponent<log>().EnterLog("Dead");
+				netwEvents.ChangeStateNPC("DEAD");
 			}
 			/*else if(isFollowing==true)
 			{
@@ -936,6 +1043,7 @@ public class AIPathHuman : MonoBehaviour {
 				GetComponent<log>().EnterLog("Wander");*/
 				state=State.RUN;
 				GetComponent<log>().EnterLog("Run");
+				netwEvents.ChangeStateNPC("RUN");
 			}
 			else if(isPossessed==true)
 			{
@@ -944,13 +1052,19 @@ public class AIPathHuman : MonoBehaviour {
 				gameObject.tag="PossessedHuman";
 				Player.SetWeapon.TryStart(2);
 				state=State.POSSESSED;
-
+				
 				// INCREASE VAMPIRE TEAM SCORE
 				netwRoundController.IncreaseVampireScore();
-
+				
 				GetComponent<log>().EnterLog("Possessed");
-			}
+				netwEvents.ChangeStateNPC("POSSESSED");
 
+
+				possessedModel.SetActive(true);
+				model.SetActive(false);
+				armedModel.SetActive(false);
+			}
+			
 			break;
 		}
 	}
@@ -959,8 +1073,22 @@ public class AIPathHuman : MonoBehaviour {
 	{
 		if(isPossessed==false)
 		{
-			if( ((other.tag=="Vampire") || (other.tag=="PossessedHuman") || (other.tag=="VampirePlayer") )&& (isArmed==false) ) {state=State.RUN; target=other.gameObject.transform; vampireTarget=other.gameObject.transform; GetComponent<log>().EnterLog("Run");}
-			else if( ((other.tag=="Vampire") || (other.tag=="PossessedHuman")  || (other.tag=="VampirePlayer") ) && (isArmed==true) && (isFollowing==false) ) {state=State.DEFEND; vampireTarget=other.gameObject.transform; target=other.gameObject.transform; GetComponent<log>().EnterLog("Defend");}
+			if( ((other.tag=="Vampire") || (other.tag=="PossessedHuman") || (other.tag=="VampirePlayer") )&& (isArmed==false) ) 
+			{
+				state=State.RUN; 
+				target=other.gameObject.transform; 
+				vampireTarget=other.gameObject.transform; 
+				GetComponent<log>().EnterLog("Run");
+				netwEvents.ChangeStateNPC("RUN");
+			}
+			else if( ((other.tag=="Vampire") || (other.tag=="PossessedHuman")  || (other.tag=="VampirePlayer") ) && (isArmed==true) && (isFollowing==false) ) 
+			{
+				state=State.DEFEND;
+				vampireTarget=other.gameObject.transform; 
+				target=other.gameObject.transform; 
+				GetComponent<log>().EnterLog("Defend");
+				netwEvents.ChangeStateNPC("DEFEND");
+			}
 			else if( ((other.tag=="Vampire") || (other.tag=="PossessedHuman")  || (other.tag=="VampirePlayer") ) && (isArmed==true) && (isFollowing==true) ) {vampireTarget=other.gameObject.transform;} 
 		}
 		else
@@ -970,8 +1098,9 @@ public class AIPathHuman : MonoBehaviour {
 				target=other.gameObject.transform;
 				state=State.ATTACK;
 				GetComponent<log>().EnterLog("Attack");
+				netwEvents.ChangeStateNPC("ATTACK");
 			}
-
+			
 		}
 	}
 	/** Point to where the AI is heading.
@@ -1017,7 +1146,7 @@ public class AIPathHuman : MonoBehaviour {
 			if (currentWaypointIndex < vPath.Count-1) {
 				//There is a "next path segment"
 				float dist = XZSqrMagnitude (vPath[currentWaypointIndex], currentPosition);
-					//Mathfx.DistancePointSegmentStrict (vPath[currentWaypointIndex+1],vPath[currentWaypointIndex+2],currentPosition);
+				//Mathfx.DistancePointSegmentStrict (vPath[currentWaypointIndex+1],vPath[currentWaypointIndex+2],currentPosition);
 				if (dist < pickNextWaypointDist*pickNextWaypointDist) {
 					currentWaypointIndex++;
 				} else {
@@ -1030,7 +1159,7 @@ public class AIPathHuman : MonoBehaviour {
 		
 		Vector3 dir = vPath[currentWaypointIndex] - vPath[currentWaypointIndex-1];
 		Vector3 targetPosition = CalculateTargetPoint (currentPosition,vPath[currentWaypointIndex-1] , vPath[currentWaypointIndex]);
-			//vPath[currentWaypointIndex] + Vector3.ClampMagnitude (dir,forwardLook);
+		//vPath[currentWaypointIndex] + Vector3.ClampMagnitude (dir,forwardLook);
 		
 		
 		
@@ -1103,12 +1232,12 @@ public class AIPathHuman : MonoBehaviour {
 		offset = Mathf.Clamp (offset+closest,0.0F,1.0F);
 		return (b-a)*offset + a;
 	}
-
+	
 	public IEnumerator NetworkDestroyWithDelay( GameObject go , float delay  )
 	{
 		yield return new WaitForSeconds(delay);
-
+		
 		uLink.Network.Destroy (go);
-
+		
 	}
 }

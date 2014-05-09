@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿//using System.Diagnostics; 
+using UnityEngine;
 using System.Collections;
 
 public class NetworkRoundController : uLink.MonoBehaviour {
@@ -8,6 +9,9 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 
 	public GameObject[] vampirePlayers = new GameObject[20];
 	public GameObject[] slayerPlayers = new GameObject[20];
+
+	public GameObject[] vampireBots = new GameObject[20];
+	public GameObject[] slayerBots = new GameObject[20];
 
 	public int SlayerBotNumber = 0;
 	public int VampireBotNumber = 0;
@@ -71,6 +75,24 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 			{
 				EndTheRound();
 			}
+
+
+			//----------------------------------------------------------------------------------------------
+			// INSTANTIATE BOTS IF NEEDED
+			CollectBots();
+
+			if( slayerBots.Length < SlayerBotNumber )
+			{
+				netwSpawnController.InstantiateBots ( (SlayerBotNumber - slayerBots.Length) , 0 );
+			}
+			if( vampireBots.Length < VampireBotNumber )
+			{
+				netwSpawnController.InstantiateBots ( 0 , (VampireBotNumber - vampireBots.Length) );
+			}
+			//----------------------------------------------------------------------------------------------
+
+
+
 		}
 	
 		if (anybodyInTheGame) 
@@ -121,23 +143,53 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 
 	}
 
-	public void EndTheRound(string winner = "")
+	public IEnumerator DisconnectPlayersWithDelay( float delay  )
 	{
-		if (winner == "V") 
-		{
-			// SEND VAMPIRES TEAM A WINNING MESSAGE
-		}
-		else if ( winner == "S" )
-		{
-			// SEND SLAYER TEAM A WINNING MESSAGE
-		}
-
-
+		yield return new WaitForSeconds(delay);
+		
 		if (uLink.Network.connections.Length > 0)
 			uLink.Network.Disconnect();
 
+		//Application.LoadLevel (Application.loadedLevel);
 
-		Application.LoadLevel (Application.loadedLevel);
+		/*
+		Process myProcess = new Process();
+		myProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+		myProcess.StartInfo.CreateNoWindow = true;
+		myProcess.StartInfo.UseShellExecute = false;
+		myProcess.StartInfo.FileName = "C:\\Windows\\system32\\cmd.exe";
+		string path = "C:\\Users\\Volkan Benli\\Desktop\\TESTBUILDS\\sv-MAP\\RestartServer.bat";
+		myProcess.StartInfo.Arguments = "/c" + path;
+		myProcess.EnableRaisingEvents = true;
+		myProcess.Start();
+		myProcess.WaitForExit();
+		*/
+
+
+
+
+		System.Diagnostics.Process.Start ("c:\\Users\\Volkan Benli\\Desktop\\TESTBUILDS\\sv-MAP\\RestartServer.bat");
+
+	}
+
+	public void EndTheRound(char winner = 'a')
+	{
+
+		CollectPlayers ();
+		
+		foreach( GameObject player in slayerPlayers )
+		{
+			player.GetComponentInChildren<NetworkEvents>().WinLose( winner );
+		}
+		foreach( GameObject player in vampirePlayers )
+		{
+			player.GetComponentInChildren<NetworkEvents>().WinLose( winner );
+		}
+
+
+		StartCoroutine (DisconnectPlayersWithDelay(5f));
+
+
 
 	}
 
@@ -145,6 +197,12 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 	{
 		slayerPlayers = GameObject.FindGameObjectsWithTag("SlayerPlayer");
 		vampirePlayers = GameObject.FindGameObjectsWithTag("VampirePlayer");
+	}
+
+	public void CollectBots()
+	{
+		vampireBots = GameObject.FindGameObjectsWithTag ("Vampire");
+		slayerBots = GameObject.FindGameObjectsWithTag ("Slayer");
 	}
 
 	public void IncreaseSlayerScore()
@@ -164,7 +222,7 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 
 
 		if( SlayerTeamScore >= WinningScore )
-			EndTheRound("S");
+			EndTheRound('s');
 
 	}
 
@@ -185,7 +243,7 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 		
 		
 		if( VampireTeamScore >= WinningScore )
-			EndTheRound("V");
+			EndTheRound('v');
 
 	}
 

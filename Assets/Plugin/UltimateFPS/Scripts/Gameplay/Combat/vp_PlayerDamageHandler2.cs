@@ -178,7 +178,7 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 			else
 			{
 				// FOLLOWING CODE INVOKES DAMAGE TO OTHERS BY PASSING IT AT THE SEND RATE
-				Debug.Log("DAMAGE IS : " + damage);
+				// Debug.Log("DAMAGE IS : " + damage);
 				netwStateSync.damageToBeDone += damage;
 				//netwEvents.DamageOthers(damage);
 				
@@ -202,7 +202,7 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 	/// </summary>
 	public override void Die()
 	{
-//		Debug.LogError("IM DEAD");
+
 		if(gameObject.tag=="VampirePlayer")
 		{
 			if(isSet==false)
@@ -292,7 +292,6 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 
 		m_CurrentHealth = MaxHealth;
 
-		m_Player.Position.Set(transform.position);
 		m_Player.Stop.Send();
 
 		m_Player.Rotation.Set(m_StartRotation.eulerAngles);

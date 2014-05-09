@@ -1,0 +1,4 @@
+6/5/2014 22:17:03.4386363 HumanCreator1(Clone) -1144074 Wander
+6/5/2014 22:17:09.4317109 HumanCreator1(Clone) -1144074 Run
+6/5/2014 22:17:10.4256553 HumanCreator1(Clone) -1144074 Channeling
+6/5/2014 22:17:14.4165166 HumanCreator1(Clone) -1144074 Possessed

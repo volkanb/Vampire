@@ -1,0 +1,10 @@
+7/5/2014 01:54:50.0840863 HumanCreator1(Clone) -99180 Wander
+7/5/2014 01:54:55.9112299 HumanCreator1(Clone) -99180 Run
+7/5/2014 01:54:56.9570772 HumanCreator1(Clone) -99180 Channeling
+7/5/2014 01:55:00.9482320 HumanCreator1(Clone) -99180 Possessed
+7/5/2014 01:55:05.9912545 HumanCreator1(Clone) -103238 Wander
+7/5/2014 01:55:06.0242984 HumanCreator1(Clone) -103238 Run
+7/5/2014 01:55:06.0273014 HumanCreator1(Clone) -99180 Attack
+7/5/2014 01:55:06.0293031 HumanCreator1(Clone) -103238 Run
+7/5/2014 01:55:06.0323060 HumanCreator1(Clone) -99180 Attack
+7/5/2014 01:55:06.0353095 HumanCreator1(Clone) -103238 Run

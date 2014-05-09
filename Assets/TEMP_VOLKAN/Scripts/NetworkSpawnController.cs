@@ -24,6 +24,10 @@ public class NetworkSpawnController : uLink.MonoBehaviour {
 	public Transform VampireSpawnLocation = null;
 
 
+	private Vector3 createPos;
+	private int createNumSlayer = 0;
+	private int createNumVampire = 0;
+
 
 
 
@@ -35,8 +39,7 @@ public class NetworkSpawnController : uLink.MonoBehaviour {
 
 		if ( loginName == "s" ) 
 		{
-
-			uLink.Network.Instantiate (player, SlayerProxyPref, SlayerOwnerPref, SlayerCreatorPref, SlayerSpawnLocation.position, SlayerSpawnLocation.rotation, 0, "SlayerPlayer");
+			uLink.Network.Instantiate (player, SlayerProxyPref, SlayerOwnerPref, SlayerCreatorPref, GetPosition('s'), SlayerSpawnLocation.rotation, 0, "SlayerPlayer");
 			roundController.CurrentSlayerPlayerNumber++;
 
 
@@ -44,7 +47,7 @@ public class NetworkSpawnController : uLink.MonoBehaviour {
 		else if ( loginName == "v" )
 		{
 
-			uLink.Network.Instantiate (player, VampireProxyPref, VampireOwnerPref, VampireCreatorPref, VampireSpawnLocation.position, VampireSpawnLocation.rotation, 0, "VampirePlayer");
+			uLink.Network.Instantiate (player, VampireProxyPref, VampireOwnerPref, VampireCreatorPref, GetPosition('v'), VampireSpawnLocation.rotation, 0, "VampirePlayer");
 			roundController.CurrentVampirePlayerNumber++;
 
 		}
@@ -61,19 +64,53 @@ public class NetworkSpawnController : uLink.MonoBehaviour {
 
 	}
 
+	void uLink_OnPlayerDisconnected(uLink.NetworkPlayer player)
+	{
+		uLink.Network.DestroyPlayerObjects (player);
+		uLink.Network.RemoveRPCs (player);
+		uLink.Network.RemoveInstantiates (player);
+	}
+
 	public void InstantiateBots( int SlayerBotNumber, int VampireBotNumber )
 	{
 		while (SlayerBotNumber != 0) 
 		{
-			uLink.Network.Instantiate (SlayerAIProxyPref, SlayerAICreatorPref, SlayerSpawnLocation.position, SlayerSpawnLocation.rotation, 0, "SlayerBot");
+			uLink.Network.Instantiate (SlayerAIProxyPref, SlayerAICreatorPref, GetPosition('s'), SlayerSpawnLocation.rotation, 0, "SlayerBot");
 			SlayerBotNumber--;
 		}
 
 		while (VampireBotNumber != 0) 
 		{
-			uLink.Network.Instantiate (VampireAIProxyPref, VampireAICreatorPref, VampireSpawnLocation.position, VampireSpawnLocation.rotation, 0, "VampireBot");
+			uLink.Network.Instantiate (VampireAIProxyPref, VampireAICreatorPref, GetPosition('v'), VampireSpawnLocation.rotation, 0, "VampireBot");
 			VampireBotNumber--;
 		}
+
+	}
+
+	private Vector3 GetPosition( char c )
+	{
+		if (c == 's') 
+		{
+			createPos = SlayerSpawnLocation.position;
+			createPos.x = createPos.x + (float)createNumSlayer;
+			createPos.z = createPos.z + (float)createNumSlayer;
+
+			createNumSlayer++;
+
+			createNumSlayer = (createNumSlayer%10);
+		}
+		else if ( c == 'v' )
+		{
+			createPos = VampireSpawnLocation.position;
+			createPos.x = createPos.x + (float)createNumVampire;
+			createPos.z = createPos.z + (float)createNumVampire;
+
+			createNumVampire++;
+
+			createNumVampire = (createNumVampire%10);
+		}
+
+		return createPos;
 
 	}
 	

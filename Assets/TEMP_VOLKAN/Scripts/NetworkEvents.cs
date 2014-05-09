@@ -35,6 +35,23 @@ public class NetworkEvents: uLink.MonoBehaviour
 	public int SlayerTeamScore;
 	//---------------------------------
 
+
+	// WIN LOSE MESSAGE
+	private string WinLoseText = null;
+
+
+	public bool isDown = false;
+
+
+	// ANIMATION CONTROLLERS
+	//---------------------------------
+	public VampireAIAnimationController VampAIAnimController;
+	public SlayerAIAnimationController SlayAIAnimController;
+	public HumanAIAnimationController HumAIAnimController;
+
+	public SlayerPlayerAnimationController SlayPlayerAnimController;
+	public VampirePlayerAnimationController VampPlayerAnimController;
+	//---------------------------------
 	
 	protected virtual void OnEnable()
 	{	
@@ -120,8 +137,6 @@ public class NetworkEvents: uLink.MonoBehaviour
 			}
 		}
 
-
-
 	}
 
 
@@ -133,6 +148,10 @@ public class NetworkEvents: uLink.MonoBehaviour
 			string text = string.Format("{0:00}:{1:00}", remainingMinutes, remainingSeconds); 
 			GUI.Label ( new Rect (400, 25, 100, 30), text);
 		}
+
+		if ( WinLoseText != null )
+			GUI.Label ( new Rect (400, 400, 500, 30), WinLoseText);
+
 	}
 
 	//----------------------------------------------------------------------------------------------------------
@@ -449,7 +468,7 @@ public class NetworkEvents: uLink.MonoBehaviour
 	public void DamageOthers(float damage)
 	{ 
 		networkView.UnreliableRPC("DamageSync", uLink.RPCMode.Others, damage);
-		Debug.Log ("DAMAGE OTHERS CALLED WITH DAMAGE : " + damage);
+		// Debug.Log ("DAMAGE OTHERS CALLED WITH DAMAGE : " + damage);
 	}
 
 	[RPC]
@@ -492,10 +511,11 @@ public class NetworkEvents: uLink.MonoBehaviour
 
 
 	//----------------------------------------------------------------------------------------------------------
-	// Following codes syncs NPC'S state change with proxies
+	// Following codes syncs human NPC'S state change with proxies
 	public void ChangeStateNPC(string s)
 	{ 
 		networkView.UnreliableRPC("ChangeStateOtherNPCs", uLink.RPCMode.Others, s);
+		Debug.Log ("HUMAN STATE IS : " + s);
 	}
 
 	[RPC]
@@ -514,6 +534,9 @@ public class NetworkEvents: uLink.MonoBehaviour
 		case "FOLLOW":
 			m_Player.SetWeapon.TryStart(1);
 			GetComponent<vp_DamageHandler2>().capsule.renderer.material.color = Color.cyan;
+
+			HumAIAnimController.SetModelWithName("armed");
+
 			break;
 
 		case "DEFEND":
@@ -523,6 +546,9 @@ public class NetworkEvents: uLink.MonoBehaviour
 		case "POSSESSED":
 			m_Player.SetWeapon.TryStart(2);
 			GetComponent<vp_DamageHandler2>().capsule.renderer.material.color = Color.magenta;
+
+			HumAIAnimController.SetModelWithName("possessed");
+
 			break;
 
 		case "CHANNELING":
@@ -531,11 +557,9 @@ public class NetworkEvents: uLink.MonoBehaviour
 
 		case "DEAD":
 
-			//Destroy(gameObject,5);
 			break;
 
 		case "RESCUED":
-
 
 			break;
 
@@ -544,6 +568,7 @@ public class NetworkEvents: uLink.MonoBehaviour
 			break;
 
 		
+		
 		default:
 			break;
 		}
@@ -551,6 +576,117 @@ public class NetworkEvents: uLink.MonoBehaviour
 		
 	}
 	
+	//----------------------------------------------------------------------------------------------------------
+
+	//----------------------------------------------------------------------------------------------------------
+	// Following codes syncs slayer NPC'S state change with proxies
+	public void ChangeStateSlayerNPC(string s)
+	{ 
+		networkView.UnreliableRPC("ChangeStateOtherSlayerNPCs", uLink.RPCMode.Others, s);
+		Debug.Log ("SLAYER BOT STATE IS : " + s);
+		
+		if (s == "DEAD") 
+		{
+			// DESTROYS BOT WHEN DEAD
+			uLink.Network.Destroy(gameObject.GetComponent<uLink.NetworkView>());
+		}	
+		
+	}
+
+	[RPC]
+	void ChangeStateOtherSlayerNPCs(string state, uLink.NetworkMessageInfo info)
+	{
+				switch (state) {
+	
+				case "DEAD":
+						break;
+			
+				case "GOTOHUMAN":
+						break;
+			
+				case "DEFEND":
+						break;
+			
+				case "SEARCH":
+						break;
+			
+				case "STAKE":
+						break;
+
+				case "ESCORT":
+						break;
+			
+				default:
+						break;
+				}
+
+	}
+
+
+	//----------------------------------------------------------------------------------------------------------
+
+
+	//----------------------------------------------------------------------------------------------------------
+	// Following codes syncs vampire NPC'S state change with proxies
+	public void ChangeStateVampireNPC(string s)
+	{ 
+		networkView.UnreliableRPC("ChangeStateOtherVampireNPCs", uLink.RPCMode.Others, s);
+		Debug.Log ("VAMPIRE STATE IS : " + s);
+
+		if (s == "DEAD") 
+		{
+			// DESTROYS BOT WHEN DEAD
+			uLink.Network.Destroy(gameObject.GetComponent<uLink.NetworkView>());
+		}	
+
+	}
+	
+	[RPC]
+	void ChangeStateOtherVampireNPCs(string state, uLink.NetworkMessageInfo info)
+	{
+		switch (state) 
+		{
+		
+		case "CHANNELING":
+			isDown = false;
+			
+			break;
+			
+		case "DEAD":
+			isDown = false;
+
+			// KILLS THE UFPS OBJECT
+			//m_Player.GetComponent<vp_DamageHandler2>().KillVampireAI();
+
+			
+			break;
+	
+		case "ATTACKHUMAN":
+			isDown = false;
+
+			break;
+			
+		case "DOWN":
+			isDown = true;
+			
+			break;
+			
+		case "SEARCH":
+			isDown = false;
+
+			break;
+			
+		case "ATTACK":
+			isDown = false;
+			
+			break;
+			
+		default:
+			break;
+		}
+		
+		
+	}
 	//----------------------------------------------------------------------------------------------------------
 
 
@@ -588,7 +724,6 @@ public class NetworkEvents: uLink.MonoBehaviour
 		vp_DamageHandler2 DH2 = null;
 		DH2 = gameObject.GetComponent<vp_DamageHandler2>();
 
-		// BURADA SıKıNTı VAR BOTLAR RESPAWN OLMUYO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		if (DH2 != null) 
 		{
 			// IF THIS INSTANCE IS A AI OBJECT
@@ -622,6 +757,186 @@ public class NetworkEvents: uLink.MonoBehaviour
 		}
 	}
 
+	//----------------------------------------------------------------------------------------------------------
+
+
+	//----------------------------------------------------------------------------------------------------------
+	// Following codes syncs winning/losing messages with clients
+
+	public void WinLose( char c )
+	{ 
+		networkView.UnreliableRPC("WinLoseOthers", uLink.RPCMode.Owner, c);
+	}
+	
+	
+	[RPC]
+	void WinLoseOthers(char c, uLink.NetworkMessageInfo info)
+	{
+		m_Player.AllowGameplayInput.Set(false);
+
+		if (c == 's' )
+			WinLoseText = "Slayer Team Won !!!";
+		else if ( c == 'v' )
+			WinLoseText = "Vampire Team Won !!!";
+		else if ( c == 'a' )
+			WinLoseText = "Round Ended !!!";
+	}
+	
+
+	//----------------------------------------------------------------------------------------------------------
+
+	//----------------------------------------------------------------------------------------------------------
+	// Following codes syncs AI vampire animations with proxies
+	
+	public void VampireAIAnimationSync( string animName, int layer = 99, float weight = 99f )
+	{ 
+		if ( layer == 99 && weight == 99f )
+			networkView.UnreliableRPC("VampireAIAnimationSyncOthersName", uLink.RPCMode.AllExceptOwner, animName);
+		else if ( layer == 99 && weight != 99f )
+			networkView.UnreliableRPC("VampireAIAnimationSyncOthersWeight", uLink.RPCMode.AllExceptOwner, animName, weight);
+		else if ( layer != 99 && weight == 99f )
+			networkView.UnreliableRPC("VampireAIAnimationSyncOthersLayer", uLink.RPCMode.AllExceptOwner, animName, layer);
+		else if ( layer != 99 && weight != 99f )
+			networkView.UnreliableRPC("VampireAIAnimationSyncOthersLayerWeight", uLink.RPCMode.AllExceptOwner, animName, layer, weight);
+	}
+
+	[RPC]
+	void VampireAIAnimationSyncOthersName(string animName, uLink.NetworkMessageInfo info)
+	{
+		VampAIAnimController.StartAnimWithName ( animName );
+	}
+	[RPC]
+	void VampireAIAnimationSyncOthersWeight(string animName, float weight, uLink.NetworkMessageInfo info)
+	{
+		VampAIAnimController.StartAnimWithNameWeight ( animName, weight );
+	}
+	[RPC]
+	void VampireAIAnimationSyncOthersLayer(string animName, int layer, uLink.NetworkMessageInfo info)
+	{
+		VampAIAnimController.StartAnimWithNameLayer ( animName, layer );
+	}
+	[RPC]
+	void VampireAIAnimationSyncOthersLayerWeight(string animName, int layer, float weight, uLink.NetworkMessageInfo info)
+	{
+		VampAIAnimController.StartAnimWithNameLayerWeight ( animName, layer, weight );
+	}
+	
+	
+	//----------------------------------------------------------------------------------------------------------
+
+	//----------------------------------------------------------------------------------------------------------
+	// Following codes syncs AI slayer animations with proxies
+	
+	public void SlayerAIAnimationSync( string animName, int layer = 99, float weight = 99f )
+	{ 
+		if ( layer == 99 && weight == 99f )
+			networkView.UnreliableRPC("SlayerAIAnimationSyncOthersName", uLink.RPCMode.AllExceptOwner, animName);
+		else if ( layer == 99 && weight != 99f )
+			networkView.UnreliableRPC("SlayerAIAnimationSyncOthersWeight", uLink.RPCMode.AllExceptOwner, animName, weight);
+		else if ( layer != 99 && weight == 99f )
+			networkView.UnreliableRPC("SlayerAIAnimationSyncOthersLayer", uLink.RPCMode.AllExceptOwner, animName, layer);
+		else if ( layer != 99 && weight != 99f )
+			networkView.UnreliableRPC("SlayerAIAnimationSyncOthersLayerWeight", uLink.RPCMode.AllExceptOwner, animName, layer, weight);
+	}
+
+	[RPC]
+	void SlayerAIAnimationSyncOthersName(string animName, uLink.NetworkMessageInfo info)
+	{
+		SlayAIAnimController.StartAnimWithName ( animName );
+	}
+	[RPC]
+	void SlayerAIAnimationSyncOthersWeight(string animName, float weight, uLink.NetworkMessageInfo info)
+	{
+		SlayAIAnimController.StartAnimWithNameWeight ( animName, weight );
+	}
+	[RPC]
+	void SlayerAIAnimationSyncOthersLayer(string animName, int layer, uLink.NetworkMessageInfo info)
+	{
+		SlayAIAnimController.StartAnimWithNameLayer ( animName, layer );
+	}
+	[RPC]
+	void SlayerAIAnimationSyncOthersLayerWeight(string animName, int layer, float weight, uLink.NetworkMessageInfo info)
+	{
+		SlayAIAnimController.StartAnimWithNameLayerWeight ( animName, layer, weight );
+	}
+	
+	
+	//----------------------------------------------------------------------------------------------------------
+
+	//----------------------------------------------------------------------------------------------------------
+	// Following codes syncs slayer's weapon change animations with others
+	
+	public void SlayerAISetWeaponAnimSync ( int weaponID )
+	{ 
+
+		networkView.UnreliableRPC("SlayerAISetWeaponAnimSyncOthers", uLink.RPCMode.Others, weaponID);
+
+	}
+	
+	[RPC]
+	void SlayerAISetWeaponAnimSyncOthers(int weaponID, uLink.NetworkMessageInfo info)
+	{
+		SlayAIAnimController.SetWeapon (weaponID);
+	}
+	
+	//----------------------------------------------------------------------------------------------------------
+
+	//----------------------------------------------------------------------------------------------------------
+	// Following codes syncs human animations with proxies
+	
+	public void HumanAIAnimationSync( string animName, int layer = 99, float weight = 99f )
+	{ 
+		if ( layer == 99 && weight == 99f )
+			networkView.UnreliableRPC("HumanAIAnimationSyncOthersName", uLink.RPCMode.AllExceptOwner, animName);
+		else if ( layer == 99 && weight != 99f )
+			networkView.UnreliableRPC("HumanAIAnimationSyncOthersWeight", uLink.RPCMode.AllExceptOwner, animName, weight);
+		else if ( layer != 99 && weight == 99f )
+			networkView.UnreliableRPC("HumanAIAnimationSyncOthersLayer", uLink.RPCMode.AllExceptOwner, animName, layer);
+		else if ( layer != 99 && weight != 99f )
+			networkView.UnreliableRPC("HumanAIAnimationSyncOthersLayerWeight", uLink.RPCMode.AllExceptOwner, animName, layer, weight);
+	}
+	
+	[RPC]
+	void HumanAIAnimationSyncOthersName(string animName, uLink.NetworkMessageInfo info)
+	{
+		HumAIAnimController.StartAnimWithName ( animName );
+	}
+	[RPC]
+	void HumanAIAnimationSyncOthersWeight(string animName, float weight, uLink.NetworkMessageInfo info)
+	{
+		HumAIAnimController.StartAnimWithNameWeight ( animName, weight );
+	}
+	[RPC]
+	void HumanAIAnimationSyncOthersLayer(string animName, int layer, uLink.NetworkMessageInfo info)
+	{
+		HumAIAnimController.StartAnimWithNameLayer ( animName, layer );
+	}
+	[RPC]
+	void HumanAIAnimationSyncOthersLayerWeight(string animName, int layer, float weight, uLink.NetworkMessageInfo info)
+	{
+		HumAIAnimController.StartAnimWithNameLayerWeight ( animName, layer, weight );
+	}
+	
+	
+	//----------------------------------------------------------------------------------------------------------
+
+	//----------------------------------------------------------------------------------------------------------
+	// Following codes syncs human models with proxies
+	
+	public void HumanAIModelSync( string modelName )
+	{ 
+
+		networkView.UnreliableRPC("HumanAIModelSyncOthers", uLink.RPCMode.AllExceptOwner, modelName);
+
+	}
+	
+	[RPC]
+	void HumanAIModelSyncOthers(string modelName, uLink.NetworkMessageInfo info)
+	{
+		HumAIAnimController.SetModelWithName( modelName );
+	}
+	
+	
 	//----------------------------------------------------------------------------------------------------------
 
 

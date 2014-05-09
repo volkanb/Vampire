@@ -915,7 +915,7 @@ public class vp_FPController : vp_Component
 	{
 
 		m_CharacterController.Move(Vector3.zero);
-		Debug.Log("fpcontroller5");
+		//Debug.Log("fpcontroller5");
 		m_MotorThrottle = Vector3.zero;
 		m_ExternalForce = Vector3.zero;
 		StopSoftForce();
