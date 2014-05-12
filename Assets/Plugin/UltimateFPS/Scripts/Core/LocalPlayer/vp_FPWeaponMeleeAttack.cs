@@ -49,7 +49,7 @@ public class vp_FPWeaponMeleeAttack : vp_Component
 	public Vector3 ImpactRotationSpring2Recoil = new Vector3(0.0f, 0.0f, 10.0f);
 
 	public string DamageMethodName = "Damage";	// user defined name of damage method on target
-	public float Damage = 5.0f;				// the damage transmitted to target by the attack
+	public float Damage = 40.0f;				// the damage transmitted to target by the attack
 	public float DamageRadius = 0.3f;
 	public float DamageRange = 2.0f;
 	public float DamageForce = 1000.0f;			// force applied to any rigidbody hit by the attack

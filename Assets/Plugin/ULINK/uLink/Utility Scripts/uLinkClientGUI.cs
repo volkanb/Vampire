@@ -47,6 +47,14 @@ public class uLinkClientGUI : uLink.MonoBehaviour
 	public bool lockCursor = true;
 	public bool hideCursor = true;
 
+	// ------------------------------------
+	// TEAM SELECTORS
+	private bool isSlayer = false;
+	private bool isVampire = false;
+
+	public uLink.BitStream vars;
+	// ------------------------------------
+
 	void Awake()
 	{
 #if !UNITY_2_6 && !UNITY_2_6_1
@@ -212,6 +220,45 @@ public class uLinkClientGUI : uLink.MonoBehaviour
 			GUILayout.BeginVertical();
 			GUILayout.Space(5);
 			GUILayout.EndVertical();
+
+			//------------------------------------------------------
+			// FOLLOWING CODES SHOWS THE TEAM SELECTOR CHECKBOXES
+
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			GUILayout.Label("Please select a team:");
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+
+			GUILayout.BeginHorizontal();
+			GUILayout.Space(10);
+
+			if ( isVampire == false )
+				isSlayer = true;
+			else if ( isVampire == true )
+				isSlayer = false;
+
+			isSlayer = GUILayout.Toggle( isSlayer , "Slayer");
+			GUILayout.Space(10);
+			GUILayout.EndHorizontal();
+
+			GUILayout.BeginHorizontal();
+			GUILayout.Space(10);
+
+			if ( isSlayer == false )
+				isVampire = true;
+			else if ( isSlayer == true )
+				isVampire = false;
+
+			isVampire = GUILayout.Toggle( isVampire , "Vampire");
+			GUILayout.Space(10);
+			GUILayout.EndHorizontal();
+
+			GUILayout.BeginVertical();
+			GUILayout.Space(5);
+			GUILayout.EndVertical();
+
+			//------------------------------------------------------
 		}
 
 		GUILayout.BeginHorizontal();
@@ -394,7 +441,10 @@ public class uLinkClientGUI : uLink.MonoBehaviour
 
 		if (inputName)
 		{
-			uLink.Network.Connect(host, port, "", playerName);
+
+			//uLink.Network.Connect(host, port, "", playerName);
+
+			uLink.Network.Connect(host, port, "", playerName, isSlayer, isVampire);
 		}
 		else
 		{
@@ -407,7 +457,7 @@ public class uLinkClientGUI : uLink.MonoBehaviour
 		isRedirected = false;
 
 		if (inputName)
-		{
+		{	
 			uLink.Network.Connect(host, "", playerName);
 		}
 		else

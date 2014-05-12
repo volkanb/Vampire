@@ -29,22 +29,22 @@ public class NetworkSpawnController : uLink.MonoBehaviour {
 	private int createNumVampire = 0;
 
 
-
-
 	void uLink_OnPlayerConnected(uLink.NetworkPlayer player)
 	{
 
 		string loginName = player.loginData.Read<string> ();
+		bool isSlayer = player.loginData.Read<bool> ();
+		bool isVampire = player.loginData.Read<bool> ();
 
 
-		if ( loginName == "s" ) 
+		if ( isSlayer == true ) 
 		{
 			uLink.Network.Instantiate (player, SlayerProxyPref, SlayerOwnerPref, SlayerCreatorPref, GetPosition('s'), SlayerSpawnLocation.rotation, 0, "SlayerPlayer");
 			roundController.CurrentSlayerPlayerNumber++;
 
 
 		}
-		else if ( loginName == "v" )
+		else if ( isVampire == true )
 		{
 
 			uLink.Network.Instantiate (player, VampireProxyPref, VampireOwnerPref, VampireCreatorPref, GetPosition('v'), VampireSpawnLocation.rotation, 0, "VampirePlayer");

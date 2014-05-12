@@ -27,6 +27,7 @@ public class NetworkEvents: uLink.MonoBehaviour
 	public int remainingMinutes;
 	public int remainingSeconds;
 	public float RoundTime;
+	vp_SimpleHUD HUD;
 	//---------------------------------
 
 	// ROUND CONTROLLER VARIABLES
@@ -86,6 +87,9 @@ public class NetworkEvents: uLink.MonoBehaviour
 		// VAMPIRE AND SLAYER BASE POSITIONS INITIALIZE
 		VampireBasePos = GameObject.Find ("VampireBase").transform.position;
 		SlayerBasePos = GameObject.Find ("SlayerBase").transform.position;
+
+		// HUD INITIALIZATION
+		HUD = gameObject.GetComponent<vp_SimpleHUD> ();
 	}
 
 
@@ -102,6 +106,13 @@ public class NetworkEvents: uLink.MonoBehaviour
 			
 			remainingMinutes = roundedInt / 60;
 			remainingSeconds = roundedInt % 60;
+
+			if ( HUD.enabled )
+			{
+				HUD.remainingMinutes = remainingMinutes;
+				HUD.remainingSeconds = remainingSeconds;
+			}
+
 		}
 
 
@@ -143,11 +154,6 @@ public class NetworkEvents: uLink.MonoBehaviour
 	// SHOWS COUNTDOWN TIMER
 	void OnGUI()
 	{
-		if (networkView.isOwner && roundStarted) 
-		{
-			string text = string.Format("{0:00}:{1:00}", remainingMinutes, remainingSeconds); 
-			GUI.Label ( new Rect (400, 25, 100, 30), text);
-		}
 
 		if ( WinLoseText != null )
 			GUI.Label ( new Rect (400, 400, 500, 30), WinLoseText);
@@ -172,12 +178,20 @@ public class NetworkEvents: uLink.MonoBehaviour
 	void IncreaseSlayerScoreOnOthers()
 	{
 		SlayerTeamScore++;
+		if ( HUD.enabled )
+		{
+			HUD.SlayerTeamScore = SlayerTeamScore;
+		}
 	}
 
 	[RPC]
 	void IncreaseVampireScoreOnOthers()
 	{
 		VampireTeamScore++;
+		if ( HUD.enabled )
+		{
+			HUD.VampireTeamScore = VampireTeamScore;
+		}
 	}
 	
 	//----------------------------------------------------------------------------------------------------------

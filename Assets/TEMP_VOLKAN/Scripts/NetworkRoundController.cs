@@ -112,8 +112,17 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 
 	void OnGUI()
 	{
-		string text = string.Format("{0:00}:{1:00}", remainingMinutes, remainingSeconds); 
-		GUI.Label ( new Rect (400, 25, 100, 30), text);
+
+		// display a simple 'Scores' HUD
+		GUI.Box(new Rect(10, Screen.height - (Screen.height - 10), 130, 22), "Vampires Score: " + VampireTeamScore);
+		GUI.Box(new Rect(10, Screen.height - (Screen.height - 40), 110, 22), "Slayers Score: " + SlayerTeamScore);
+		
+		// display a simple 'Count Down Timer' HUD
+		string TimerText = string.Format("{0:00}:{1:00}", remainingMinutes, remainingSeconds);
+		GUI.Box(new Rect((Screen.width - 140), Screen.height - (Screen.height - 10), 130, 22), "Round Time: " + TimerText);
+
+		//string text = string.Format("{0:00}:{1:00}", remainingMinutes, remainingSeconds); 
+		//GUI.Label ( new Rect (400, 25, 100, 30), text);
 	}
 
 

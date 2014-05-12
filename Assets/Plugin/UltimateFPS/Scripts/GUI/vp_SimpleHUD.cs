@@ -17,6 +17,18 @@ using UnityEngine;
 public class vp_SimpleHUD : MonoBehaviour
 {
 
+	//--------------------------------------------
+	// TEAM SCORES VARIABLES
+	public int VampireTeamScore;
+	public int SlayerTeamScore;
+	//--------------------------------------------
+
+	//--------------------------------------------
+	// TIMER VALUES
+	public int remainingMinutes;
+	public int remainingSeconds;
+	//--------------------------------------------
+
 	public Texture DamageFlashTexture = null;
 	public bool ShowHUD = true;
 	Color m_MessageColor = new Color(2, 2, 0, 2);
@@ -47,6 +59,15 @@ public class vp_SimpleHUD : MonoBehaviour
 	void Awake()
 	{
 		m_Player = transform.GetComponent<vp_FPPlayerEventHandler>();
+
+
+		// TEAM SCORES INITIALIZATION
+		VampireTeamScore = 0;
+		SlayerTeamScore = 0;
+
+		// TIMER INITIALIZATION
+		remainingMinutes = 0;
+		remainingSeconds = 0;
 	}
 
 
@@ -93,6 +114,14 @@ public class vp_SimpleHUD : MonoBehaviour
 
 		// display a simple 'Ammo' HUD
 		GUI.Box(new Rect(Screen.width - 110, Screen.height - 30, 100, 22), "Ammo: " + m_Player.CurrentWeaponAmmoCount.Get());
+
+		// display a simple 'Scores' HUD
+		GUI.Box(new Rect(10, Screen.height - (Screen.height - 10), 130, 22), "Vampires Score: " + VampireTeamScore);
+		GUI.Box(new Rect(10, Screen.height - (Screen.height - 40), 110, 22), "Slayers Score: " + SlayerTeamScore);
+
+		// display a simple 'Count Down Timer' HUD
+		string TimerText = string.Format("{0:00}:{1:00}", remainingMinutes, remainingSeconds);
+		GUI.Box(new Rect((Screen.width - 140), Screen.height - (Screen.height - 10), 130, 22), "Round Time: " + TimerText);
 
 		// show a message in the middle of the screen and fade it out
 		if (!string.IsNullOrEmpty(m_PickupMessage) && m_MessageColor.a > 0.01f)

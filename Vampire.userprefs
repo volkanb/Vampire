@@ -1,16 +1,11 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Plugin\UltimateFPS\Scripts\Core\ComponentSystem\vp_Component.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Plugin\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPWeaponMeleeAttack.cs">
     <Files>
-      <File FileName="Assets\Plugin\AstarPathfindingProject\Core\AI\AIPathHuman.cs" Line="915" Column="55" />
-      <File FileName="Assets\TEMP_VOLKAN\Scripts\AnimationControllers\VampirePlayerAnimationController.cs" Line="71" Column="3" />
-      <File FileName="Assets\TEMP_VOLKAN\Scripts\AnimationControllers\SlayerAIAnimationController.cs" Line="6" Column="1" />
-      <File FileName="Assets\Plugin\AstarPathfindingProject\Core\AI\AIPathSlayer.cs" Line="985" Column="3" />
-      <File FileName="Assets\TEMP_VOLKAN\Scripts\NetworkEvents.cs" Line="892" Column="78" />
-      <File FileName="Assets\Plugin\Other\LayerChanger.cs" Line="23" Column="4" />
-      <File FileName="Assets\TEMP_VOLKAN\Scripts\AnimationControllers\SlayerPlayerAnimationController.cs" Line="38" Column="3" />
-      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPPlayerEventHandler.cs" Line="22" Column="68" />
-      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Core\ComponentSystem\vp_Component.cs" Line="80" Column="1" />
+      <File FileName="Assets\TEMP_VOLKAN\Scripts\NetworkRoundController.cs" Line="122" Column="118" />
+      <File FileName="Assets\TEMP_VOLKAN\Scripts\NetworkEvents.cs" Line="157" Column="3" />
+      <File FileName="Assets\Plugin\UltimateFPS\Scripts\GUI\vp_SimpleHUD.cs" Line="117" Column="3" />
+      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPWeaponMeleeAttack.cs" Line="56" Column="2" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
