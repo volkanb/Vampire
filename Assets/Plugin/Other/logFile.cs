@@ -15,8 +15,8 @@ public class logFile : MonoBehaviour {
 			fileName="MyFile"+j+".txt";
 			j++;
 		}
-		var sr = File.CreateText(fileName);
-		sr.Close();
+//		var sr = File.CreateText(fileName);
+//		sr.Close();
 	
 	}
 	

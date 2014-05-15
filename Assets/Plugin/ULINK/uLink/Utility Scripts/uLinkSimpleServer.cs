@@ -62,6 +62,8 @@ public class uLinkSimpleServer : uLink.MonoBehaviour
 	
 	void Start()
 	{
+		maxConnections = GameObject.Find ("NetworkControlUnits").GetComponentInChildren<NetworkRoundController>().MaxPlayerNumber;
+
 		Application.targetFrameRate = targetFrameRate;
 
 		if (dontDestroyOnLoad) DontDestroyOnLoad(this);

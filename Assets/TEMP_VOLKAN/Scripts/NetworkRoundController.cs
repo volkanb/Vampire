@@ -34,6 +34,10 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 
 	private NetworkSpawnController netwSpawnController;
 
+
+
+	public int MaxPlayerNumber = 10;
+
 	// Use this for initialization
 	void Start () {
 
@@ -52,6 +56,8 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 		SlayerTeamScore = 0;
 
 		anybodyInTheGame = false;
+
+		uLink.Network.maxConnections = MaxPlayerNumber;
 	
 	}
 	
@@ -149,6 +155,9 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 		//TRIGGER THE BOT INSTANTIATIONS
 		netwSpawnController.InstantiateBots ( SlayerBotNumber, VampireBotNumber );
 
+		// INFORM GAME ANALYTICS
+		GA.API.Design.NewEvent ("New Round Started");
+
 
 	}
 
@@ -176,8 +185,12 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 
 
 
+		// FOLLOWIN CODE RESTARTS SERVER AFTER ROUND
 
-		System.Diagnostics.Process.Start ("c:\\Users\\Volkan Benli\\Desktop\\TESTBUILDS\\sv-MAP\\RestartServer.bat");
+		//  On azure -> System.Diagnostics.Process.Start ("c:\\Users\\vampire\\Desktop\\RestartServer.bat");
+
+
+		System.Diagnostics.Process.Start ("d:\\VAMPIRESERVER\\RestartServer.bat");
 
 	}
 
@@ -198,7 +211,8 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 
 		StartCoroutine (DisconnectPlayersWithDelay(5f));
 
-
+		// INFORM GAME ANALYTICS
+		GA.API.Design.NewEvent ("Round Ended");
 
 	}
 
@@ -233,6 +247,8 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 		if( SlayerTeamScore >= WinningScore )
 			EndTheRound('s');
 
+		// INFORM GAME ANALYTICS
+		GA.API.Design.NewEvent ("Slayer Team Score Increased", SlayerTeamScore);
 	}
 
 	public void IncreaseVampireScore()
@@ -253,6 +269,9 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 		
 		if( VampireTeamScore >= WinningScore )
 			EndTheRound('v');
+
+		// INFORM GAME ANALYTICS
+		GA.API.Design.NewEvent ("Vampire Team Score Increased", VampireTeamScore);
 
 	}
 

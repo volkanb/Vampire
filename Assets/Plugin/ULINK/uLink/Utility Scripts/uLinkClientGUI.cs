@@ -31,7 +31,8 @@ public class uLinkClientGUI : uLink.MonoBehaviour
 
 	private string playerName;
 
-	private bool isQuickMode = true;
+	//private bool isQuickMode = true;
+	private bool isQuickMode = false;
 
 	private const float QUICK_WIDTH = 220;
 	private const float ADVANCED_WIDTH = 620;
@@ -53,6 +54,69 @@ public class uLinkClientGUI : uLink.MonoBehaviour
 	private bool isVampire = false;
 
 	public uLink.BitStream vars;
+	// ------------------------------------
+
+	// ------------------------------------
+	// SHOWS CREDITS PAGE
+	private bool credits = false;
+	private const string creditsText = 
+		"Developers:\n" +
+		"Volkan Benli\t\t\tvolkanbenli92gmail.com\n" +
+		"Mehmet Burucu\t\tmehmetburucuhotmail.com\n" +
+		"Onur Keklik\t\t\tonurkeklik90gmail.com\n" +
+		"Ersel Erbay\t\t\terselerbaylive.com\n" +
+		"Hande Akin\t\t\thande.akin123gmail.com\n" +
+		"\n" +
+		"\"Vampire Slayer\" online fps game is a dissertation project of the five software engineers\n" +
+		"who are mentioned above. Developers would be happy to receive questions about the game or any\n" +
+		"other concern.\n" +
+		"\n" +
+		"All Rights Reserved.\n" +
+		"\n" +
+		"Izmir - Turkey\n" +
+		"2014";
+	// ------------------------------------
+
+	// ------------------------------------
+	// SHOWS INSTRUCTIONS PAGE
+	private bool howTo = false;
+	private const string howToText = 
+		"Objective:\n" +
+		"The objective of the game if you are a vampire is to turn as many humans as you can into vampires\n" +
+		"and if you are a slayer take as many humans as you can to the safe spot, which is the golden ball\n" +
+		"where slayers respawn, within the allocated time limit.A rescued human means 1 point for the slayer\n" +
+		"team. A bitten and turned human means 1 point for the vampire team. First team to reach the winning\n" +
+		"score of 10 wins the game!\n" +
+		"\n" +
+		"Controls:\n" +
+		"\n" +
+		"For Slayers\n" +
+		"Move - WASD\n" +
+		"Jump - Space\n" +
+		"Sprint - Left Shift\n" +
+		"Shoot - Left Mouse Button\n" +
+		"Zoom - Right Mouse Button\n" +
+		"Make a human follow you - E\n" +
+		"Changing weapons - 123\n" +
+		"Crouch - Left Ctrl\n" +
+		"Replenish Health&Ammo - F\n" +
+		"\n" +
+		"For vampires:\n" +
+		"Move - WASD\n" +
+		"Jump - Space\n" +
+		"Sprint - Left Shift\n" +
+		"Melee Attack - Left Mouse Button\n" +
+		"Turn a human into a vampire - E\n" +
+		"\n" +
+		"Game Mechanics:\n" +
+		"Vampires go down when their health reaches zero but in order to completely kill them you need\n" +
+		"to go over their bodies and attack them using the mace in button 3.If you are a vampire, in\n" +
+		"order to turn a human into a vampire you need to stand still for a few seconds while holding\n" +
+		"down button E in front of a human. If you are a slayer it is much shorter to give a human a\n" +
+		"pistol and making them follow you. Just tap E in front of a human You can prevent slayers\n" +
+		"from gaining points if you kill the humans while they are being taken to the safe house.\n" +
+		"Slayers can replenish their health + ammo from a box at the gate of their base by pressing F.\n" +
+		"Do not be afraid of dying, dead players instantly respawns from the base of their team";
 	// ------------------------------------
 
 	void Awake()
@@ -103,6 +167,18 @@ public class uLinkClientGUI : uLink.MonoBehaviour
 		{
 			GUILayout.BeginVertical("Box", GUILayout.Width(BUSY_WIDTH));
 			BusyGUI();
+			GUILayout.EndVertical();
+		}
+		else if (credits)
+		{
+			GUILayout.BeginVertical("Box", GUILayout.Width(620));
+			CreditsPage();
+			GUILayout.EndVertical();
+		}
+		else if (howTo)
+		{
+			GUILayout.BeginVertical("Box", GUILayout.Width(620));
+			HowToPage();
 			GUILayout.EndVertical();
 		}
 		else if (isQuickMode)
@@ -403,20 +479,170 @@ public class uLinkClientGUI : uLink.MonoBehaviour
 		GUILayout.Space(5);
 		GUILayout.EndVertical();
 
+
+		//------------------------------------------------------------------------------------
+		// FOLLOWING CODES SHOWS THE TEAM SELECTOR CHECKBOXES
+
+		GUILayout.BeginHorizontal();
+		GUILayout.FlexibleSpace();
+		GUILayout.Label("Please enter your name:");
+		GUILayout.FlexibleSpace();
+		GUILayout.EndHorizontal();
+		
+		GUILayout.BeginVertical();
+		GUILayout.Space(5);
+		GUILayout.EndVertical();
+		
+		GUILayout.BeginHorizontal();
+		GUILayout.Space(10);
+		playerName = GUILayout.TextField(playerName, GUILayout.MinWidth(80));
+		GUILayout.Space(10);
+		GUILayout.EndHorizontal();
+		
+		GUILayout.BeginVertical();
+		GUILayout.Space(5);
+		GUILayout.EndVertical();
+	
+		GUILayout.BeginHorizontal();
+		GUILayout.FlexibleSpace();
+		GUILayout.Label("Please select a team:");
+		GUILayout.FlexibleSpace();
+		GUILayout.EndHorizontal();
+		
+		GUILayout.BeginHorizontal();
+		GUILayout.Space(10);
+		
+		if ( isVampire == false )
+			isSlayer = true;
+		else if ( isVampire == true )
+			isSlayer = false;
+		
+		isSlayer = GUILayout.Toggle( isSlayer , "Slayer");
+		GUILayout.Space(10);
+		GUILayout.EndHorizontal();
+		
+		GUILayout.BeginHorizontal();
+		GUILayout.Space(10);
+		
+		if ( isSlayer == false )
+			isVampire = true;
+		else if ( isSlayer == true )
+			isVampire = false;
+		
+		isVampire = GUILayout.Toggle( isVampire , "Vampire");
+		GUILayout.Space(10);
+		GUILayout.EndHorizontal();
+		
+		GUILayout.BeginVertical();
+		GUILayout.Space(5);
+		GUILayout.EndVertical();
+
+
+		//------------------------------------------------------------------------------------
+
 		GUILayout.BeginHorizontal();
 		GUILayout.Space(2);
 
-		if (GUILayout.Button("Back", GUILayout.Width(80), GUILayout.Height(25)))
+		//if (GUILayout.Button("Back", GUILayout.Width(80), GUILayout.Height(25)))
+		if (GUILayout.Button("Quit", GUILayout.Width(80), GUILayout.Height(25)))
 		{
-			isQuickMode = true;
+			//isQuickMode = true;
+			//isQuickMode = false;
+
+			Application.Quit();
+			Application.Quit();
+			Application.Quit();
+			Application.Quit();
+			Application.Quit();
+		}
+
+		GUILayout.Space(2);
+
+		if (GUILayout.Button("Credits", GUILayout.Width(80), GUILayout.Height(25)))
+		{
+			credits = true;
 		}
 
 		GUILayout.FlexibleSpace();
+
+
+		if (GUILayout.Button("HOW TO PLAY (PLEASE READ BEFORE PLAYING!)", GUILayout.Width(350), GUILayout.Height(25)))
+		{
+			howTo = true;
+		}
+
+
+		GUILayout.Space(2);
 		GUILayout.EndHorizontal();
 
 		GUILayout.BeginVertical();
 		GUILayout.Space(2);
 		GUILayout.EndVertical();
+	}
+
+	// SHOWS CReDITS PAGE
+	void CreditsPage()
+	{
+		GUILayout.BeginVertical();
+		GUILayout.Space(5);
+		GUILayout.EndVertical();
+		
+		GUI.skin.box.alignment = TextAnchor.UpperLeft;
+		
+		GUILayout.Box (creditsText, GUILayout.Width(600));
+		
+		GUILayout.BeginVertical();
+		GUILayout.Space(5);
+		GUILayout.EndVertical();
+		
+		GUILayout.BeginHorizontal();
+		GUILayout.Space(10);
+		
+		if (GUILayout.Button("Back", GUILayout.Width(80), GUILayout.Height(25)))
+		{
+			credits = false;
+		}
+		
+		GUILayout.FlexibleSpace ();
+		GUILayout.EndHorizontal ();
+		
+		GUILayout.BeginVertical();
+		GUILayout.Space(5);
+		GUILayout.EndVertical();
+
+	}
+
+	// SHOWS INSTRUCTIONS PAGE
+	void HowToPage()
+	{
+
+		GUILayout.BeginVertical();
+		GUILayout.Space(5);
+		GUILayout.EndVertical();
+
+		GUI.skin.box.alignment = TextAnchor.UpperLeft;
+
+		GUILayout.Box (howToText, GUILayout.Width(600));
+
+		GUILayout.BeginVertical();
+		GUILayout.Space(5);
+		GUILayout.EndVertical();
+
+		GUILayout.BeginHorizontal();
+		GUILayout.Space(10);
+
+		if (GUILayout.Button("Back", GUILayout.Width(80), GUILayout.Height(25)))
+		{
+			howTo = false;
+		}
+
+		GUILayout.FlexibleSpace ();
+		GUILayout.EndHorizontal ();
+
+		GUILayout.BeginVertical();
+		GUILayout.Space(5);
+		GUILayout.EndVertical();
+
 	}
 
 	void EnableGUI(bool enabled)
@@ -458,7 +684,7 @@ public class uLinkClientGUI : uLink.MonoBehaviour
 
 		if (inputName)
 		{	
-			uLink.Network.Connect(host, "", playerName);
+			uLink.Network.Connect(host, "", playerName, isSlayer, isVampire);
 		}
 		else
 		{
@@ -474,7 +700,8 @@ public class uLinkClientGUI : uLink.MonoBehaviour
 
 	void uLink_OnDisconnectedFromServer(uLink.NetworkDisconnection mode)
 	{
-		isQuickMode = true;
+		//isQuickMode = true;
+		isQuickMode = false;
 
 		if (reloadOnDisconnect && mode != uLink.NetworkDisconnection.Redirecting && Application.loadedLevel != -1)
 		{

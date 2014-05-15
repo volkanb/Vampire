@@ -24,7 +24,37 @@ public class NetworkStateSync : uLink.MonoBehaviour
 	
 	private float fraction;
 	//---------------------------------------------------------------------------------
+
+
+	//---------------------------------------------------------------------------------
+	// FOLLOWING VARIABLES ARE USED FOR BOT INTERPOLATION (LERP)
+
+	private Vector3 botNextPos;
+	private Vector3 botLastPos;
+
+	private double botLastTimestamp;
+	private double botNextTimestamp;
+
+	private float botTimeCovered;
+
+	//---------------------------------------------------------------------------------
+
+	//---------------------------------------------------------------------------------
+	// FOLLOWING VARIABLES ARE USED FOR PLAYER INTERPOLATION (LERP)
 	
+	private Vector3 playerNextPos;
+	private Vector3 playerLastPos;
+	
+	private Vector2 playerNextRot;
+	private Vector2 playerLastRot;
+	
+	private double playerLastTimestamp;
+	private double playerNextTimestamp;
+	
+	private float playerTimeCovered;
+	
+	//---------------------------------------------------------------------------------
+
 	public bool isBot = false;
 
 	// GETTING THE COMPONENT OF NETW EVENTS
@@ -142,6 +172,7 @@ public class NetworkStateSync : uLink.MonoBehaviour
 				// This code is executed on the creator (server) when server is auth, or on the owner (client) when the server is non-auth.
 				stream.Write(m_Player.Position.Get());
 				stream.Write(m_Player.gameObject.transform.rotation.eulerAngles.y);
+
 			}
 			else
 			{
@@ -149,9 +180,7 @@ public class NetworkStateSync : uLink.MonoBehaviour
 				// Send information to all proxies (opponent player's computers)
 				// This code is executed on the creator (server) when server is auth, or on the owner (client) when the server is non-auth.
 				stream.Write(m_Player.Position.Get());
-				stream.Write(m_Player.Velocity.Get());
 				stream.Write(m_Player.Rotation.Get());
-				stream.Write(m_Player.InputMoveVector.Get());
 				
 			}
 
@@ -171,69 +200,56 @@ public class NetworkStateSync : uLink.MonoBehaviour
 				float rotationY = stream.Read<float>();
 
 
-				//-----------------------------------
-				// BOTLAR iÇiN LERP iŞiNDE BU KıSıM DEĞiŞECEK!!!!!!!!!!!!!!!
-				m_Player.Position.Set(pos);
+				//----------------------------------------------------------------------
+				// FOLLOWING CODES HANDLE BOT LERP PACKAGE ARRIVAL PROCESSES
+
+				botLastPos = botNextPos;
+				botNextPos = pos;
+
+				botLastTimestamp = botNextTimestamp;
+				botNextTimestamp = Time.time;
+
+				botTimeCovered = 0f;
+
+
+				//m_Player.Position.Set(pos);
 				gameObject.transform.rotation = Quaternion.Euler( new Vector3(0f,rotationY,0f) );
-				//-----------------------------------
+				//----------------------------------------------------------------------
 
 			}
 			else
 			{
 				// Update the proxy state when statesync arrives.
 				Vector3 pos = stream.Read<Vector3>();
-				Vector3 vel = stream.Read<Vector3>();
 				Vector2 rot = stream.Read<Vector2>();
-				Vector2 inpMov = stream.Read<Vector2>();
-				
-				UpdateState(pos, vel, rot, inpMov, info.timestamp);
-			}
 
+				//----------------------------------------------------------------------
+				// FOLLOWING CODES HANDLE PLAYER LERP PACKAGE ARRIVAL PROCESSES
+
+				playerLastPos = playerNextPos;
+				playerNextPos = pos;
+
+				playerLastRot = playerNextRot;
+				playerNextRot = rot;
+				
+				playerLastTimestamp = playerNextTimestamp;
+				playerNextTimestamp = Time.time;
+				
+				playerTimeCovered = 0f;
+
+				//----------------------------------------------------------------------
+			}
 		}
 	}
 	
 	
 	
-	private void UpdateState(Vector3 pos, Vector3 vel, Vector2 rot, Vector2 inpMov, double timestamp)
+	private void UpdateState(Vector3 pos, Vector2 rot)
 	{
-		
-		/*
-		 * 
-		 * // set edilen değerleri lerp yapma işi
-		lastPos = targetPos;
-		lastRot = targetRot;
-		lastVel = targetVel;
-		lastTimestamp = targetTimestamp;
 
+		m_Player.Position.Set (pos);
+		m_Player.Rotation.Set (rot);
 
-		targetPos = pos;
-		targetRot = rot;
-		targetVel = vel;
-		targetTimestamp = timestamp;
-
-		timeToBeCovered = (float)(targetTimestamp - lastTimestamp);
-		timeCovered = 0f;
-		*/
-		
-		// rotation lerp için 
-		lastRot = targetRot;
-		lastPos = targetPos;
-		
-		lastTimestamp = targetTimestamp;
-		
-		targetRot = rot;
-		targetPos = pos;
-		
-		targetTimestamp = timestamp;
-		
-		timeToBeCovered = (float)(targetTimestamp - lastTimestamp);
-		
-		timeCovered = 0f;
-		
-		
-		m_Player.InputMoveVector.Set (inpMov);
-		
-		
 	}
 	
 	
@@ -243,7 +259,7 @@ public class NetworkStateSync : uLink.MonoBehaviour
 		// This code is only executed on the client which is the owner of this game object
 		// Sends Movement RPC to server. The nice part is that this code works when using 
 		// an auth server or non-auth server. Both can handle this RPC!
-		networkView.UnreliableRPC("Move", uLink.NetworkPlayer.server, m_Player.Position.Get() , m_Player.Velocity.Get(), m_Player.Rotation.Get(), m_Player.InputMoveVector.Get() );
+		networkView.UnreliableRPC("Move", uLink.NetworkPlayer.server, m_Player.Position.Get() , m_Player.Rotation.Get() );
 	}
 	
 	
@@ -263,33 +279,47 @@ public class NetworkStateSync : uLink.MonoBehaviour
 		}
 		*/
 
-
-		// THIS SECTION HANDLES PLAYER MOVE LERPING
-		if (!networkView.isOwner && !isBot) 
+		//---------------------------------------------------------------
+		// THIS SECTION HANDLES BOT PROXIES MOVE LERPING
+		if( isBot && networkView.isProxy )
 		{
-			// FOLLOWING CODES HANDLE THE SMOOTH ROTATION OF SERVER AND PROXIES
-			timeCovered += Time.deltaTime;
-			fraction = (timeCovered / timeToBeCovered);
-			
-			m_Player.Rotation.Set (Vector2.Lerp (lastRot, targetRot, fraction));
+			botTimeCovered += Time.deltaTime;
+			float frac = ( botTimeCovered / (float)(botNextTimestamp - botLastTimestamp) );
+			m_Player.Position.Set(Vector3.Lerp(botLastPos, botNextPos, frac));
+
+		}
+		//---------------------------------------------------------------
+
+
+		//---------------------------------------------------------------
+		// THIS SECTION HANDLES PLAYER MOVE LERPING
+		if (networkView.isProxy && !isBot) 
+		{
+			playerTimeCovered += Time.deltaTime;
+			float frac = ( playerTimeCovered / (float)(playerNextTimestamp - playerLastTimestamp) );
+			m_Player.Position.Set(Vector3.Lerp(playerLastPos, playerNextPos, frac));
+
+
+
+			// FOLLOWING CODES HANDLE THE SMOOTH ROTATION 
+			m_Player.Rotation.Set (Vector2.Lerp (playerLastRot, playerNextRot, frac));
 			
 			
 			// IF PLAYER DIVERGES FROM SERVER POSITION, SNAP THE POSITION
 			if (Vector3.Distance(m_Player.Position.Get(), targetPos) >= failRadius) 
 			{
-				m_Player.Position.Set( targetPos );
+				//m_Player.Position.Set( targetPos );
 				Debug.Log("SNAPPING");
-			}
-			
-			
+			}	
 		}
+		//---------------------------------------------------------------
 		
 		
 	}
 	
 	
 	[RPC]
-	void Move(Vector3 pos, Vector3 vel, Vector2 rot, Vector2 inpMov, uLink.NetworkMessageInfo info)
+	void Move(Vector3 pos, Vector2 rot, uLink.NetworkMessageInfo info)
 	{
 		// This code is only executed in the auth server
 		if (info.sender != networkView.owner || info.timestamp <= serverLastTimestamp)
@@ -304,7 +334,7 @@ public class NetworkStateSync : uLink.MonoBehaviour
 		// Add some more code right here if the server is authoritave and you want to do more security checks
 		// The server state is updated with incoming data from the client beeing the "owner" of this game object
 		
-		UpdateState(pos, vel, rot, inpMov, info.timestamp);
+		UpdateState(pos, rot);
 	}
 	
 }

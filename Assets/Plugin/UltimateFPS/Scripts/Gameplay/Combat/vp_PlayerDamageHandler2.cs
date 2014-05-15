@@ -244,6 +244,9 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 			// RESPAWN SLAYER PLAYER AT BASE WHEN HE DIES
 			netwEvents.RespawnAtBase();
 
+			// INFORM GAME ANALYTICS
+			GA.API.Design.NewEvent ("A Slayer Player Has Dýed");
+
 			/*
 			if (Respawns)
 				vp_Timer.In(Random.Range(MinRespawnTime, MaxRespawnTime), Respawn);
@@ -300,6 +303,9 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 		isDown=false;
 		isSet=false;
 		capsule.animation.Play("reanimate");
+
+		if (gameObject.tag == "VampirePlayer")
+			gameObject.GetComponent<VampirePlayerAnimationController> ().Revive ();
 	}
 
 
@@ -372,6 +378,9 @@ public class vp_PlayerDamageHandler2 : vp_DamageHandler
 			if ((Respawns) && (isDead==false) && (isDown==true) && (Time.time-downTime>=4.0f))
 			{
 				Respawn();
+
+				// INFORM GAME ANALYTICS
+				GA.API.Design.NewEvent ("A Vampire Player Has Dýed");
 			}
 
 			else if( ( netwEvents.actionStatus == 1 && is_Client == false ) && (isKeyHolding==false) && (getClosestHuman()!=null))

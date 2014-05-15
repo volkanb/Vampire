@@ -5,6 +5,7 @@ public class VampirePlayerAnimationController : MonoBehaviour {
 
 	public GameObject model;
 
+	private bool down = false;
 
 	//----------------------------------------------------------------------------------
 	// EVENT HANDLER
@@ -42,9 +43,13 @@ public class VampirePlayerAnimationController : MonoBehaviour {
 		if( !m_Player.Run.Active )
 		{
 			if ( (transform.position - lastPos).magnitude > 0.2f )
-				model.animation.Play("walk");
+			{
+				model.animation.Play("RunForward");
+
+				down = false;
+			}
 			else
-				model.animation.Stop("walk");
+				model.animation.Stop("RunForward");
 		}
 
 		lastPos = transform.position;
@@ -53,7 +58,7 @@ public class VampirePlayerAnimationController : MonoBehaviour {
 
 	void Update()
 	{
-		if ( !model.animation.isPlaying )
+		if ( !down && !model.animation.isPlaying )
 			model.animation.PlayQueued("IdleUsual");
 
 	}
@@ -64,6 +69,8 @@ public class VampirePlayerAnimationController : MonoBehaviour {
 		model.animation["Attack3"].weight=0.5f;
 		model.animation ["Attack3"].wrapMode = WrapMode.Loop;
 		model.animation.Play("Attack3");
+
+		down = false;
 	}
 	void OnStop_Attack()
 	{
@@ -74,12 +81,16 @@ public class VampirePlayerAnimationController : MonoBehaviour {
 	void OnStart_Jump()
 	{
 		model.animation.Play ("Jump");
+
+		down = false;
 	}
 
 	void OnStart_Run()
 	{
 		model.animation ["RunForward"].wrapMode = WrapMode.Loop;
 		model.animation.Play ("RunForward");
+
+		down = false;
 	}
 	void OnStop_Run()
 	{
@@ -90,6 +101,17 @@ public class VampirePlayerAnimationController : MonoBehaviour {
 	{
 		model.animation["Death1"].speed=1;
 		model.animation.Play("Death1");
+
+		down = true;
+	}
+
+	public void Revive()
+	{
+		model.animation["Death1"].speed=-1;
+		model.animation["Death1"].time = model.animation["Death1"].length;
+		model.animation.Play("Death1");
+
+		down = false;
 	}
 	
 

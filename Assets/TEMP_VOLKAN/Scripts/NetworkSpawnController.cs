@@ -42,14 +42,15 @@ public class NetworkSpawnController : uLink.MonoBehaviour {
 			uLink.Network.Instantiate (player, SlayerProxyPref, SlayerOwnerPref, SlayerCreatorPref, GetPosition('s'), SlayerSpawnLocation.rotation, 0, "SlayerPlayer");
 			roundController.CurrentSlayerPlayerNumber++;
 
-
+			GA.API.Design.NewEvent("New Slayer Player Connected");
 		}
 		else if ( isVampire == true )
 		{
 
 			uLink.Network.Instantiate (player, VampireProxyPref, VampireOwnerPref, VampireCreatorPref, GetPosition('v'), VampireSpawnLocation.rotation, 0, "VampirePlayer");
 			roundController.CurrentVampirePlayerNumber++;
-
+	
+			GA.API.Design.NewEvent("New Vampire Player Connected");
 		}
 
 		if (!roundController.anybodyInTheGame)
@@ -69,6 +70,8 @@ public class NetworkSpawnController : uLink.MonoBehaviour {
 		uLink.Network.DestroyPlayerObjects (player);
 		uLink.Network.RemoveRPCs (player);
 		uLink.Network.RemoveInstantiates (player);
+
+		GA.API.Design.NewEvent("Player Disconnected");
 	}
 
 	public void InstantiateBots( int SlayerBotNumber, int VampireBotNumber )
