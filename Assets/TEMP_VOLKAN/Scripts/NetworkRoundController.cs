@@ -34,6 +34,8 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 
 	private NetworkSpawnController netwSpawnController;
 
+	private bool restarted = false;
+
 
 
 	public int MaxPlayerNumber = 10;
@@ -189,8 +191,23 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 
 		//  On azure -> System.Diagnostics.Process.Start ("c:\\Users\\vampire\\Desktop\\RestartServer.bat");
 
+		RestartApp ();
 
-		System.Diagnostics.Process.Start ("d:\\VAMPIRESERVER\\RestartServer.bat");
+
+	}
+
+	public void RestartApp()
+	{
+		if ( !restarted)
+		{
+			restarted = true;
+			// laptop için 
+			// System.Diagnostics.Process.Start ("e:\\VAMPIRESERVER\\RestartServer.bat");
+
+			// desktop için 
+			System.Diagnostics.Process.Start ("d:\\VAMPIRESERVER\\RestartServer.bat");
+		}
+
 
 	}
 

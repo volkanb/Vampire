@@ -507,11 +507,11 @@ public class NetworkEvents: uLink.MonoBehaviour
 	// Following codes syncs server's clip count with others
 	public void SupplySpotStart()
 	{ 
-		networkView.UnreliableRPC("SupplySpotStartOthers", uLink.RPCMode.Others);
+		networkView.UnreliableRPC("SupplySpotStartServer", uLink.RPCMode.Server);
 	}
 	
 	[RPC]
-	void SupplySpotStartOthers(uLink.NetworkMessageInfo info)
+	void SupplySpotStartServer(uLink.NetworkMessageInfo info)
 	{
 		int toAdd = 10 - m_Player.GetItemCount.Send("AmmoClip");
 		
@@ -519,6 +519,19 @@ public class NetworkEvents: uLink.MonoBehaviour
 
 		m_Player.Health.Set(100f);
 
+		networkView.UnreliableRPC("SupplySpotStartOthers", uLink.RPCMode.OthersExceptOwner);
+
+	}
+
+	[RPC]
+	void SupplySpotStartOthers(uLink.NetworkMessageInfo info)
+	{
+		int toAdd = 10 - m_Player.GetItemCount.Send("AmmoClip");
+		
+		m_Player.AddItem.Try(new object[] { "AmmoClip", toAdd });
+		
+		m_Player.Health.Set(100f);
+		
 	}
 	
 	//----------------------------------------------------------------------------------------------------------
@@ -596,9 +609,15 @@ public class NetworkEvents: uLink.MonoBehaviour
 	// Following codes syncs slayer NPC'S state change with proxies
 	public void ChangeStateSlayerNPC(string s)
 	{ 
-		networkView.UnreliableRPC("ChangeStateOtherSlayerNPCs", uLink.RPCMode.Others, s);
+		networkView.UnreliableRPC("ChangeStateOtherSlayerNPCsServer", uLink.RPCMode.Server, s);
 		Debug.Log ("SLAYER BOT STATE IS : " + s);
-		
+
+	}
+
+	public void ChangeStateSlayerNPCsServer(string s)
+	{ 
+		networkView.UnreliableRPC("ChangeStateOtherSlayerNPCs", uLink.RPCMode.Others, s);
+				
 		if (s == "DEAD") 
 		{
 			// DESTROYS BOT WHEN DEAD

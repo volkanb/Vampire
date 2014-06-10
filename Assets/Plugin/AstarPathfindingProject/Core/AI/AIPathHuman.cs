@@ -598,7 +598,7 @@ public class AIPathHuman : MonoBehaviour {
 				GetComponent<log>().EnterLog("Dead");
 				netwEvents.ChangeStateNPC("DEAD");
 			}
-			else if(targetPos.magnitude<5f) {
+			else if(targetPos.magnitude<15f) {
 				Player.Attack.TryStop(); 
 				state=State.RESCUED; 
 				

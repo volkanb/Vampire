@@ -1,8 +1,10 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Plugin\ULINK\uLink\Utility Scripts\uLinkClientGUI.cs">
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Plugin\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPWeaponMeleeAttack.cs">
     <Files>
-      <File FileName="Assets\Plugin\ULINK\uLink\Utility Scripts\uLinkClientGUI.cs" Line="73" Column="9" />
+      <File FileName="Assets\TEMP_VOLKAN\Scripts\NetworkEvents.cs" Line="614" Column="3" />
+      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Gameplay\Combat\vp_DamageHandler2.cs" Line="182" Column="6" />
+      <File FileName="Assets\Plugin\UltimateFPS\Scripts\Core\LocalPlayer\vp_FPWeaponMeleeAttack.cs" Line="159" Column="82" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
