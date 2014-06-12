@@ -1,8 +1,0 @@
-9/5/2014 23:02:28.5691238 SlayerAICreator1(Clone) -625328 Search
-9/5/2014 23:02:29.8947497 SlayerAICreator1(Clone) -625328 Defend
-9/5/2014 23:02:33.6745642 HumanCreator1(Clone) -630578 Wander
-9/5/2014 23:02:51.9498189 SlayerAICreator1(Clone) -625328 Defend
-9/5/2014 23:03:02.4444179 SlayerAICreator1(Clone) -625328 Defend
-9/5/2014 23:03:18.4505434 SlayerAICreator1(Clone) -625328 Defend
-9/5/2014 23:03:30.5870641 SlayerAICreator1(Clone) -625328 Defend
-9/5/2014 23:03:34.1669456 SlayerAICreator1(Clone) -625328 Search

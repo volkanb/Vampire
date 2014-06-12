@@ -1,8 +1,0 @@
-5/5/2014 19:44:18.1130762 SlayerAICreator1(Clone) -584250 Search
-5/5/2014 19:44:22.6268663 SlayerAICreator1(Clone) -584250 Defend
-5/5/2014 19:44:37.8037294 SlayerAICreator1(Clone) -584250 Search
-5/5/2014 19:44:41.0759191 SlayerAICreator1(Clone) -584250 Defend
-5/5/2014 19:44:43.1849273 SlayerAICreator1(Clone) -584250 Defend
-5/5/2014 19:44:48.6468013 SlayerAICreator1(Clone) -584250 Dead
-5/5/2014 19:44:54.0706584 SlayerAICreator1(Clone) -584250 Defend
-5/5/2014 19:44:58.6481773 SlayerAICreator1(Clone) -584250 Defend

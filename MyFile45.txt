@@ -1,6 +1,0 @@
-27/4/2014 17:28:38.6763437 HumanCreator1(Clone) -11378 Wander
-27/4/2014 17:28:38.6833504 HumanCreator1(Clone) -11482 Wander
-27/4/2014 17:28:38.6863533 HumanCreator1(Clone) -11586 Wander
-27/4/2014 17:28:38.6893560 HumanCreator1(Clone) -11690 Wander
-27/4/2014 17:28:55.0975904 HumanCreator1(Clone) -11586 Dead
-27/4/2014 17:29:12.1809569 HumanCreator1(Clone) -20254 Wander

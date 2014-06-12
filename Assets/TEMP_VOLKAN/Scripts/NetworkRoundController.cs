@@ -201,11 +201,18 @@ public class NetworkRoundController : uLink.MonoBehaviour {
 		if ( !restarted)
 		{
 			restarted = true;
-			// laptop için 
-			// System.Diagnostics.Process.Start ("e:\\VAMPIRESERVER\\RestartServer.bat");
 
-			// desktop için 
-			System.Diagnostics.Process.Start ("d:\\VAMPIRESERVER\\RestartServer.bat");
+			string path = Application.dataPath;
+
+			if (Application.platform == RuntimePlatform.OSXPlayer) {
+				path += "/../../RestartServer.bat";
+			}
+			else if (Application.platform == RuntimePlatform.WindowsPlayer) {
+				path += "/../RestartServer.bat";
+			}
+
+			System.Diagnostics.Process.Start (path);
+			//System.Diagnostics.Process.Start ("d:\\VAMPIRESERVER\\RestartServer.bat");
 		}
 
 

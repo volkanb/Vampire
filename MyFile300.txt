@@ -1,7 +1,0 @@
-5/5/2014 23:34:21.5158881 VampireAICreator1(Clone) -1414072 Search
-5/5/2014 23:34:25.9024847 VampireAICreator1(Clone) -1414072 Attack
-5/5/2014 23:34:28.4228181 VampireAICreator1(Clone) -1414072 Down
-5/5/2014 23:34:33.3485197 VampireAICreator1(Clone) -1414072 Attack
-5/5/2014 23:34:35.3265937 VampireAICreator1(Clone) -1414072 Down
-5/5/2014 23:34:39.8138890 VampireAICreator1(Clone) -1414072 Down
-5/5/2014 23:34:42.5500063 VampireAICreator1(Clone) -1414072 Dead

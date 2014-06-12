@@ -1,2 +1,0 @@
-9/5/2014 04:33:21.4863402 VampireAICreator1(Clone) -535738 Search
-9/5/2014 04:33:26.5564623 HumanCreator1(Clone) -539884 Wander
